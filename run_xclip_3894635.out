@@ -1,0 +1,188 @@
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2023 NVIDIA Corporation
+Built on Mon_Apr__3_17:16:06_PDT_2023
+Cuda compilation tools, release 12.1, V12.1.105
+Build cuda_12.1.r12.1/compiler.32688072_0
+g++ (GCC) 12.3.0
+Copyright (C) 2022 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+## Available CUDA devices: 0,1
+## Checking status of CUDA device with nvidia-smi
+Fri Mar 21 18:31:19 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.03              Driver Version: 560.35.03      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GeForce RTX 2080 Ti     On  |   00000000:62:00.0 Off |                  N/A |
+| 30%   34C    P8             34W /  250W |       1MiB /  11264MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA GeForce RTX 2080 Ti     On  |   00000000:B9:00.0 Off |                  N/A |
+| 30%   31C    P8             19W /  250W |       1MiB /  11264MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+CUDA_VISIBLE_DEVICES: 0,1
+MASTER_ADDR: localhost
+MASTER_PORT: 34988
+[nltk_data] Downloading package wordnet to /home/s3705609/nltk_data...
+[nltk_data] Downloading package wordnet to /home/s3705609/nltk_data...
+[nltk_data]   Package wordnet is already up-to-date!
+[nltk_data]   Package wordnet is already up-to-date!
+[Process 3217089] rank = 1, world_size = 2, local_rank = 1
+[Process 3217088] rank = 0, world_size = 2, local_rank = 0
+[Process 3217088] Initialized process group: rank=0, world_size=2
+[Process 3217089] Initialized process group: rank=1, world_size=2
+03/21/2025 18:31:35 - INFO -   CUDA_VISIBLE_DEVICES: 0,1
+03/21/2025 18:31:35 - INFO -   Effective parameters:
+03/21/2025 18:31:35 - INFO -   Total available GPUs: 2
+03/21/2025 18:31:35 - INFO -     <<< batch_size: 16
+03/21/2025 18:31:35 - INFO -     <<< batch_size_val: 64
+03/21/2025 18:31:35 - INFO -   Process 3217089 using device: cuda:1, local_rank: 1
+03/21/2025 18:31:35 - INFO -     <<< cache_dir: 
+03/21/2025 18:31:35 - INFO -   Current device index: 1
+03/21/2025 18:31:35 - INFO -     <<< coef_lr: 0.001
+03/21/2025 18:31:35 - INFO -   Device properties: _CudaDeviceProperties(name='NVIDIA GeForce RTX 2080 Ti', major=7, minor=5, total_memory=10824MB, multi_processor_count=68)
+03/21/2025 18:31:35 - INFO -     <<< cross_model: cross-base
+03/21/2025 18:31:35 - INFO -     <<< cross_num_hidden_layers: 4
+03/21/2025 18:31:35 - INFO -     <<< data_path: /home/s3705609/data1/VATEX
+03/21/2025 18:31:35 - INFO -     <<< datatype: vatex
+03/21/2025 18:31:35 - INFO -     <<< do_eval: False
+03/21/2025 18:31:35 - INFO -     <<< do_lower_case: False
+03/21/2025 18:31:35 - INFO -     <<< do_pretrain: False
+03/21/2025 18:31:35 - INFO -     <<< do_train: True
+03/21/2025 18:31:35 - INFO -     <<< epochs: 5
+03/21/2025 18:31:35 - INFO -     <<< eval_frame_order: 0
+03/21/2025 18:31:35 - INFO -     <<< expand_msrvtt_sentences: False
+03/21/2025 18:31:35 - INFO -     <<< feature_framerate: 1
+03/21/2025 18:31:35 - INFO -     <<< features_path: /home/s3705609/data1/VATEX/clips
+03/21/2025 18:31:35 - INFO -     <<< fp16: True
+03/21/2025 18:31:35 - INFO -     <<< fp16_opt_level: O2
+03/21/2025 18:31:35 - INFO -     <<< freeze_layer_num: 0
+03/21/2025 18:31:35 - INFO -     <<< gradient_accumulation_steps: 1
+03/21/2025 18:31:35 - INFO -     <<< hard_negative_rate: 0.5
+03/21/2025 18:31:35 - INFO -     <<< init_model: None
+03/21/2025 18:31:35 - INFO -     <<< linear_patch: 2d
+03/21/2025 18:31:35 - INFO -     <<< local_rank: 0
+03/21/2025 18:31:35 - INFO -     <<< loose_type: True
+03/21/2025 18:31:35 - INFO -     <<< lr: 0.0001
+03/21/2025 18:31:35 - INFO -     <<< lr_decay: 0.9
+03/21/2025 18:31:35 - INFO -     <<< margin: 0.1
+03/21/2025 18:31:35 - INFO -     <<< max_frames: 12
+03/21/2025 18:31:35 - INFO -     <<< max_words: 32
+03/21/2025 18:31:35 - INFO -     <<< n_display: 1
+03/21/2025 18:31:35 - INFO -     <<< n_gpu: 2
+03/21/2025 18:31:35 - INFO -     <<< n_pair: 1
+03/21/2025 18:31:35 - INFO -     <<< negative_weighting: 1
+03/21/2025 18:31:35 - INFO -     <<< num_thread_reader: 2
+03/21/2025 18:31:35 - INFO -     <<< output_dir: ckpts3/xclip_vatex_vit16
+03/21/2025 18:31:35 - INFO -     <<< pretrained_clip_name: ViT-B/16
+03/21/2025 18:31:35 - INFO -     <<< rank: 0
+03/21/2025 18:31:35 - INFO -     <<< resume_model: None
+03/21/2025 18:31:35 - INFO -     <<< sampled_use_mil: False
+03/21/2025 18:31:35 - INFO -     <<< seed: 42
+03/21/2025 18:31:35 - INFO -     <<< sim_header: seqTransf
+03/21/2025 18:31:35 - INFO -     <<< slice_framepos: 2
+03/21/2025 18:31:35 - INFO -     <<< task_type: retrieval
+03/21/2025 18:31:35 - INFO -     <<< text_num_hidden_layers: 12
+03/21/2025 18:31:35 - INFO -     <<< train_csv: data/.train.csv
+03/21/2025 18:31:35 - INFO -     <<< train_frame_order: 0
+03/21/2025 18:31:35 - INFO -     <<< use_mil: False
+03/21/2025 18:31:35 - INFO -     <<< val_csv: data/.val.csv
+03/21/2025 18:31:35 - INFO -     <<< video_dim: 1024
+03/21/2025 18:31:35 - INFO -     <<< visual_num_hidden_layers: 12
+03/21/2025 18:31:35 - INFO -     <<< warmup_proportion: 0.1
+03/21/2025 18:31:35 - INFO -     <<< world_size: 2
+03/21/2025 18:31:35 - INFO -   CUDA_VISIBLE_DEVICES: 0,1
+03/21/2025 18:31:35 - INFO -   Total available GPUs: 2
+03/21/2025 18:31:35 - INFO -   Process 3217088 using device: cuda:0, local_rank: 0
+03/21/2025 18:31:35 - INFO -   Current device index: 0
+03/21/2025 18:31:35 - INFO -   Device properties: _CudaDeviceProperties(name='NVIDIA GeForce RTX 2080 Ti', major=7, minor=5, total_memory=10824MB, multi_processor_count=68)
+03/21/2025 18:31:37 - INFO -   loading archive file /home/s3705609/X-CLIP/modules/cross-base
+03/21/2025 18:31:37 - INFO -   Model config {
+  "attention_probs_dropout_prob": 0.1,
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 512,
+  "initializer_range": 0.02,
+  "intermediate_size": 2048,
+  "max_position_embeddings": 128,
+  "num_attention_heads": 8,
+  "num_hidden_layers": 4,
+  "type_vocab_size": 2,
+  "vocab_size": 512
+}
+
+03/21/2025 18:31:37 - INFO -   Weight doesn't exsits. /home/s3705609/X-CLIP/modules/cross-base/cross_pytorch_model.bin
+03/21/2025 18:31:37 - WARNING -   Stage-One:True, Stage-Two:False
+03/21/2025 18:31:37 - WARNING -   Test retrieval by loose type.
+03/21/2025 18:31:37 - WARNING -   	 embed_dim: 512
+03/21/2025 18:31:37 - WARNING -   	 image_resolution: 224
+03/21/2025 18:31:37 - WARNING -   	 vision_layers: 12
+03/21/2025 18:31:37 - WARNING -   	 vision_width: 768
+03/21/2025 18:31:37 - WARNING -   	 vision_patch_size: 16
+03/21/2025 18:31:37 - WARNING -   	 context_length: 77
+03/21/2025 18:31:37 - WARNING -   	 vocab_size: 49408
+03/21/2025 18:31:37 - WARNING -   	 transformer_width: 512
+03/21/2025 18:31:37 - WARNING -   	 transformer_heads: 8
+03/21/2025 18:31:37 - WARNING -   	 transformer_layers: 12
+03/21/2025 18:31:37 - WARNING -   		 linear_patch: 2d
+03/21/2025 18:31:37 - WARNING -   	 cut_top_layer: 0
+03/21/2025 18:31:41 - WARNING -   	 sim_header: seqTransf
+03/21/2025 18:31:51 - INFO -   --------------------
+03/21/2025 18:31:51 - INFO -   Weights of XCLIP not initialized from pretrained model: 
+   global_mat_weight
+   word_logit_weight
+   frame_logit_weight
+   local_mat_weight
+   frame_mat_weight
+   word_mat_weight
+   frame_mat_weight2
+   word_mat_weight2
+03/21/2025 18:31:51 - INFO -   Weights from pretrained model not used in XCLIP: 
+   clip.input_resolution
+   clip.context_length
+   clip.vocab_size
+03/21/2025 18:32:00 - INFO -   ***** Running test *****
+03/21/2025 18:32:00 - INFO -     Num examples = 33910
+03/21/2025 18:32:00 - INFO -     Batch size = 64
+03/21/2025 18:32:00 - INFO -     Num steps = 530
+03/21/2025 18:32:00 - INFO -   ***** Running val *****
+03/21/2025 18:32:00 - INFO -     Num examples = 23750
+Total Paire: train 237780
+Video number: 23778
+Total Paire: train 237780
+Total Paire: train 237780
+Video number: 23778
+Total Paire: train 237780
+03/21/2025 18:32:17 - INFO -   ***** Running training *****
+03/21/2025 18:32:17 - INFO -     Num examples = 237780
+03/21/2025 18:32:17 - INFO -     Batch size = 16
+03/21/2025 18:32:17 - INFO -     Num steps = 74305
+[W reducer.cpp:1346] Warning: find_unused_parameters=True was specified in DDP constructor, but did not find any unused parameters in the forward pass. This flag results in an extra traversal of the autograd graph every iteration,  which can adversely affect performance. If your model indeed never has any unused parameters in the forward pass, consider turning this flag off. Note that this warning may be a false positive if your model has flow control causing later iterations to have unused parameters. (function operator())
+[W reducer.cpp:1346] Warning: find_unused_parameters=True was specified in DDP constructor, but did not find any unused parameters in the forward pass. This flag results in an extra traversal of the autograd graph every iteration,  which can adversely affect performance. If your model indeed never has any unused parameters in the forward pass, consider turning this flag off. Note that this warning may be a false positive if your model has flow control causing later iterations to have unused parameters. (function operator())
+03/21/2025 18:33:03 - INFO -   Epoch: 1/5, Step: 1/14861, Lr: , Loss: 0.140039, Time/step: 45.974548
+03/21/2025 18:33:04 - INFO -   Epoch: 1/5, Step: 2/14861, Lr: , Loss: 0.192775, Time/step: 1.082784
+03/21/2025 18:33:41 - INFO -   Epoch: 1/5, Step: 3/14861, Lr: , Loss: 0.156114, Time/step: 36.895226
+03/21/2025 18:33:42 - INFO -   Epoch: 1/5, Step: 4/14861, Lr: , Loss: 0.149094, Time/step: 1.078261
+03/21/2025 18:34:13 - INFO -   Epoch: 1/5, Step: 5/14861, Lr: , Loss: 0.247001, Time/step: 31.008484
+03/21/2025 18:34:14 - INFO -   Epoch: 1/5, Step: 6/14861, Lr: , Loss: 0.109976, Time/step: 0.853052
+03/21/2025 18:34:37 - INFO -   Epoch: 1/5, Step: 7/14861, Lr: , Loss: 0.067666, Time/step: 22.873630
+03/21/2025 18:34:38 - INFO -   Epoch: 1/5, Step: 8/14861, Lr: , Loss: 0.150079, Time/step: 1.296517
+03/21/2025 18:35:03 - INFO -   Epoch: 1/5, Step: 9/14861, Lr: , Loss: 0.129105, Time/step: 24.930173
+03/21/2025 18:35:04 - INFO -   Epoch: 1/5, Step: 10/14861, Lr: , Loss: 0.064761, Time/step: 0.989276
+03/21/2025 18:35:40 - INFO -   Epoch: 1/5, Step: 11/14861, Lr: , Loss: 0.225837, Time/step: 35.417329
+03/21/2025 18:35:41 - INFO -   Epoch: 1/5, Step: 12/14861, Lr: , Loss: 0.072193, Time/step: 1.185389
+slurmstepd: error: *** JOB 3894635 ON node851 CANCELLED AT 2025-03-21T18:36:15 ***

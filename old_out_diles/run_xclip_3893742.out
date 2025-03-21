@@ -1,0 +1,369 @@
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2023 NVIDIA Corporation
+Built on Mon_Apr__3_17:16:06_PDT_2023
+Cuda compilation tools, release 12.1, V12.1.105
+Build cuda_12.1.r12.1/compiler.32688072_0
+g++ (GCC) 12.3.0
+Copyright (C) 2022 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+## Available CUDA devices: 0,1
+## Checking status of CUDA device with nvidia-smi
+Fri Mar 21 14:53:23 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.03              Driver Version: 560.35.03      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GeForce RTX 2080 Ti     On  |   00000000:62:00.0 Off |                  N/A |
+| 29%   29C    P8             21W /  250W |       1MiB /  11264MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA GeForce RTX 2080 Ti     On  |   00000000:B9:00.0 Off |                  N/A |
+| 29%   29C    P8             20W /  250W |       1MiB /  11264MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+[nltk_data] Downloading package wordnet to /home/s3705609/nltk_data...
+[nltk_data] Downloading package wordnet to /home/s3705609/nltk_data...
+[nltk_data]   Package wordnet is already up-to-date!
+[nltk_data]   Package wordnet is already up-to-date!
+03/21/2025 14:53:38 - INFO -   Effective parameters:
+03/21/2025 14:53:38 - INFO -     <<< batch_size: 16
+03/21/2025 14:53:38 - INFO -     <<< batch_size_val: 64
+03/21/2025 14:53:38 - INFO -     <<< cache_dir: 
+03/21/2025 14:53:38 - INFO -     <<< coef_lr: 0.001
+03/21/2025 14:53:38 - INFO -     <<< cross_model: cross-base
+03/21/2025 14:53:38 - INFO -     <<< cross_num_hidden_layers: 4
+03/21/2025 14:53:38 - INFO -     <<< data_path: /home/s3705609/data1/VATEX
+03/21/2025 14:53:38 - INFO -     <<< datatype: vatex
+03/21/2025 14:53:38 - INFO -     <<< do_eval: False
+03/21/2025 14:53:38 - INFO -     <<< do_lower_case: False
+03/21/2025 14:53:38 - INFO -     <<< do_pretrain: False
+03/21/2025 14:53:38 - INFO -     <<< do_train: True
+03/21/2025 14:53:38 - INFO -     <<< epochs: 5
+03/21/2025 14:53:38 - INFO -     <<< eval_frame_order: 0
+03/21/2025 14:53:38 - INFO -     <<< expand_msrvtt_sentences: False
+03/21/2025 14:53:38 - INFO -     <<< feature_framerate: 1
+03/21/2025 14:53:38 - INFO -     <<< features_path: /home/s3705609/data1/VATEX/clips
+03/21/2025 14:53:38 - INFO -     <<< fp16: True
+03/21/2025 14:53:38 - INFO -     <<< fp16_opt_level: O1
+03/21/2025 14:53:38 - INFO -     <<< freeze_layer_num: 0
+03/21/2025 14:53:38 - INFO -     <<< gradient_accumulation_steps: 1
+03/21/2025 14:53:38 - INFO -     <<< hard_negative_rate: 0.5
+03/21/2025 14:53:38 - INFO -     <<< init_model: None
+03/21/2025 14:53:38 - INFO -     <<< linear_patch: 2d
+03/21/2025 14:53:38 - INFO -     <<< local_rank: 0
+03/21/2025 14:53:38 - INFO -     <<< loose_type: True
+03/21/2025 14:53:38 - INFO -     <<< lr: 0.0001
+03/21/2025 14:53:38 - INFO -     <<< lr_decay: 0.9
+03/21/2025 14:53:38 - INFO -     <<< margin: 0.1
+03/21/2025 14:53:38 - INFO -     <<< max_frames: 12
+03/21/2025 14:53:38 - INFO -     <<< max_words: 32
+03/21/2025 14:53:38 - INFO -     <<< n_display: 50
+03/21/2025 14:53:38 - INFO -     <<< n_gpu: 2
+03/21/2025 14:53:38 - INFO -     <<< n_pair: 1
+03/21/2025 14:53:38 - INFO -     <<< negative_weighting: 1
+03/21/2025 14:53:38 - INFO -     <<< num_thread_reader: 2
+03/21/2025 14:53:38 - INFO -     <<< output_dir: ckpts3/xclip_vatex_vit16
+03/21/2025 14:53:38 - INFO -     <<< pretrained_clip_name: ViT-B/16
+03/21/2025 14:53:38 - INFO -     <<< rank: 0
+03/21/2025 14:53:38 - INFO -     <<< resume_model: None
+03/21/2025 14:53:38 - INFO -     <<< sampled_use_mil: False
+03/21/2025 14:53:38 - INFO -     <<< seed: 42
+03/21/2025 14:53:38 - INFO -     <<< sim_header: seqTransf
+03/21/2025 14:53:38 - INFO -     <<< slice_framepos: 2
+03/21/2025 14:53:38 - INFO -     <<< task_type: retrieval
+03/21/2025 14:53:38 - INFO -     <<< text_num_hidden_layers: 12
+03/21/2025 14:53:38 - INFO -     <<< train_csv: data/.train.csv
+03/21/2025 14:53:38 - INFO -     <<< train_frame_order: 0
+03/21/2025 14:53:38 - INFO -     <<< use_mil: False
+03/21/2025 14:53:38 - INFO -     <<< val_csv: data/.val.csv
+03/21/2025 14:53:38 - INFO -     <<< video_dim: 1024
+03/21/2025 14:53:38 - INFO -     <<< visual_num_hidden_layers: 12
+03/21/2025 14:53:38 - INFO -     <<< warmup_proportion: 0.1
+03/21/2025 14:53:38 - INFO -     <<< world_size: 2
+_CudaDeviceProperties(name='NVIDIA GeForce RTX 2080 Ti', major=7, minor=5, total_memory=10824MB, multi_processor_count=68)
+03/21/2025 14:53:38 - INFO -   device: cuda:0 n_gpu: 2
+03/21/2025 14:53:38 - INFO -   Effective parameters:
+03/21/2025 14:53:38 - INFO -     <<< batch_size: 16
+03/21/2025 14:53:38 - INFO -     <<< batch_size_val: 64
+03/21/2025 14:53:38 - INFO -     <<< cache_dir: 
+03/21/2025 14:53:38 - INFO -     <<< coef_lr: 0.001
+03/21/2025 14:53:38 - INFO -     <<< cross_model: cross-base
+03/21/2025 14:53:38 - INFO -     <<< cross_num_hidden_layers: 4
+03/21/2025 14:53:38 - INFO -     <<< data_path: /home/s3705609/data1/VATEX
+03/21/2025 14:53:38 - INFO -     <<< datatype: vatex
+03/21/2025 14:53:38 - INFO -     <<< do_eval: False
+03/21/2025 14:53:38 - INFO -     <<< do_lower_case: False
+03/21/2025 14:53:38 - INFO -     <<< do_pretrain: False
+03/21/2025 14:53:38 - INFO -     <<< do_train: True
+03/21/2025 14:53:38 - INFO -     <<< epochs: 5
+03/21/2025 14:53:38 - INFO -     <<< eval_frame_order: 0
+03/21/2025 14:53:38 - INFO -     <<< expand_msrvtt_sentences: False
+03/21/2025 14:53:38 - INFO -     <<< feature_framerate: 1
+03/21/2025 14:53:38 - INFO -     <<< features_path: /home/s3705609/data1/VATEX/clips
+03/21/2025 14:53:38 - INFO -     <<< fp16: True
+03/21/2025 14:53:38 - INFO -     <<< fp16_opt_level: O1
+03/21/2025 14:53:38 - INFO -     <<< freeze_layer_num: 0
+03/21/2025 14:53:38 - INFO -     <<< gradient_accumulation_steps: 1
+03/21/2025 14:53:38 - INFO -     <<< hard_negative_rate: 0.5
+03/21/2025 14:53:38 - INFO -     <<< init_model: None
+03/21/2025 14:53:38 - INFO -     <<< linear_patch: 2d
+03/21/2025 14:53:38 - INFO -     <<< local_rank: 0
+03/21/2025 14:53:38 - INFO -     <<< loose_type: True
+03/21/2025 14:53:38 - INFO -     <<< lr: 0.0001
+03/21/2025 14:53:38 - INFO -     <<< lr_decay: 0.9
+03/21/2025 14:53:38 - INFO -     <<< margin: 0.1
+03/21/2025 14:53:38 - INFO -     <<< max_frames: 12
+03/21/2025 14:53:38 - INFO -     <<< max_words: 32
+03/21/2025 14:53:38 - INFO -     <<< n_display: 50
+03/21/2025 14:53:38 - INFO -     <<< n_gpu: 2
+03/21/2025 14:53:38 - INFO -     <<< n_pair: 1
+03/21/2025 14:53:38 - INFO -     <<< negative_weighting: 1
+03/21/2025 14:53:38 - INFO -     <<< num_thread_reader: 2
+03/21/2025 14:53:38 - INFO -     <<< output_dir: ckpts3/xclip_vatex_vit16
+03/21/2025 14:53:38 - INFO -     <<< pretrained_clip_name: ViT-B/16
+03/21/2025 14:53:38 - INFO -     <<< rank: 1
+03/21/2025 14:53:38 - INFO -     <<< resume_model: None
+03/21/2025 14:53:38 - INFO -     <<< sampled_use_mil: False
+03/21/2025 14:53:38 - INFO -     <<< seed: 42
+03/21/2025 14:53:38 - INFO -     <<< sim_header: seqTransf
+03/21/2025 14:53:38 - INFO -     <<< slice_framepos: 2
+03/21/2025 14:53:38 - INFO -     <<< task_type: retrieval
+03/21/2025 14:53:38 - INFO -     <<< text_num_hidden_layers: 12
+03/21/2025 14:53:38 - INFO -     <<< train_csv: data/.train.csv
+03/21/2025 14:53:38 - INFO -     <<< train_frame_order: 0
+03/21/2025 14:53:38 - INFO -     <<< use_mil: False
+03/21/2025 14:53:38 - INFO -     <<< val_csv: data/.val.csv
+03/21/2025 14:53:38 - INFO -     <<< video_dim: 1024
+03/21/2025 14:53:38 - INFO -     <<< visual_num_hidden_layers: 12
+03/21/2025 14:53:38 - INFO -     <<< warmup_proportion: 0.1
+03/21/2025 14:53:38 - INFO -     <<< world_size: 2
+_CudaDeviceProperties(name='NVIDIA GeForce RTX 2080 Ti', major=7, minor=5, total_memory=10824MB, multi_processor_count=68)
+03/21/2025 14:53:38 - INFO -   device: cuda:0 n_gpu: 2
+03/21/2025 14:53:41 - INFO -   loading archive file /home/s3705609/X-CLIP/modules/cross-base
+03/21/2025 14:53:41 - INFO -   Model config {
+  "attention_probs_dropout_prob": 0.1,
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 512,
+  "initializer_range": 0.02,
+  "intermediate_size": 2048,
+  "max_position_embeddings": 128,
+  "num_attention_heads": 8,
+  "num_hidden_layers": 4,
+  "type_vocab_size": 2,
+  "vocab_size": 512
+}
+
+03/21/2025 14:53:41 - INFO -   Weight doesn't exsits. /home/s3705609/X-CLIP/modules/cross-base/cross_pytorch_model.bin
+03/21/2025 14:53:41 - WARNING -   Stage-One:True, Stage-Two:False
+03/21/2025 14:53:41 - WARNING -   Test retrieval by loose type.
+03/21/2025 14:53:41 - WARNING -   	 embed_dim: 512
+03/21/2025 14:53:41 - WARNING -   	 image_resolution: 224
+03/21/2025 14:53:41 - WARNING -   	 vision_layers: 12
+03/21/2025 14:53:41 - WARNING -   	 vision_width: 768
+03/21/2025 14:53:41 - WARNING -   	 vision_patch_size: 16
+03/21/2025 14:53:41 - WARNING -   	 context_length: 77
+03/21/2025 14:53:41 - WARNING -   	 vocab_size: 49408
+03/21/2025 14:53:41 - WARNING -   	 transformer_width: 512
+03/21/2025 14:53:41 - WARNING -   	 transformer_heads: 8
+03/21/2025 14:53:41 - WARNING -   	 transformer_layers: 12
+03/21/2025 14:53:41 - WARNING -   		 linear_patch: 2d
+03/21/2025 14:53:41 - WARNING -   	 cut_top_layer: 0
+03/21/2025 14:53:41 - INFO -   loading archive file /home/s3705609/X-CLIP/modules/cross-base
+03/21/2025 14:53:41 - INFO -   Model config {
+  "attention_probs_dropout_prob": 0.1,
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 512,
+  "initializer_range": 0.02,
+  "intermediate_size": 2048,
+  "max_position_embeddings": 128,
+  "num_attention_heads": 8,
+  "num_hidden_layers": 4,
+  "type_vocab_size": 2,
+  "vocab_size": 512
+}
+
+03/21/2025 14:53:41 - INFO -   Weight doesn't exsits. /home/s3705609/X-CLIP/modules/cross-base/cross_pytorch_model.bin
+03/21/2025 14:53:41 - WARNING -   Stage-One:True, Stage-Two:False
+03/21/2025 14:53:41 - WARNING -   Test retrieval by loose type.
+03/21/2025 14:53:41 - WARNING -   	 embed_dim: 512
+03/21/2025 14:53:41 - WARNING -   	 image_resolution: 224
+03/21/2025 14:53:41 - WARNING -   	 vision_layers: 12
+03/21/2025 14:53:41 - WARNING -   	 vision_width: 768
+03/21/2025 14:53:41 - WARNING -   	 vision_patch_size: 16
+03/21/2025 14:53:41 - WARNING -   	 context_length: 77
+03/21/2025 14:53:41 - WARNING -   	 vocab_size: 49408
+03/21/2025 14:53:41 - WARNING -   	 transformer_width: 512
+03/21/2025 14:53:41 - WARNING -   	 transformer_heads: 8
+03/21/2025 14:53:41 - WARNING -   	 transformer_layers: 12
+03/21/2025 14:53:41 - WARNING -   		 linear_patch: 2d
+03/21/2025 14:53:41 - WARNING -   	 cut_top_layer: 0
+03/21/2025 14:53:43 - WARNING -   	 sim_header: seqTransf
+03/21/2025 14:53:43 - WARNING -   	 sim_header: seqTransf
+03/21/2025 14:53:56 - INFO -   --------------------
+03/21/2025 14:53:56 - INFO -   Weights of XCLIP not initialized from pretrained model: 
+   global_mat_weight
+   word_logit_weight
+   frame_logit_weight
+   local_mat_weight
+   frame_mat_weight
+   word_mat_weight
+   frame_mat_weight2
+   word_mat_weight2
+03/21/2025 14:53:56 - INFO -   Weights from pretrained model not used in XCLIP: 
+   clip.input_resolution
+   clip.context_length
+   clip.vocab_size
+03/21/2025 14:53:56 - INFO -   --------------------
+03/21/2025 14:53:56 - INFO -   Weights of XCLIP not initialized from pretrained model: 
+   global_mat_weight
+   word_logit_weight
+   frame_logit_weight
+   local_mat_weight
+   frame_mat_weight
+   word_mat_weight
+   frame_mat_weight2
+   word_mat_weight2
+03/21/2025 14:53:56 - INFO -   Weights from pretrained model not used in XCLIP: 
+   clip.input_resolution
+   clip.context_length
+   clip.vocab_size
+03/21/2025 14:54:05 - INFO -   ***** Running test *****
+03/21/2025 14:54:05 - INFO -     Num examples = 60000
+03/21/2025 14:54:05 - INFO -     Batch size = 64
+03/21/2025 14:54:05 - INFO -     Num steps = 938
+03/21/2025 14:54:05 - INFO -   ***** Running val *****
+03/21/2025 14:54:05 - INFO -     Num examples = 30000
+03/21/2025 14:54:05 - INFO -   ***** Running test *****
+03/21/2025 14:54:05 - INFO -     Num examples = 60000
+03/21/2025 14:54:05 - INFO -     Batch size = 64
+03/21/2025 14:54:05 - INFO -     Num steps = 938
+03/21/2025 14:54:05 - INFO -   ***** Running val *****
+03/21/2025 14:54:05 - INFO -     Num examples = 30000
+Total Paire: train 259910
+Video number: 23778
+Total Paire: train 259910
+Total Paire: train 259910
+Video number: 23778
+Total Paire: train 259910
+node852:2125004:2125004 [0] NCCL INFO Bootstrap : Using eth01:10.161.19.84<0>
+node852:2125004:2125004 [0] NCCL INFO NET/Plugin : Plugin load (libnccl-net.so) returned 2 : libnccl-net.so: cannot open shared object file: No such file or directory
+node852:2125004:2125004 [0] NCCL INFO NET/Plugin : No plugin found, using internal implementation
+node852:2125004:2125004 [0] NCCL INFO cudaDriverVersion 12060
+NCCL version 2.18.3+cuda12.1
+node852:2125004:2125004 [0] NCCL INFO init.cc:1584 Cuda Host Alloc Size 4 pointer 0x155473600000
+node852:2125005:2125005 [0] NCCL INFO cudaDriverVersion 12060
+node852:2125005:2125005 [0] NCCL INFO Bootstrap : Using eth01:10.161.19.84<0>
+node852:2125005:2125005 [0] NCCL INFO NET/Plugin : Plugin load (libnccl-net.so) returned 2 : libnccl-net.so: cannot open shared object file: No such file or directory
+node852:2125005:2125005 [0] NCCL INFO NET/Plugin : No plugin found, using internal implementation
+node852:2125005:2125005 [0] NCCL INFO init.cc:1584 Cuda Host Alloc Size 4 pointer 0x155473600000
+node852:2125005:2147565 [0] NCCL INFO NET/IB : No device found.
+node852:2125005:2147565 [0] NCCL INFO NET/Socket : Using [0]eth01:10.161.19.84<0> [1]ens9f1:10.161.27.84<0>
+node852:2125005:2147565 [0] NCCL INFO Using network Socket
+node852:2125004:2147553 [0] NCCL INFO NET/IB : No device found.
+node852:2125004:2147553 [0] NCCL INFO NET/Socket : Using [0]eth01:10.161.19.84<0> [1]ens9f1:10.161.27.84<0>
+node852:2125004:2147553 [0] NCCL INFO Using network Socket
+node852:2125004:2147553 [0] NCCL INFO comm 0xa0f4b80 rank 0 nranks 2 cudaDev 0 nvmlDev 0 busId 62000 commId 0xc45f1bfd0269a800 - Init START
+node852:2125005:2147565 [0] NCCL INFO comm 0xbd258c0 rank 1 nranks 2 cudaDev 0 nvmlDev 0 busId 62000 commId 0xc45f1bfd0269a800 - Init START
+
+node852:2125004:2147553 [0] init.cc:795 NCCL WARN Duplicate GPU detected : rank 0 and rank 1 both on CUDA device 62000
+
+node852:2125005:2147565 [0] init.cc:795 NCCL WARN Duplicate GPU detected : rank 1 and rank 0 both on CUDA device 62000
+node852:2125004:2147553 [0] NCCL INFO init.cc:1358 -> 5
+node852:2125005:2147565 [0] NCCL INFO init.cc:1358 -> 5
+node852:2125004:2147553 [0] NCCL INFO group.cc:65 -> 5 [Async thread]
+node852:2125005:2147565 [0] NCCL INFO group.cc:65 -> 5 [Async thread]
+node852:2125004:2125004 [0] NCCL INFO group.cc:406 -> 5
+node852:2125004:2125004 [0] NCCL INFO group.cc:96 -> 5
+node852:2125005:2125005 [0] NCCL INFO group.cc:406 -> 5
+node852:2125005:2125005 [0] NCCL INFO group.cc:96 -> 5
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/home/s3705609/X-CLIP/main_xclip.py", line 549, in <module>
+  File "/home/s3705609/X-CLIP/main_xclip.py", line 549, in <module>
+    main()
+  File "/home/s3705609/X-CLIP/main_xclip.py", line 500, in main
+    optimizer, scheduler, model = prep_optimizer(args, model, num_train_optimization_steps, device, n_gpu, args.local_rank, coef_lr=coef_lr)
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/s3705609/X-CLIP/main_xclip.py", line 215, in prep_optimizer
+    main()
+  File "/home/s3705609/X-CLIP/main_xclip.py", line 500, in main
+    model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[local_rank],
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/easybuild/software/PyTorch/2.1.2-foss-2023a-CUDA-12.1.1/lib/python3.11/site-packages/torch/nn/parallel/distributed.py", line 795, in __init__
+    optimizer, scheduler, model = prep_optimizer(args, model, num_train_optimization_steps, device, n_gpu, args.local_rank, coef_lr=coef_lr)
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/s3705609/X-CLIP/main_xclip.py", line 215, in prep_optimizer
+    model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[local_rank],
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/easybuild/software/PyTorch/2.1.2-foss-2023a-CUDA-12.1.1/lib/python3.11/site-packages/torch/nn/parallel/distributed.py", line 795, in __init__
+    _verify_param_shape_across_processes(self.process_group, parameters)
+  File "/easybuild/software/PyTorch/2.1.2-foss-2023a-CUDA-12.1.1/lib/python3.11/site-packages/torch/distributed/utils.py", line 265, in _verify_param_shape_across_processes
+    _verify_param_shape_across_processes(self.process_group, parameters)
+  File "/easybuild/software/PyTorch/2.1.2-foss-2023a-CUDA-12.1.1/lib/python3.11/site-packages/torch/distributed/utils.py", line 265, in _verify_param_shape_across_processes
+    return dist._verify_params_across_processes(process_group, tensors, logger)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.distributed.DistBackendError: NCCL error in: /local/easybuild/PyTorch/2.1.2/foss-2023a-CUDA-12.1.1/pytorch-v2.1.2/torch/csrc/distributed/c10d/ProcessGroupNCCL.cpp:1333, invalid usage (run with NCCL_DEBUG=WARN for details), NCCL version 2.18.3
+ncclInvalidUsage: This usually reflects invalid usage of NCCL library.
+Last error:
+Duplicate GPU detected : rank 1 and rank 0 both on CUDA device 62000
+    return dist._verify_params_across_processes(process_group, tensors, logger)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.distributed.DistBackendError: NCCL error in: /local/easybuild/PyTorch/2.1.2/foss-2023a-CUDA-12.1.1/pytorch-v2.1.2/torch/csrc/distributed/c10d/ProcessGroupNCCL.cpp:1333, invalid usage (run with NCCL_DEBUG=WARN for details), NCCL version 2.18.3
+ncclInvalidUsage: This usually reflects invalid usage of NCCL library.
+Last error:
+Duplicate GPU detected : rank 0 and rank 1 both on CUDA device 62000
+[2025-03-21 14:54:26,341] torch.distributed.elastic.multiprocessing.api: [ERROR] failed (exitcode: 1) local_rank: 0 (pid: 2125004) of binary: /data1/s3705609/venv_clip/bin/python
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/easybuild/software/PyTorch/2.1.2-foss-2023a-CUDA-12.1.1/lib/python3.11/site-packages/torch/distributed/run.py", line 810, in <module>
+    main()
+  File "/easybuild/software/PyTorch/2.1.2-foss-2023a-CUDA-12.1.1/lib/python3.11/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 346, in wrapper
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/easybuild/software/PyTorch/2.1.2-foss-2023a-CUDA-12.1.1/lib/python3.11/site-packages/torch/distributed/run.py", line 806, in main
+    run(args)
+  File "/easybuild/software/PyTorch/2.1.2-foss-2023a-CUDA-12.1.1/lib/python3.11/site-packages/torch/distributed/run.py", line 797, in run
+    elastic_launch(
+  File "/easybuild/software/PyTorch/2.1.2-foss-2023a-CUDA-12.1.1/lib/python3.11/site-packages/torch/distributed/launcher/api.py", line 134, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/easybuild/software/PyTorch/2.1.2-foss-2023a-CUDA-12.1.1/lib/python3.11/site-packages/torch/distributed/launcher/api.py", line 264, in launch_agent
+    raise ChildFailedError(
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+main_xclip.py FAILED
+------------------------------------------------------------
+Failures:
+[1]:
+  time      : 2025-03-21_14:54:26
+  host      : node852.cm.cluster
+  rank      : 1 (local_rank: 1)
+  exitcode  : 1 (pid: 2125005)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2025-03-21_14:54:26
+  host      : node852.cm.cluster
+  rank      : 0 (local_rank: 0)
+  exitcode  : 1 (pid: 2125004)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================

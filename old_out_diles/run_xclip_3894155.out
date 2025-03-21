@@ -1,0 +1,50 @@
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2023 NVIDIA Corporation
+Built on Mon_Apr__3_17:16:06_PDT_2023
+Cuda compilation tools, release 12.1, V12.1.105
+Build cuda_12.1.r12.1/compiler.32688072_0
+g++ (GCC) 12.3.0
+Copyright (C) 2022 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+## Available CUDA devices: 0,1
+## Checking status of CUDA device with nvidia-smi
+Fri Mar 21 16:11:16 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.03              Driver Version: 560.35.03      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GeForce RTX 2080 Ti     On  |   00000000:62:00.0 Off |                  N/A |
+| 30%   36C    P8             35W /  250W |       1MiB /  11264MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA GeForce RTX 2080 Ti     On  |   00000000:B9:00.0 Off |                  N/A |
+| 30%   30C    P8             18W /  250W |       1MiB /  11264MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+CUDA_VISIBLE_DEVICES: 0,1
+MASTER_ADDR: localhost
+MASTER_PORT: 25021
+usage: run.py [-h] [--nnodes NNODES] [--nproc-per-node NPROC_PER_NODE]
+              [--rdzv-backend RDZV_BACKEND] [--rdzv-endpoint RDZV_ENDPOINT]
+              [--rdzv-id RDZV_ID] [--rdzv-conf RDZV_CONF] [--standalone]
+              [--max-restarts MAX_RESTARTS]
+              [--monitor-interval MONITOR_INTERVAL]
+              [--start-method {spawn,fork,forkserver}] [--role ROLE] [-m]
+              [--no-python] [--run-path] [--log-dir LOG_DIR] [-r REDIRECTS]
+              [-t TEE] [--node-rank NODE_RANK] [--master-addr MASTER_ADDR]
+              [--master-port MASTER_PORT] [--local-addr LOCAL_ADDR]
+              training_script ...
+run.py: error: unrecognized arguments: --use_env
