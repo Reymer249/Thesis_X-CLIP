@@ -416,7 +416,11 @@ class CLIP(nn.Module):
         if pretrained_clip_name in _MODELS and pretrained_clip_name in _PT_NAME:
             model_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), _PT_NAME[pretrained_clip_name])
 
+        print(f"Model path: {model_path}")
+
         if pretrained_clip_name in ["ViT-B/32", "ViT-B/16"] and os.path.exists(model_path):
+            print(f"path {model_path} exists? - {os.path.exists(model_path)}")
+            print("Found model ViT-B/32 or ViT-B/16 in the local directory")
             pass
         else:
             if pretrained_clip_name in _MODELS:
@@ -425,13 +429,17 @@ class CLIP(nn.Module):
                 model_path = pretrained_clip_name
             else:
                 raise RuntimeError(f"Model {pretrained_clip_name} not found; available models = {available_models()}")
+            
+        print(f"Model path 2: {model_path}")
 
         try:
             # loading JIT archive
             model = torch.jit.load(model_path, map_location="cpu").eval()
             state_dict = model.state_dict()
+            print("Loaded JIT model")
         except RuntimeError:
             state_dict = torch.load(model_path, map_location="cpu")
+            print("Loaded model")
         
         return state_dict
 

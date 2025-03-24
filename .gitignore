@@ -9,3 +9,6 @@ ckpts/
 .ipynb_checkpoints
 log/
 .vscode/
+old_out_files/
+*.out
+test.py
