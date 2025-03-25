@@ -1,0 +1,7 @@
+{"time":"2025-03-25T14:37:42.724493407+01:00","level":"INFO","msg":"stream: starting","core version":"0.19.8","symlink path":"/home/s3705609/X-CLIP/wandb/run-20250325_143742-100q3o05/logs/debug-core.log"}
+{"time":"2025-03-25T14:37:42.953972386+01:00","level":"INFO","msg":"created new stream","id":"100q3o05"}
+{"time":"2025-03-25T14:37:42.954004085+01:00","level":"INFO","msg":"stream: started","id":"100q3o05"}
+{"time":"2025-03-25T14:37:42.954014178+01:00","level":"INFO","msg":"writer: Do: started","stream_id":"100q3o05"}
+{"time":"2025-03-25T14:37:42.95402806+01:00","level":"INFO","msg":"sender: started","stream_id":"100q3o05"}
+{"time":"2025-03-25T14:37:42.964589912+01:00","level":"INFO","msg":"handler: started","stream_id":"100q3o05"}
+{"time":"2025-03-25T14:37:43.263466588+01:00","level":"INFO","msg":"Starting system monitor"}

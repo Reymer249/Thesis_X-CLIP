@@ -1,0 +1,26 @@
+2025-03-25 15:19:14,682 INFO    MainThread:1843068 [wandb_setup.py:_flush():67] Current SDK version is 0.19.8
+2025-03-25 15:19:14,682 INFO    MainThread:1843068 [wandb_setup.py:_flush():67] Configure stats pid to 1843068
+2025-03-25 15:19:14,682 INFO    MainThread:1843068 [wandb_setup.py:_flush():67] Loading settings from /home/s3705609/.config/wandb/settings
+2025-03-25 15:19:14,682 INFO    MainThread:1843068 [wandb_setup.py:_flush():67] Loading settings from /home/s3705609/X-CLIP/wandb/settings
+2025-03-25 15:19:14,682 INFO    MainThread:1843068 [wandb_setup.py:_flush():67] Loading settings from environment variables
+2025-03-25 15:19:14,682 INFO    MainThread:1843068 [wandb_init.py:setup_run_log_directory():647] Logging user logs to /home/s3705609/X-CLIP/wandb/run-20250325_151914-ur9phza3/logs/debug.log
+2025-03-25 15:19:14,682 INFO    MainThread:1843068 [wandb_init.py:setup_run_log_directory():648] Logging internal logs to /home/s3705609/X-CLIP/wandb/run-20250325_151914-ur9phza3/logs/debug-internal.log
+2025-03-25 15:19:14,682 INFO    MainThread:1843068 [wandb_init.py:init():761] calling init triggers
+2025-03-25 15:19:14,682 INFO    MainThread:1843068 [wandb_init.py:init():766] wandb.init called with sweep_config: {}
+config: {'learning_rate': 0.0001, 'epochs': 5, 'batch_size': 16, 'warmup_proportion': 0.1, 'weight_decay': 0.2, 'datatype': 'vatex', 'pretrained_clip_name': 'ViT-B/32', 'sim_header': 'seqTransf', 'freeze_layer_num': 0, 'text_num_hidden_layers': 12, 'visual_num_hidden_layers': 12, 'cross_num_hidden_layers': 4, 'linear_patch': '2d', 'fp16': False, 'seed': 42, '_wandb': {}}
+2025-03-25 15:19:14,682 INFO    MainThread:1843068 [wandb_init.py:init():784] starting backend
+2025-03-25 15:19:14,682 INFO    MainThread:1843068 [wandb_init.py:init():788] sending inform_init request
+2025-03-25 15:19:14,863 INFO    MainThread:1843068 [backend.py:_multiprocessing_setup():101] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2025-03-25 15:19:14,863 INFO    MainThread:1843068 [wandb_init.py:init():798] backend started and connected
+2025-03-25 15:19:14,867 INFO    MainThread:1843068 [wandb_init.py:init():891] updated telemetry
+2025-03-25 15:19:14,938 INFO    MainThread:1843068 [wandb_init.py:init():915] communicating run to backend with 90.0 second timeout
+2025-03-25 15:19:15,340 INFO    MainThread:1843068 [wandb_init.py:init():990] starting run threads in backend
+2025-03-25 15:19:16,184 INFO    MainThread:1843068 [wandb_run.py:_console_start():2375] atexit reg
+2025-03-25 15:19:16,184 INFO    MainThread:1843068 [wandb_run.py:_redirect():2227] redirect: wrap_raw
+2025-03-25 15:19:16,186 INFO    MainThread:1843068 [wandb_run.py:_redirect():2292] Wrapping output streams.
+2025-03-25 15:19:16,186 INFO    MainThread:1843068 [wandb_run.py:_redirect():2315] Redirects installed.
+2025-03-25 15:19:16,194 INFO    MainThread:1843068 [wandb_init.py:init():1032] run started, returning control to user process
+2025-03-25 15:19:32,353 INFO    MainThread:1843068 [wandb_watch.py:_watch():71] Watching
+2025-03-25 15:19:32,360 INFO    MainThread:1843068 [wandb_run.py:_config_callback():1261] config_cb None None {'model_config': '{\n  "attention_probs_dropout_prob": 0.1,\n  "hidden_act": "gelu",\n  "hidden_dropout_prob": 0.1,\n  "hidden_size": 512,\n  "initializer_range": 0.02,\n  "intermediate_size": 2048,\n  "max_position_embeddings": 77,\n  "num_attention_heads": 8,\n  "num_hidden_layers": 4,\n  "type_vocab_size": 2,\n  "vocab_size": 512\n}\n'}
+2025-03-25 15:19:32,364 INFO    MainThread:1843068 [wandb_run.py:_config_callback():1261] config_cb None None {'frozen_params': 27736320, 'trainable_params': 260258738, 'total_params': 287995058, 'trainable_percentage': 90.36916807093266}
+2025-03-25 15:19:40,457 INFO    MainThread:1843068 [wandb_run.py:_config_callback():1261] config_cb None None {'train_examples': 0, 'val_examples': 23750, 'test_examples': 33910, 'effective_batch_size': 16, 'val_batch_size': 16}

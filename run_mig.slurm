@@ -7,12 +7,12 @@
 #SBATCH --mail-user="007litovka@gmail.com"
 #SBATCH --mail-type="ALL"
 #SBATCH --partition=gpu-short
-#SBATCH --time=4:00:00
+#SBATCH --time=1:00:00
 #SBATCH --ntasks=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=32G
-#SBATCH --gres=gpu:1
+#SBATCH --gres=gpu:a100:1
 ###########################
 # Set up your software environment
 ###########################
@@ -38,7 +38,7 @@ nvidia-smi --query-gpu=index,mig.mode.current --format=csv 2>/dev/null || echo "
 ###########################
 # Execute tasks
 ###########################
-job_name="xclip_vatex_vit16"
+job_name="xclip_vatex_vit32_MIG"
 DATA_PATH="/home/s3705609/data1"
 
 # Function to run the main task
@@ -63,7 +63,7 @@ run_main_task() {
     
     # Run the main python command
     python main_xclip_work.py --do_train --num_thread_reader=8 \
-     --lr 1e-4 --batch_size=16 --batch_size_val=16 \
+     --lr 1e-4 --batch_size=${BATCH_SIZE} --batch_size_val=${BATCH_SIZE} \
      --epochs=5 --n_display=100 \
      --data_path ${DATA_PATH}/VATEX \
      --features_path ${DATA_PATH}/VATEX/clips \

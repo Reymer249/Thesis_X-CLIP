@@ -31,13 +31,13 @@ nvidia-smi
 ###########################
 # Execute tasks
 ###########################
-job_name="xclip_vatex_vit16"
+job_name="xclip_vatex_vit32"
 DATA_PATH="/home/s3705609/data1"
 
 # Function to run the main task
 run_main_task() {
     # Explicitly set distributed environment variables
-    export MASTER_ADDR="localhost"
+    export MASTER_ADDR=$(hostname)
     export MASTER_PORT=$(($RANDOM + 10000))
     
     # Print detailed environment information for debugging
@@ -65,7 +65,8 @@ run_main_task() {
      --freeze_layer_num 0 --slice_framepos 2 \
      --loose_type --linear_patch 2d --sim_header seqTransf \
      --n_gpu 2 \
-     --pretrained_clip_name ViT-B/32
+     --pretrained_clip_name ViT-B/32 \
+     --use_wandb --wandb_project x-clip --wandb_name ${job_name} --wandb_watch
 }
 
 # Auto-restart logic

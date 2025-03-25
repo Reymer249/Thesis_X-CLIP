@@ -31,7 +31,7 @@ nvidia-smi
 ###########################
 # Execute tasks
 ###########################
-job_name="xclip_vatex_vit16"
+job_name="xclip_vatex_vit32"
 DATA_PATH="/home/s3705609/data1"
 
 # Explicitly set distributed environment variables
