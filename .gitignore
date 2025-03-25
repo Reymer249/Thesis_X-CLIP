@@ -13,3 +13,4 @@ old_out_files/
 *.out
 test.py
 *.env
+wandb/

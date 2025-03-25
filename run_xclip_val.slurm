@@ -66,7 +66,7 @@ run_main_task() {
      --loose_type --linear_patch 2d --sim_header seqTransf \
      --n_gpu 2 \
      --pretrained_clip_name ViT-B/32 \
-     --use_wandb --wandb_project x-clip --wandb_name ${job_name} --wandb_watch
+     --use_wandb --wandb_project x-clip --wandb_name ${job_name}
 }
 
 # Auto-restart logic
