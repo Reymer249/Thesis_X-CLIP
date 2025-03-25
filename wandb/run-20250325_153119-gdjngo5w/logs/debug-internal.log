@@ -1,7 +1,0 @@
-{"time":"2025-03-25T15:31:20.064131107+01:00","level":"INFO","msg":"stream: starting","core version":"0.19.8","symlink path":"/home/s3705609/X-CLIP/wandb/run-20250325_153119-gdjngo5w/logs/debug-core.log"}
-{"time":"2025-03-25T15:31:20.289954618+01:00","level":"INFO","msg":"created new stream","id":"gdjngo5w"}
-{"time":"2025-03-25T15:31:20.289991682+01:00","level":"INFO","msg":"stream: started","id":"gdjngo5w"}
-{"time":"2025-03-25T15:31:20.290006084+01:00","level":"INFO","msg":"writer: Do: started","stream_id":"gdjngo5w"}
-{"time":"2025-03-25T15:31:20.290014959+01:00","level":"INFO","msg":"sender: started","stream_id":"gdjngo5w"}
-{"time":"2025-03-25T15:31:20.290030397+01:00","level":"INFO","msg":"handler: started","stream_id":"gdjngo5w"}
-{"time":"2025-03-25T15:31:20.504148861+01:00","level":"INFO","msg":"Starting system monitor"}
