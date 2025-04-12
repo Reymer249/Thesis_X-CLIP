@@ -27,10 +27,6 @@ global logger
 
 def init_distributed_mode():
     """Initialize distributed mode with proper device assignment."""
-    # Don't initialize if already initialized
-    if torch.distributed.is_initialized():
-        return
-    
     # Check if we're running via torch.distributed.launch
     if 'RANK' in os.environ and 'WORLD_SIZE' in os.environ:
         rank = int(os.environ["RANK"])
@@ -57,10 +53,9 @@ def init_distributed_mode():
         
         return local_rank
     else:
-        # Fallback if not using torch.distributed.launch
-        print("WARNING: Not using distributed.launch. Falling back to manual initialization.")
-        torch.distributed.init_process_group(backend="nccl")
-        return 0
+        # Fallback for single GPU or non-distributed training
+        print("No distributed environment variables found. Running in non-distributed mode.")
+        return 0  # Default to first GPU
 
 def get_args(description='X-CLIP on Retrieval Task'):
     parser = argparse.ArgumentParser(description=description)
@@ -115,7 +110,6 @@ def get_args(description='X-CLIP on Retrieval Task'):
     parser.add_argument("--datatype", default="msrvtt", type=str, help="Point the dataset to finetune.")
 
     parser.add_argument("--world_size", default=0, type=int, help="distribted training")
-    parser.add_argument("--local_rank", default=0, type=int, help="distribted training")
     parser.add_argument("--rank", default=0, type=int, help="distribted training")
     parser.add_argument('--coef_lr', type=float, default=1., help='coefficient for bert branch.')
     parser.add_argument('--use_mil', action='store_true', help="Whether use MIL as Miech et. al. (2020).")
@@ -151,7 +145,16 @@ def get_args(description='X-CLIP on Retrieval Task'):
     parser.add_argument("--wandb_tags", type=str, default=None, help="Comma-separated list of tags for the run")
     parser.add_argument("--wandb_watch", action='store_true', help="Whether to watch model parameters and gradients")
 
+    # Remove the conflicting local_rank argument
+    # parser.add_argument("--local_rank", default=0, type=int, help="distribted training")
+
     args = parser.parse_args()
+    
+    # Get local_rank from environment variable instead
+    if 'LOCAL_RANK' in os.environ:
+        args.local_rank = int(os.environ['LOCAL_RANK'])
+    else:
+        args.local_rank = 0
 
     if args.sim_header == "tightTransf":
         args.loose_type = False
@@ -859,5 +862,5 @@ if __name__ == "__main__":
             wandb.run.summary["error"] = str(e)
             wandb.finish(exit_code=1)
         # Re-raise the exception
-        logger.error("Exception occurred during execution: %s", str(e), exc_info=True)
+        print(f"Exception occurred during execution: {str(e)}")
         raise
