@@ -14,8 +14,8 @@ from get_xclip import get_xclip
 warnings.filterwarnings("ignore")
 
 
-global model
-global device
+model = None
+device = None
 
 def get_args(description='Fine evaluation on X-CLIP'):
     parser = argparse.ArgumentParser(description=description)
@@ -23,16 +23,16 @@ def get_args(description='Fine evaluation on X-CLIP'):
     parser.add_argument("--save_dir",
                         type=str, required=True,
                         help="The output directory where the model predictions and checkpoints will be written.")
-    parser.add_argument("--visual_path",
+    parser.add_argument("--visual_path",  # visual features
                         type=str, required=True,
                         help="The path of visual features.")
-    parser.add_argument("--visual_mask_path",
+    parser.add_argument("--visual_mask_path",  # visual mask
                         type=str, required=True,
                         help="The path of visual mask.")
-    parser.add_argument("--test_model",
+    parser.add_argument("--test_model",  # path to the model
                         type=str, required=False, help="Initial model.")
     parser.add_argument("--test_id_path", default='/home/caz/VisualSearch/vatex_data/VATEX_test.csv', type=str,
-                        required=True, help="Initial model.")
+                        required=True, help="Initial model.")  # test_csv_ids_path
 
     args = parser.parse_args()
     return args
@@ -109,10 +109,10 @@ def main():
               '--output_dir', './', '--local_rank', '0',
               '--init_model', args.test_model]
 
-    model = get_xclip(config)
-    device = next(model.parameters()).device  # 与model保持一致
     global model
     global device
+    model = get_xclip(config)
+    device = next(model.parameters()).device  # 与model保持一致
 
     feat_p = args.visual_path
     mask_p = args.visual_mask_path
@@ -132,17 +132,17 @@ def main():
     for video_id, f_mask in zip(test_video_ids, visual_mask):
         video_frame_mask[video_id] = f_mask
 
-    test_p = '/var/scratch/achen/VisualSearch/vatex_data/vatex_test1k5_enc.txt'
+    test_p = '/vol/home/s3705609/Desktop/data_vatex/splits_txt/vatex_test_avail.txt'
     msrvtt_s = open(test_p).read().strip().split('\n')
     raw_caps = {}
     for line in msrvtt_s:
         tt_sent_id = line.split(' ')[0]
         raw_caps[tt_sent_id] = ' '.join(line.split(' ')[1:])
 
-    changeS_P = '/var/scratch/achen/VisualSearch/vatex_data/hardnegative/'
-    test_list = ['vatex1k5_ChangeADP_RE20_20230920.json', 'vatex1k5_ChangeVP_RE20_20230920.json',
-                 'vatex1k5_ChangeVerb_RE20_20230920.json', 'vatex1k5_ChangeNP_RE20_20230920.json',
-                 'vatex1k5_ChangeNoun_RE20_20230920.json']
+    changeS_P = '/vol/home/s3705609/Desktop/data_vatex/splits_txt/'
+    test_list = ['vatex1k5_adjective_RE20.json', 'vatex1k5_adverb_RE20.json',
+                 'vatex1k5_noun_RE20.json', 'vatex1k5_preposition_RE20.json',
+                 'vatex1k5_verb_RE20.json']
 
     save_p = args.save_dir
     if not os.path.exists(save_p):
