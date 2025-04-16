@@ -3,6 +3,8 @@ from __future__ import division
 from __future__ import unicode_literals
 from __future__ import print_function
 
+import pickle
+
 import torch
 import numpy as np
 import random
@@ -413,6 +415,20 @@ def eval_epoch(args, model, test_dataloader, device, n_gpu, changed_captions_lis
         # ----------------------------------
         # 2. calculate the similarity
         # ----------------------------------
+
+        # Save extracted features
+        with open("batch_list_t.pkl", "wb") as f:
+            pickle.dump(batch_list_t, f)
+        with open("batch_list_v.pkl", "wb") as f:
+            pickle.dump(batch_list_v, f)
+        with open("batch_sequence_output_list.pkl", "wb") as f:
+            pickle.dump(batch_sequence_output_list, f)
+        with open("batch_seq_features_list.pkl", "wb") as f:
+            pickle.dump(batch_seq_features_list, f)
+        with open("batch_visual_output_list.pkl", "wb") as f:
+            pickle.dump(batch_visual_output_list, f)
+        return 0
+
         sim_matrix = _run_on_single_gpu(model, batch_list_t, batch_list_v, batch_sequence_output_list, batch_seq_features_list, batch_visual_output_list)
         sim_matrix = np.concatenate(tuple(sim_matrix), axis=0)
 
