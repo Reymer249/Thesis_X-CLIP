@@ -673,7 +673,7 @@ def main():
 
     elif args.do_eval:
         if args.local_rank == 0:
-            model_file = args.models_path + f"pytorch_model.bin.{args.num_epochs}"
+            model_file = args.models_path + f"pytorch_model.bin.{args.num_epochs-1}"
             model = load_model(-1, args, n_gpu, device, model_file=model_file)
 
             files_with_changed_sentences = ["vatex1k5_noun_RE20.json", "vatex1k5_adjective_RE20.json",
