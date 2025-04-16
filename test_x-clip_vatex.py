@@ -105,6 +105,12 @@ def get_args(description='X-CLIP on Retrieval Task'):
 
     parser.add_argument("--pretrained_clip_name", default="ViT-B/32", type=str, help="Choose a CLIP version")
 
+    parser.add_argument("--models_path", default=None, type=str, required=True,
+                        help="The directory of the checkpoints of the model you want to test")
+    parser.add_argument("--num_epochs", default=None, type=int, required=True,
+                        help="The epoch number to take the model from (starts from 1)")
+    parser.add_argument("--changed_sentences_jsons_path", default=None, type=str, required=True)
+
     args = parser.parse_args()
 
     if args.sim_header == "tightTransf":
@@ -333,7 +339,7 @@ def _run_on_single_gpu(model, batch_list_t, batch_list_v, batch_sequence_output_
     return sim_matrix
 
 
-def eval_epoch(args, model, test_dataloader, device, n_gpu):
+def eval_epoch(args, model, test_dataloader, device, n_gpu, test_files):
     if hasattr(model, 'module'):
         model = model.module.to(device)
     else:
@@ -346,104 +352,208 @@ def eval_epoch(args, model, test_dataloader, device, n_gpu):
     # sentence_num: used to cut the sentence representation
     # video_num: used to cut the video representation
     # #################################################################
-    multi_sentence_ = False
-    cut_off_points_, sentence_num_, video_num_ = [], -1, -1
-    if hasattr(test_dataloader.dataset, 'multi_sentence_per_video') \
-            and test_dataloader.dataset.multi_sentence_per_video:
-        multi_sentence_ = True
-        cut_off_points_ = test_dataloader.dataset.cut_off_points
-        sentence_num_ = test_dataloader.dataset.sentence_num
-        video_num_ = test_dataloader.dataset.video_num
-        cut_off_points_ = [itm - 1 for itm in cut_off_points_]
+    # multi_sentence_ = False
+    # cut_off_points_, sentence_num_, video_num_ = [], -1, -1
+    # if hasattr(test_dataloader.dataset, 'multi_sentence_per_video') \
+    #         and test_dataloader.dataset.multi_sentence_per_video:
+    #     multi_sentence_ = True
+    #     cut_off_points_ = test_dataloader.dataset.cut_off_points
+    #     sentence_num_ = test_dataloader.dataset.sentence_num
+    #     video_num_ = test_dataloader.dataset.video_num
+    #     cut_off_points_ = [itm - 1 for itm in cut_off_points_]
+    #
+    # if multi_sentence_:
+    #     logger.warning("Eval under the multi-sentence per video clip setting.")
+    #     logger.warning("sentence num: {}, video num: {}".format(sentence_num_, video_num_))
+    #
+    # model.eval()
+    # with torch.no_grad():
+    #     batch_list_t = []
+    #     batch_list_v = []
+    #     batch_sequence_output_list, batch_visual_output_list = [], []
+    #     batch_seq_features_list = []
+    #     total_video_num = 0
+    #
+    #     # ----------------------------
+    #     # 1. cache the features
+    #     # ----------------------------
+    #     for bid, batch in enumerate(test_dataloader):
+    #         batch = tuple(t.to(device) for t in batch)
+    #         input_ids, input_mask, segment_ids, video, video_mask = batch
+    #
+    #         if multi_sentence_:
+    #             # multi-sentences retrieval means: one clip has two or more descriptions.
+    #             b, *_t = video.shape
+    #             sequence_output, seq_features = model.get_sequence_output(input_ids, segment_ids, input_mask)
+    #             batch_sequence_output_list.append(sequence_output)
+    #             batch_seq_features_list.append(seq_features)
+    #             batch_list_t.append((input_mask, segment_ids,))
+    #
+    #             s_, e_ = total_video_num, total_video_num + b
+    #             filter_inds = [itm - s_ for itm in cut_off_points_ if itm >= s_ and itm < e_]
+    #
+    #             if len(filter_inds) > 0:
+    #                 video, video_mask = video[filter_inds, ...], video_mask[filter_inds, ...]
+    #                 visual_output = model.get_visual_output(video, video_mask)
+    #                 batch_visual_output_list.append(visual_output)
+    #                 batch_list_v.append((video_mask,))
+    #             total_video_num += b
+    #         else:
+    #             (sequence_output, seq_features), visual_output = model.get_sequence_visual_output(input_ids,
+    #                                                                                               segment_ids,
+    #                                                                                               input_mask, video,
+    #                                                                                               video_mask)
+    #
+    #             batch_sequence_output_list.append(sequence_output)
+    #             batch_seq_features_list.append(seq_features)
+    #             batch_list_t.append((input_mask, segment_ids,))
+    #             batch_visual_output_list.append(visual_output)
+    #             batch_list_v.append((video_mask,))
+    #
+    #         print("{}/{}\r".format(bid, len(test_dataloader)), end="")
+    #
+    #     # ----------------------------------
+    #     # 2. calculate the similarity
+    #     # ----------------------------------
+    #     sim_matrix = _run_on_single_gpu(model, batch_list_t, batch_list_v, batch_sequence_output_list,
+    #                                     batch_seq_features_list, batch_visual_output_list)
+    #     sim_matrix = np.concatenate(tuple(sim_matrix), axis=0)
+    #
+    # if multi_sentence_:
+    #     logger.info("before reshape, sim matrix size: {} x {}".format(sim_matrix.shape[0], sim_matrix.shape[1]))
+    #     cut_off_points2len_ = [itm + 1 for itm in cut_off_points_]
+    #     max_length = max([e_ - s_ for s_, e_ in zip([0] + cut_off_points2len_[:-1], cut_off_points2len_)])
+    #     sim_matrix_new = []
+    #     for s_, e_ in zip([0] + cut_off_points2len_[:-1], cut_off_points2len_):
+    #         sim_matrix_new.append(np.concatenate((sim_matrix[s_:e_],
+    #                                               np.full((max_length - e_ + s_, sim_matrix.shape[1]), -np.inf)),
+    #                                              axis=0))
+    #     sim_matrix = np.stack(tuple(sim_matrix_new), axis=0)
+    #     logger.info("after reshape, sim matrix size: {} x {} x {}".
+    #                 format(sim_matrix.shape[0], sim_matrix.shape[1], sim_matrix.shape[2]))
+    #
+    #     tv_metrics = tensor_text_to_video_metrics(sim_matrix)
+    #     vt_metrics = compute_metrics(tensor_video_to_text_sim(sim_matrix))
+    # else:
+    #     logger.info("sim matrix size: {}, {}".format(sim_matrix.shape[0], sim_matrix.shape[1]))
+    #     tv_metrics = compute_metrics(sim_matrix)
+    #     vt_metrics = compute_metrics(sim_matrix.T)
+    #     logger.info('\t Length-T: {}, Length-V:{}'.format(len(sim_matrix), len(sim_matrix[0])))
+    #
+    # logger.info("Text-to-Video:")
+    # logger.info('\t>>>  R@1: {:.1f} - R@5: {:.1f} - R@10: {:.1f} - Median R: {:.1f} - Mean R: {:.1f}'.
+    #             format(tv_metrics['R1'], tv_metrics['R5'], tv_metrics['R10'], tv_metrics['MR'], tv_metrics['MeanR']))
+    # logger.info("Video-to-Text:")
+    # logger.info(
+    #     '\t>>>  V2T$R@1: {:.1f} - V2T$R@5: {:.1f} - V2T$R@10: {:.1f} - V2T$Median R: {:.1f} - V2T$Mean R: {:.1f}'.
+    #     format(vt_metrics['R1'], vt_metrics['R5'], vt_metrics['R10'], vt_metrics['MR'], vt_metrics['MeanR']))
 
-    if multi_sentence_:
-        logger.warning("Eval under the multi-sentence per video clip setting.")
-        logger.warning("sentence num: {}, video num: {}".format(sentence_num_, video_num_))
-
+    # Additional metrics calculation for test files if provided
     model.eval()
     with torch.no_grad():
-        batch_list_t = []
-        batch_list_v = []
-        batch_sequence_output_list, batch_visual_output_list = [], []
-        batch_seq_features_list = []
-        total_video_num = 0
+        additional_metrics = {}
+        if test_files is not None and len(test_files) > 0:
+            import os
+            import json
+            import numpy as np
+            from tqdm import tqdm
 
-        # ----------------------------
-        # 1. cache the features
-        # ----------------------------
-        for bid, batch in enumerate(test_dataloader):  # Maybe something went wrong here!!!
-            batch = tuple(t.to(device) for t in batch)
-            input_ids, input_mask, segment_ids, video, video_mask = batch
+            save_dir = args.save_dir if hasattr(args, 'save_dir') else './results'
+            os.makedirs(save_dir, exist_ok=True)
 
-            if multi_sentence_:
-                # multi-sentences retrieval means: one clip has two or more descriptions.
-                b, *_t = video.shape
-                sequence_output, seq_features = model.get_sequence_output(input_ids, segment_ids, input_mask)
-                batch_sequence_output_list.append(sequence_output)
-                batch_seq_features_list.append(seq_features)
-                batch_list_t.append((input_mask, segment_ids,))
+            # Extract relevant features for testing
+            video_features = {}
+            video_masks = {}
 
-                s_, e_ = total_video_num, total_video_num + b
-                filter_inds = [itm - s_ for itm in cut_off_points_ if itm >= s_ and itm < e_]
+            # Get video features and masks from dataloader
+            for video_id, feat, mask in zip(test_dataloader.dataset.video_ids,
+                                            batch_visual_output_list,
+                                            [vm[0] for vm in batch_list_v]):
+                video_features[video_id] = feat.cpu().numpy()
+                video_masks[video_id] = mask.cpu().numpy()
 
-                if len(filter_inds) > 0:
-                    video, video_mask = video[filter_inds, ...], video_mask[filter_inds, ...]
-                    visual_output = model.get_visual_output(video, video_mask)
-                    batch_visual_output_list.append(visual_output)
-                    batch_list_v.append((video_mask,))
-                total_video_num += b
-            else:
-                (sequence_output, seq_features), visual_output = model.get_sequence_visual_output(input_ids,
-                                                                                                  segment_ids,
-                                                                                                  input_mask, video,
-                                                                                                  video_mask)
+            # Process each test file
+            for test_file in test_files:
+                test_name = os.path.basename(test_file).split('.')[0]
+                logger.info(f"Processing test file: {test_name}")
 
-                batch_sequence_output_list.append(sequence_output)
-                batch_seq_features_list.append(seq_features)
-                batch_list_t.append((input_mask, segment_ids,))
-                batch_visual_output_list.append(visual_output)
-                batch_list_v.append((video_mask,))
+                try:
+                    with open(test_file, 'r') as f:
+                        test_data = json.load(f)
 
-            print("{}/{}\r".format(bid, len(test_dataloader)), end="")
+                    rank_GT = []  # append rank of gt sentence
+                    res_list = {}
 
-        # ----------------------------------
-        # 2. calculate the similarity
-        # ----------------------------------
-        sim_matrix = _run_on_single_gpu(model, batch_list_t, batch_list_v, batch_sequence_output_list,
-                                        batch_seq_features_list, batch_visual_output_list)
-        sim_matrix = np.concatenate(tuple(sim_matrix), axis=0)
+                    for sent_id in tqdm(list(test_data.keys())):
+                        video_id = sent_id.split('#')[0]
 
-    if multi_sentence_:
-        logger.info("before reshape, sim matrix size: {} x {}".format(sim_matrix.shape[0], sim_matrix.shape[1]))
-        cut_off_points2len_ = [itm + 1 for itm in cut_off_points_]
-        max_length = max([e_ - s_ for s_, e_ in zip([0] + cut_off_points2len_[:-1], cut_off_points2len_)])
-        sim_matrix_new = []
-        for s_, e_ in zip([0] + cut_off_points2len_[:-1], cut_off_points2len_):
-            sim_matrix_new.append(np.concatenate((sim_matrix[s_:e_],
-                                                  np.full((max_length - e_ + s_, sim_matrix.shape[1]), -np.inf)),
-                                                 axis=0))
-        sim_matrix = np.stack(tuple(sim_matrix_new), axis=0)
-        logger.info("after reshape, sim matrix size: {} x {} x {}".
-                    format(sim_matrix.shape[0], sim_matrix.shape[1], sim_matrix.shape[2]))
+                        if video_id not in video_features:
+                            logger.warning(f"Video ID {video_id} not found in features")
+                            continue
 
-        tv_metrics = tensor_text_to_video_metrics(sim_matrix)
-        vt_metrics = compute_metrics(tensor_video_to_text_sim(sim_matrix))
-    else:
-        logger.info("sim matrix size: {}, {}".format(sim_matrix.shape[0], sim_matrix.shape[1]))
-        tv_metrics = compute_metrics(sim_matrix)
-        vt_metrics = compute_metrics(sim_matrix.T)
-        logger.info('\t Length-T: {}, Length-V:{}'.format(len(sim_matrix), len(sim_matrix[0])))
+                        video_feat = video_features[video_id]
+                        video_mask = video_masks[video_id]
 
-    logger.info("Text-to-Video:")
-    logger.info('\t>>>  R@1: {:.1f} - R@5: {:.1f} - R@10: {:.1f} - Median R: {:.1f} - Mean R: {:.1f}'.
-                format(tv_metrics['R1'], tv_metrics['R5'], tv_metrics['R10'], tv_metrics['MR'], tv_metrics['MeanR']))
-    logger.info("Video-to-Text:")
-    logger.info(
-        '\t>>>  V2T$R@1: {:.1f} - V2T$R@5: {:.1f} - V2T$R@10: {:.1f} - V2T$Median R: {:.1f} - V2T$Mean R: {:.1f}'.
-        format(vt_metrics['R1'], vt_metrics['R5'], vt_metrics['R10'], vt_metrics['MR'], vt_metrics['MeanR']))
+                        # Get original sentence
+                        raw_sent = test_dataloader.dataset.get_caption_by_id(sent_id)
 
-    R1 = tv_metrics['R1']
-    return R1
+                        # Get changed sentences
+                        change_s = list(test_data[sent_id].values())
+                        temp_test_sent = [raw_sent] + change_s
+
+                        # Calculate similarity for each sentence
+                        temp_sim_res = []
+                        for s in temp_test_sent:
+                            # Using the model's similarity calculation
+                            sequence_output, seq_features = model.get_sequence_output_from_text(s)
+                            b1b2_logits, *_ = model.get_similarity_logits(
+                                sequence_output, seq_features,
+                                torch.tensor(video_feat).to(device),
+                                None, torch.tensor(video_mask).to(device),
+                                loose_type=model.loose_type
+                            )
+                            temp_sim = b1b2_logits.cpu().detach().numpy().squeeze()
+                            temp_sim_res.append(temp_sim)
+
+                        temp_sim_res = np.array(temp_sim_res).squeeze()
+                        temp_sort_res = np.argsort(temp_sim_res)[::-1]  # Descending order
+
+                        temp_gt_rank = np.where(temp_sort_res == 0)[0][0] + 1  # GT is at index 0
+                        res_list[sent_id] = [int(x) for x in list(temp_sort_res)]
+                        rank_GT.append(int(temp_gt_rank))
+
+                    # Calculate metrics
+                    mrr = calculate_mrr(rank_GT)
+                    r1_accuracy = rank_GT.count(1) / len(rank_GT) * 100 if rank_GT else 0
+
+                    logger.info(f"Mean Reciprocal Rank for {test_name}: {mrr:.4f}")
+                    logger.info(f"R@1 Accuracy for {test_name}: {r1_accuracy:.2f}%")
+
+                    # Save results
+                    with open(os.path.join(save_dir, f'{test_name}_metrics.txt'), 'w') as wr:
+                        wr.write(f'Mean Reciprocal Rank: {mrr:.4f}\n')
+                        wr.write(f'R@1 Accuracy: {r1_accuracy:.2f}%\n')
+
+                    with open(os.path.join(save_dir, f'{test_name}_ranks.json'), 'w') as json_file:
+                        json_file.write(json.dumps(res_list))
+
+                    additional_metrics[test_name] = {
+                        'MRR': mrr,
+                        'R1': r1_accuracy
+                    }
+
+                except Exception as e:
+                    logger.error(f"Error processing test file {test_file}: {str(e)}")
+
+    # Return standard metrics and additional metrics
+    # R1 = tv_metrics['R1']
+    # return R1, additional_metrics
+    return additional_metrics
+
+
+def calculate_mrr(ranks):
+    """Calculate Mean Reciprocal Rank"""
+    return np.mean([1.0 / r for r in ranks]) if ranks else 0
 
 
 def main():
@@ -563,8 +673,16 @@ def main():
 
     elif args.do_eval:
         if args.local_rank == 0:
-            model = load_model(-1, args, n_gpu, device, model_file=best_output_model_file)
-            eval_epoch(args, model, test_dataloader, device, n_gpu)
+            model_file = args.models_path + f"pytorch_model.bin.{args.num_epochs}"
+            model = load_model(-1, args, n_gpu, device, model_file=model_file)
+
+            files_with_changed_sentences = ["vatex1k5_noun_RE20.json", "vatex1k5_adjective_RE20.json",
+                                            "vatex1k5_adverb_RE20.json", "vatex1k5_noun_RE20.json",
+                                            "vatex1k5_preposition_RE20.json"]
+            files_with_changed_sentences = [
+                os.path.join(args.changed_sentences_jsons_path, file) for file in files_with_changed_sentences]
+
+            eval_epoch(args, model, test_dataloader, device, n_gpu, test_files=files_with_changed_sentences)
 
 
 if __name__ == "__main__":
