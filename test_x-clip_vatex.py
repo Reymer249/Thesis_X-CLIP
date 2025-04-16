@@ -673,7 +673,7 @@ def main():
 
     elif args.do_eval:
         if args.local_rank == 0:
-            model_file = args.models_path + f"pytorch_model.bin.{args.num_epochs-1}"
+            model_file = os.path.join(args.models_path, f"pytorch_model.bin.{args.num_epochs-1}")
             print(f"Loading model from {model_file}")
             model = load_model(-1, args, n_gpu, device, model_file=model_file)
 
