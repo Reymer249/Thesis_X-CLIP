@@ -132,17 +132,17 @@ def main():
     for video_id, f_mask in zip(test_video_ids, visual_mask):
         video_frame_mask[video_id] = f_mask
 
-    test_p = '/vol/home/s3705609/Desktop/data_vatex/splits_txt/vatex_test_avail.txt'
+    test_p = '/vol/home/s3705609/Desktop/data_vatex/splits_txt/captions.txt'
     msrvtt_s = open(test_p).read().strip().split('\n')
     raw_caps = {}
     for line in msrvtt_s:
         tt_sent_id = line.split(' ')[0]
         raw_caps[tt_sent_id] = ' '.join(line.split(' ')[1:])
 
-    changeS_P = '/vol/home/s3705609/Desktop/data_vatex/splits_txt/'
-    test_list = ['vatex1k5_adjective_RE20.json', 'vatex1k5_adverb_RE20.json',
-                 'vatex1k5_noun_RE20.json', 'vatex1k5_preposition_RE20.json',
-                 'vatex1k5_verb_RE20.json']
+    changeS_P = '/vol/home/s3705609/Desktop/thesis_code/filtered_json_files'
+    test_list = ['filtered_vatex1k5_adjective_RE20.json', 'filtered_vatex1k5_adverb_RE20.json',
+                 'filtered_vatex1k5_noun_RE20.json', 'filtered_vatex1k5_preposition_RE20.json',
+                 'filtered_vatex1k5_verb_RE20.json']
 
     save_p = args.save_dir
     if not os.path.exists(save_p):
@@ -158,11 +158,11 @@ def main():
         for sent_id in tqdm(list(changejs.keys())):
 
             video_id = sent_id.split('#')[0]
-            video_feat = torch.tensor(np.array(video_frame_feat[video_id])).to(device).unsqueeze(dim=0)
-            video_mask = torch.tensor(np.array(video_frame_mask[video_id])).to(device).unsqueeze(dim=0)
+            video_feat = torch.tensor(np.array(video_frame_feat[video_id].cpu())).to(device).unsqueeze(dim=0)
+            video_mask = torch.tensor(np.array(video_frame_mask[video_id][0].cpu())).to(device).unsqueeze(dim=0)
 
-            r_sent_id = sent_id.replace('#', '#enc#')
-            raw_sent = raw_caps[r_sent_id]  # use the encoded sentence
+            # r_sent_id = sent_id.replace('#', '#enc#')
+            raw_sent = raw_caps[sent_id]  # use the encoded sentence
 
             chage_s = list(changejs[sent_id].values())
             temp_test_sent = [raw_sent] + chage_s
