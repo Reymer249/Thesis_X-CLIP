@@ -1,8 +1,10 @@
 #!/bin/bash
 
 # Set variables
+EPOCH=2
 DATA_PATH="/data/s3705609/VATEX"
 job_name="xclip_vatex_run_vibranium_1"
+CHECKPOINT_PATH="${DATA_PATH}/x-clip_checkpoints/${job_name}/pytorch_model.bin.${EPOCH}" # Replace {EPOCH} with actual epoch number
 
 # Use torchrun instead of torch.distributed.launch (recommended in newer PyTorch)
 python -m torch.distributed.run --nproc_per_node=1 main_xclip_work.py \
@@ -16,6 +18,7 @@ python -m torch.distributed.run --nproc_per_node=1 main_xclip_work.py \
     --data_path ${DATA_PATH} \
     --features_path ${DATA_PATH}/clips \
     --output_dir ${DATA_PATH}/x-clip_checkpoints/${job_name} \
+    --resume_model ${CHECKPOINT_PATH} \
     --max_words 32 \
     --max_frames 12 \
     --datatype vatex \
