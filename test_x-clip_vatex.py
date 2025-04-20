@@ -417,15 +417,16 @@ def eval_epoch(args, model, test_dataloader, device, n_gpu, changed_captions_lis
         # ----------------------------------
 
         # Save extracted features
-        with open("batch_list_t.pkl", "wb") as f:
+        base = "new_features/"
+        with open(base+"batch_list_t.pkl", "wb") as f:
             pickle.dump(batch_list_t, f)
-        with open("batch_list_v.pkl", "wb") as f:
+        with open(base+"batch_list_v.pkl", "wb") as f:
             pickle.dump(batch_list_v, f)
-        with open("batch_sequence_output_list.pkl", "wb") as f:
+        with open(base+"batch_sequence_output_list.pkl", "wb") as f:
             pickle.dump(batch_sequence_output_list, f)
-        with open("batch_seq_features_list.pkl", "wb") as f:
+        with open(base+"batch_seq_features_list.pkl", "wb") as f:
             pickle.dump(batch_seq_features_list, f)
-        with open("batch_visual_output_list.pkl", "wb") as f:
+        with open(base+"batch_visual_output_list.pkl", "wb") as f:
             pickle.dump(batch_visual_output_list, f)
         return 0
 
@@ -477,28 +478,30 @@ def main():
     tokenizer = ClipTokenizer()
 
     assert args.task_type == "retrieval"
-    # model = init_model(args, device, n_gpu, args.local_rank)
-    #
+    model_file = os.path.join(args.models_path, f"pytorch_model.bin.{args.num_epochs-1}")
+    print(f"Loading model from {model_file}")
+    model = load_model(-1, args, n_gpu, device, model_file=model_file)
+
     # ## ####################################
     # # freeze testing
     # ## ####################################
-    # assert args.freeze_layer_num <= 12 and args.freeze_layer_num >= -1
-    # if hasattr(model, "clip") and args.freeze_layer_num > -1:
-    #     for name, param in model.clip.named_parameters():
-    #         # top layers always need to train
-    #         if name.find("ln_final.") == 0 or name.find("text_projection") == 0 or name.find("logit_scale") == 0 \
-    #                 or name.find("visual.ln_post.") == 0 or name.find("visual.proj") == 0:
-    #             continue  # need to train
-    #         elif name.find("visual.transformer.resblocks.") == 0 or name.find("transformer.resblocks.") == 0:
-    #             layer_num = int(name.split(".resblocks.")[1].split(".")[0])
-    #             if layer_num >= args.freeze_layer_num:
-    #                 continue  # need to train
-    #
-    #         if args.linear_patch == "3d" and name.find("conv2."):
-    #             continue
-    #         else:
-    #             # paramenters which < freeze_layer_num will be freezed
-    #             param.requires_grad = False
+    assert args.freeze_layer_num <= 12 and args.freeze_layer_num >= -1
+    if hasattr(model, "clip") and args.freeze_layer_num > -1:
+        for name, param in model.clip.named_parameters():
+            # top layers always need to train
+            if name.find("ln_final.") == 0 or name.find("text_projection") == 0 or name.find("logit_scale") == 0 \
+                    or name.find("visual.ln_post.") == 0 or name.find("visual.proj") == 0:
+                continue  # need to train
+            elif name.find("visual.transformer.resblocks.") == 0 or name.find("transformer.resblocks.") == 0:
+                layer_num = int(name.split(".resblocks.")[1].split(".")[0])
+                if layer_num >= args.freeze_layer_num:
+                    continue  # need to train
+    
+            if args.linear_patch == "3d" and name.find("conv2."):
+                continue
+            else:
+                # paramenters which < freeze_layer_num will be freezed
+                param.requires_grad = False
 
     ## ####################################
     # dataloader loading
@@ -585,17 +588,13 @@ def main():
 
     elif args.do_eval:
         if args.local_rank == 0:
-            model_file = os.path.join(args.models_path, f"pytorch_model.bin.{args.num_epochs-1}")
-            print(f"Loading model from {model_file}")
-            model = load_model(-1, args, n_gpu, device, model_file=model_file)
-
             files_with_changed_sentences = ["vatex1k5_noun_RE20.json", "vatex1k5_adjective_RE20.json",
                                             "vatex1k5_adverb_RE20.json", "vatex1k5_noun_RE20.json",
                                             "vatex1k5_preposition_RE20.json"]
             files_with_changed_sentences = [
                 os.path.join(args.changed_sentences_jsons_path, file) for file in files_with_changed_sentences]
 
-            eval_epoch(args, model, test_dataloader, device, n_gpu, changed_captions_list=files_with_changed_sentences)
+            eval_epoch(args, model, val_dataloader, device, n_gpu, changed_captions_list=files_with_changed_sentences)
 
 
 if __name__ == "__main__":
