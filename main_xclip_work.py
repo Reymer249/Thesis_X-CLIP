@@ -761,8 +761,7 @@ def main(args):
                     model_checkpoint = {k.replace('module.', ''): v for k, v in model_checkpoint.keys()}
 
             # Load with strict=False to ignore missing or unexpected keys
-            model.load_state_dict(model_checkpoint, strict=False)
-            print("Model loaded with some missing/unexpected keys (using strict=False)")
+            model.load_state_dict(model_checkpoint)
 
             # Load optimizer state from the corresponding optimizer file
             # Convert pytorch_model.bin.2 path to pytorch_opt.bin.2
