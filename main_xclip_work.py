@@ -742,14 +742,22 @@ def main(args):
         ## ##############################################################
         resumed_epoch = 0
         if args.resume_model:
-            checkpoint = torch.load(args.resume_model, map_location='cpu')
-            optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-            resumed_epoch = checkpoint['epoch']+1
-            resumed_loss = checkpoint['loss']
-            
-            if args.use_wandb and args.local_rank == 0:
-                wandb.config.update({"resumed_from_epoch": resumed_epoch - 1})
-                logger.info(f"Resuming training from epoch {resumed_epoch} with loss {resumed_loss}")
+            # Load model weights
+            model_checkpoint = torch.load(args.resume_model, map_location='cpu')
+            model.load_state_dict(model_checkpoint)
+
+            # Load optimizer state from the corresponding optimizer file
+            # Convert pytorch_model.bin.2 path to pytorch_opt.bin.2
+            optimizer_path = args.resume_model.replace("pytorch_model", "pytorch_opt")
+
+            if os.path.exists(optimizer_path):
+                optimizer_checkpoint = torch.load(optimizer_path, map_location='cpu')
+                optimizer.load_state_dict(optimizer_checkpoint['optimizer_state_dict'])
+                resumed_epoch = optimizer_checkpoint['epoch'] + 1
+                resumed_loss = optimizer_checkpoint['loss']
+                print(f"Resumed training from epoch {resumed_epoch}")
+            else:
+                raise Excepion("No optimizer file found (pytorch_opt.bla-bla-bla)")
         
         global_step = 0
         for epoch in range(resumed_epoch, args.epochs):
