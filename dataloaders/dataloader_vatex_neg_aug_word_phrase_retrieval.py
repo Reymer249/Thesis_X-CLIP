@@ -401,7 +401,7 @@ class VATEX_TrainDataLoader(Dataset):
     def __getitem__(self, idx):
         video_id, caption = self.sentences_dict[idx]
 
-        do_neg_aug = True
+        do_neg_aug = False
         do_word_phrase_neg_aug = False
         change_num= self.batch_size*self.n_gpu - 1
         # 设置一个超参数 控制negative sample 和 batch size的 ratio
