@@ -743,8 +743,26 @@ def main(args):
         resumed_epoch = 0
         if args.resume_model:
             # Load model weights
+            # Load model weights
             model_checkpoint = torch.load(args.resume_model, map_location='cpu')
-            model.load_state_dict(model_checkpoint)
+
+            # Check if model_checkpoint is already a state dict or needs to be accessed as state_dict
+            if not isinstance(model_checkpoint, dict) or 'state_dict' in model_checkpoint:
+                model_checkpoint = model_checkpoint.get('state_dict', model_checkpoint)
+
+            # Handle the case where the saved model wasn't wrapped in DDP but current one is
+            if hasattr(model, 'module'):
+                # Option 1: Add 'module.' prefix to keys if missing
+                if not all(k.startswith('module.') for k in model_checkpoint.keys()):
+                    model_checkpoint = {'module.' + k: v for k, v in model_checkpoint.items()}
+            else:
+                # Option 2: Remove 'module.' prefix if present
+                if all(k.startswith('module.') for k in model_checkpoint.keys()):
+                    model_checkpoint = {k.replace('module.', ''): v for k, v in model_checkpoint.keys()}
+
+            # Load with strict=False to ignore missing or unexpected keys
+            model.load_state_dict(model_checkpoint, strict=False)
+            print("Model loaded with some missing/unexpected keys (using strict=False)")
 
             # Load optimizer state from the corresponding optimizer file
             # Convert pytorch_model.bin.2 path to pytorch_opt.bin.2
