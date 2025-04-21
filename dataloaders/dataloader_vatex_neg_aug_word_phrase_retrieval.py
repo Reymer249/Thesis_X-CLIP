@@ -24,7 +24,7 @@ cls = spacy.util.get_lang_class('en')
 stop_words = cls.Defaults.stop_words
 nlp = spacy.load("en_core_web_sm")
 
-dataset_based_vocab_path=  '/vol/home/s3705609/Desktop/data_vatex/splits_txt/vatex_word_dic_20230924.json'
+dataset_based_vocab_path=  '/data/s3705609/VATEX/splits_txt/vatex_word_dic_20230924.json'
 from dataloaders.generated_negative_sentence import Get_Negative_text_samples
 
 
