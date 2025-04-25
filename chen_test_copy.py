@@ -33,6 +33,8 @@ def get_args(description='Fine evaluation on X-CLIP'):
                         type=str, required=False, help="Initial model.")
     parser.add_argument("--test_id_path", default='/home/caz/VisualSearch/vatex_data/VATEX_test.csv', type=str,
                         required=True, help="Initial model.")  # test_csv_ids_path
+    parser.add_argument("--part_of_speech",  default='all', type=str,
+                         required=True, help="Part of speeh to test for. 'all' for all of them")  # test_csv_ids_path
 
     args = parser.parse_args()
     return args
@@ -120,7 +122,6 @@ def main():
 
     test_video_ids = open(test_id_path).read().strip().split('\n')
 
-    # TODO: get that on a fly
     visual_feat = pickle.load(open(feat_p, 'rb'))
     visual_mask = pickle.load(open(mask_p, 'rb'))
 
@@ -140,9 +141,22 @@ def main():
         raw_caps[tt_sent_id] = ' '.join(line.split(' ')[1:])
 
     changeS_P = '/vol/home/s3705609/Desktop/thesis_code/filtered_json_files'
-    test_list = ['filtered_vatex1k5_adjective_RE20.json', 'filtered_vatex1k5_adverb_RE20.json',
-                 'filtered_vatex1k5_noun_RE20.json', 'filtered_vatex1k5_preposition_RE20.json',
-                 'filtered_vatex1k5_verb_RE20.json']
+    if args.part_of_speech == 'all':
+        test_list = ['filtered_vatex1k5_adjective_RE20.json', 'filtered_vatex1k5_adverb_RE20.json',
+                    'filtered_vatex1k5_noun_RE20.json', 'filtered_vatex1k5_preposition_RE20.json',
+                    'filtered_vatex1k5_verb_RE20.json']
+    elif args.part_of_speech == 'adjective':
+        test_list = ['filtered_vatex1k5_adjective_RE20.json']
+    elif args.part_of_speech == 'adverb':
+        test_list = ['filtered_vatex1k5_adverb_RE20.json']
+    elif args.part_of_speech == 'noun':
+        test_list = ['filtered_vatex1k5_noun_RE20.json']
+    elif args.part_of_speech == 'preposition':
+        test_list = ['filtered_vatex1k5_preposition_RE20.json']
+    elif args.part_of_speech == 'verb':
+        test_list = ['filtered_vatex1k5_verb_RE20.json']
+    else:
+        raise ValueError('Invalid part of speech specified. Choose from: all, adjective, adverb, noun, preposition, verb.')
 
     save_p = args.save_dir
     if not os.path.exists(save_p):
@@ -158,8 +172,8 @@ def main():
         for sent_id in tqdm(list(changejs.keys())):
 
             video_id = sent_id.split('#')[0]
-            video_feat = torch.tensor(np.array(video_frame_feat[video_id].cpu())).to(device).unsqueeze(dim=0)
-            video_mask = torch.tensor(np.array(video_frame_mask[video_id][0].cpu())).to(device).unsqueeze(dim=0)
+            video_feat = torch.tensor(np.array(video_frame_feat[video_id].cpu())).to(device)#.unsqueeze(dim=0)
+            video_mask = torch.tensor(np.array(video_frame_mask[video_id].cpu())).to(device)#.unsqueeze(dim=0)
 
             # r_sent_id = sent_id.replace('#', '#enc#')
             raw_sent = raw_caps[sent_id]  # use the encoded sentence
@@ -188,8 +202,8 @@ def main():
         wr.write('GT @ R1 count {} is:{}\n'.format(testname, rank_GT.count(1)))
         wr.close()
 
-        with open(os.path.join(save_p, '{}_dump_antonym_v2tres.json'.format(testname)), 'w') as json_file:
-            json_file.write(json.dumps(res_list))
+        # with open(os.path.join(save_p, '{}_dump_antonym_v2tres.json'.format(testname)), 'w') as json_file:
+        #     json_file.write(json.dumps(res_list))
 
 
 if __name__ == "__main__":
