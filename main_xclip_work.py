@@ -25,6 +25,7 @@ WANDB_KEY = os.getenv("WANDB_KEY")
 
 global logger
 
+
 def init_distributed_mode():
     """Initialize distributed mode with proper device assignment."""
     # Check if we're running via torch.distributed.launch
@@ -32,30 +33,31 @@ def init_distributed_mode():
         rank = int(os.environ["RANK"])
         world_size = int(os.environ['WORLD_SIZE'])
         local_rank = int(os.environ['LOCAL_RANK'])
-        
+
         # Print debugging info
         print(f"[Process {os.getpid()}] rank = {rank}, world_size = {world_size}, local_rank = {local_rank}")
-        
+
         # Set the device BEFORE initializing process group
         torch.cuda.set_device(local_rank)
-        
+
         torch.distributed.init_process_group(
             backend="nccl",
             init_method="env://",
             world_size=world_size,
             rank=rank
         )
-        
+
         print(f"[Process {os.getpid()}] Initialized process group: rank={rank}, world_size={world_size}")
-        
+
         # Synchronize all processes
         torch.distributed.barrier()
-        
+
         return local_rank
     else:
         # Fallback for single GPU or non-distributed training
         print("No distributed environment variables found. Running in non-distributed mode.")
         return 0  # Default to first GPU
+
 
 def get_args(description='X-CLIP on Retrieval Task'):
     parser = argparse.ArgumentParser(description=description)
@@ -137,7 +139,7 @@ def get_args(description='X-CLIP on Retrieval Task'):
                         help="choice a similarity header.")
 
     parser.add_argument("--pretrained_clip_name", default="ViT-B/32", type=str, help="Choose a CLIP version")
-    
+
     # Weights & Biases arguments
     parser.add_argument("--use_wandb", action='store_true', help="Whether to use Weights & Biases logging")
     parser.add_argument("--wandb_project", type=str, default="x-clip", help="Weights & Biases project name")
@@ -149,7 +151,7 @@ def get_args(description='X-CLIP on Retrieval Task'):
     # parser.add_argument("--local_rank", default=0, type=int, help="distribted training")
 
     args = parser.parse_args()
-    
+
     # Get local_rank from environment variable instead
     if 'LOCAL_RANK' in os.environ:
         args.local_rank = int(os.environ['LOCAL_RANK'])
@@ -170,6 +172,7 @@ def get_args(description='X-CLIP on Retrieval Task'):
 
     return args
 
+
 def init_wandb(args, model_config=None):
     """Initialize Weights & Biases logging if enabled."""
     if args.use_wandb and args.local_rank == 0:  # Only log on main process
@@ -177,7 +180,7 @@ def init_wandb(args, model_config=None):
         tags = None
         if args.wandb_tags:
             tags = [tag.strip() for tag in args.wandb_tags.split(',')]
-            
+
         # Initialize wandb
         wandb.init(
             project=args.wandb_project,
@@ -190,7 +193,7 @@ def init_wandb(args, model_config=None):
                 "batch_size": args.batch_size * args.gradient_accumulation_steps,
                 "warmup_proportion": args.warmup_proportion,
                 "weight_decay": 0.2,  # from prep_optimizer
-                
+
                 # Model configuration
                 "datatype": args.datatype,
                 "pretrained_clip_name": args.pretrained_clip_name,
@@ -200,18 +203,19 @@ def init_wandb(args, model_config=None):
                 "visual_num_hidden_layers": args.visual_num_hidden_layers,
                 "cross_num_hidden_layers": args.cross_num_hidden_layers,
                 "linear_patch": args.linear_patch,
-                
+
                 # Other settings
                 "fp16": args.fp16,
                 "seed": args.seed,
             }
         )
-        
+
         # Add any additional model config if provided
         if model_config is not None:
-            wandb.config.update(model_config)        
-            
+            wandb.config.update(model_config)
+
         logger.info("Weights & Biases logging enabled")
+
 
 def set_seed_logger(args):
     global logger
@@ -243,38 +247,40 @@ def set_seed_logger(args):
 
     return args
 
+
 def init_device(args, local_rank):
     global logger
-    
+
     # Check which GPUs are visible
     visible_devices = os.environ.get('CUDA_VISIBLE_DEVICES', '')
     logger.info(f"CUDA_VISIBLE_DEVICES: {visible_devices}")
-    
+
     # Set device explicitly based on local_rank
     torch.cuda.set_device(local_rank)
     device = torch.device(f"cuda:{local_rank}")
-    
+
     # Get total number of available GPUs
     total_gpus = torch.cuda.device_count()
     logger.info(f"Total available GPUs: {total_gpus}")
-    
+
     # In distributed training, each process uses one GPU
     n_gpu = 1
-    
+
     logger.info(f"Process {os.getpid()} using device: {device}, local_rank: {local_rank}")
     logger.info(f"Current device index: {torch.cuda.current_device()}")
     logger.info(f"Device properties: {torch.cuda.get_device_properties(local_rank)}")
-    
+
     # Store total number of GPUs in args for batch size calculations
     args.n_gpu = total_gpus
-    
+
     if args.batch_size % args.n_gpu != 0 or args.batch_size_val % args.n_gpu != 0:
-        raise ValueError(f"Invalid batch_size/batch_size_val and n_gpu parameter: {args.batch_size}%{args.n_gpu} and {args.batch_size_val}%{args.n_gpu}, should be == 0")
-    
+        raise ValueError(
+            f"Invalid batch_size/batch_size_val and n_gpu parameter: {args.batch_size}%{args.n_gpu} and {args.batch_size_val}%{args.n_gpu}, should be == 0")
+
     return device, n_gpu
 
-def init_model(args, device, n_gpu, local_rank):
 
+def init_model(args, device, n_gpu, local_rank):
     if args.init_model:
         model_state_dict = torch.load(args.init_model, map_location='cpu')
     else:
@@ -288,8 +294,8 @@ def init_model(args, device, n_gpu, local_rank):
 
     return model
 
-def prep_optimizer(args, model, num_train_optimization_steps, device, n_gpu, local_rank, coef_lr=1.):
 
+def prep_optimizer(args, model, num_train_optimization_steps, device, n_gpu, local_rank, coef_lr=1.):
     if hasattr(model, 'module'):
         model = model.module
 
@@ -320,7 +326,7 @@ def prep_optimizer(args, model, num_train_optimization_steps, device, n_gpu, loc
                          schedule='warmup_cosine', b1=0.9, b2=0.98, e=1e-6,
                          t_total=num_train_optimization_steps, weight_decay=weight_decay,
                          max_grad_norm=1.0)
-    
+
     # Create DDP model with explicit device_ids
     # This is the key part to ensure proper GPU assignment
     model = torch.nn.parallel.DistributedDataParallel(
@@ -329,25 +335,27 @@ def prep_optimizer(args, model, num_train_optimization_steps, device, n_gpu, loc
         output_device=local_rank,
         find_unused_parameters=True
     )
-    
+
     return optimizer, scheduler, model
+
 
 def save_model(epoch, args, model, optimizer, tr_loss, type_name=""):
     # Only save the model it-self
     model_to_save = model.module if hasattr(model, 'module') else model
     output_model_file = os.path.join(
-        args.output_dir, "pytorch_model.bin.{}{}".format("" if type_name=="" else type_name+".", epoch))
+        args.output_dir, "pytorch_model.bin.{}{}".format("" if type_name == "" else type_name + ".", epoch))
     optimizer_state_file = os.path.join(
-        args.output_dir, "pytorch_opt.bin.{}{}".format("" if type_name=="" else type_name+".", epoch))
+        args.output_dir, "pytorch_opt.bin.{}{}".format("" if type_name == "" else type_name + ".", epoch))
     torch.save(model_to_save.state_dict(), output_model_file)
     torch.save({
-            'epoch': epoch,
-            'optimizer_state_dict': optimizer.state_dict(),
-            'loss': tr_loss,
-            }, optimizer_state_file)
+        'epoch': epoch,
+        'optimizer_state_dict': optimizer.state_dict(),
+        'loss': tr_loss,
+    }, optimizer_state_file)
     logger.info("Model saved to %s", output_model_file)
     logger.info("Optimizer saved to %s", optimizer_state_file)
     return output_model_file
+
 
 def load_model(epoch, args, n_gpu, device, model_file=None):
     if model_file is None or len(model_file) == 0:
@@ -357,13 +365,16 @@ def load_model(epoch, args, n_gpu, device, model_file=None):
         if args.local_rank == 0:
             logger.info("Model loaded from %s", model_file)
         # Prepare model
-        cache_dir = args.cache_dir if args.cache_dir else os.path.join(str(PYTORCH_PRETRAINED_BERT_CACHE), 'distributed')
-        model = XCLIP.from_pretrained(args.cross_model, cache_dir=cache_dir, state_dict=model_state_dict, task_config=args)
+        cache_dir = args.cache_dir if args.cache_dir else os.path.join(str(PYTORCH_PRETRAINED_BERT_CACHE),
+                                                                       'distributed')
+        model = XCLIP.from_pretrained(args.cross_model, cache_dir=cache_dir, state_dict=model_state_dict,
+                                      task_config=args)
 
         model.to(device)
     else:
         model = None
     return model
+
 
 def train_epoch(epoch, args, model, train_dataloader, device, n_gpu, optimizer, scheduler, global_step, local_rank=0):
     global logger
@@ -406,29 +417,30 @@ def train_epoch(epoch, args, model, train_dataloader, device, n_gpu, optimizer, 
                 torch.clamp_(model.clip.logit_scale.data, max=np.log(100))
 
             global_step += 1
-            
+
             # Log training progress
             if global_step % log_step == 0 and local_rank == 0:
                 # Get current learning rate
                 current_lr = [param_group['lr'] for param_group in optimizer.param_groups]
-                lr_str = "-".join([str('%.9f'%itm) for itm in sorted(list(set(current_lr)))])
-                
+                lr_str = "-".join([str('%.9f' % itm) for itm in sorted(list(set(current_lr)))])
+
                 # Calculate and log metrics
                 time_per_step = (time.time() - start_time) / (log_step * args.gradient_accumulation_steps)
-                
-                logger.info("Epoch: %d/%s, Step: %d/%d, Lr: %s, Loss: %f, Time/step: %f", 
-                            epoch + 1, args.epochs, step + 1, len(train_dataloader), 
+
+                logger.info("Epoch: %d/%s, Step: %d/%d, Lr: %s, Loss: %f, Time/step: %f",
+                            epoch + 1, args.epochs, step + 1, len(train_dataloader),
                             lr_str, float(loss), time_per_step)
-                
+
                 # Log to wandb if enabled
                 if args.use_wandb and local_rank == 0:
                     # Log scale parameter as well, which is important for CLIP models
                     logit_scale = 0
-                    if hasattr(model, 'module') and hasattr(model.module, 'clip') and hasattr(model.module.clip, 'logit_scale'):
+                    if hasattr(model, 'module') and hasattr(model.module, 'clip') and hasattr(model.module.clip,
+                                                                                              'logit_scale'):
                         logit_scale = model.module.clip.logit_scale.exp().item()
                     elif hasattr(model, 'clip') and hasattr(model.clip, 'logit_scale'):
                         logit_scale = model.clip.logit_scale.exp().item()
-                        
+
                     wandb.log({
                         "epoch": epoch + 1,
                         "train/loss": float(loss),
@@ -438,13 +450,15 @@ def train_epoch(epoch, args, model, train_dataloader, device, n_gpu, optimizer, 
                         "train/time_per_step": time_per_step,
                         "train/progress": step / len(train_dataloader)
                     }, step=global_step)
-                
+
                 start_time = time.time()
 
     total_loss = total_loss / len(train_dataloader)
     return total_loss, global_step
 
-def _run_on_single_gpu(model, batch_list_t, batch_list_v, batch_sequence_output_list, batch_seq_features_list, batch_visual_output_list):
+
+def _run_on_single_gpu(model, batch_list_t, batch_list_v, batch_sequence_output_list, batch_seq_features_list,
+                       batch_visual_output_list):
     sim_matrix = []
     for idx1, b1 in enumerate(batch_list_t):
         input_mask, segment_ids, *_tmp = b1
@@ -454,13 +468,15 @@ def _run_on_single_gpu(model, batch_list_t, batch_list_v, batch_sequence_output_
         for idx2, b2 in enumerate(batch_list_v):
             video_mask, *_tmp = b2
             visual_output = batch_visual_output_list[idx2]
-            b1b2_logits, *_tmp = model.get_similarity_logits(sequence_output, seq_features, visual_output, input_mask, video_mask,
-                                                                     loose_type=model.loose_type)
+            b1b2_logits, *_tmp = model.get_similarity_logits(sequence_output, seq_features, visual_output, input_mask,
+                                                             video_mask,
+                                                             loose_type=model.loose_type)
             b1b2_logits = b1b2_logits.cpu().detach().numpy()
             each_row.append(b1b2_logits)
         each_row = np.concatenate(tuple(each_row), axis=-1)
         sim_matrix.append(each_row)
     return sim_matrix
+
 
 def eval_epoch(args, model, test_dataloader, device, n_gpu, split="val"):
     """Evaluate the model on validation or test set"""
@@ -501,7 +517,7 @@ def eval_epoch(args, model, test_dataloader, device, n_gpu, split="val"):
         # ----------------------------
         # 1. cache the features
         # ----------------------------
-        for bid, batch in enumerate(test_dataloader): # Maybe something went wrong here!!!
+        for bid, batch in enumerate(test_dataloader):  # Maybe something went wrong here!!!
             batch = tuple(t.to(device) for t in batch)
             input_ids, input_mask, segment_ids, video, video_mask = batch
 
@@ -523,7 +539,10 @@ def eval_epoch(args, model, test_dataloader, device, n_gpu, split="val"):
                     batch_list_v.append((video_mask,))
                 total_video_num += b
             else:
-                (sequence_output, seq_features), visual_output = model.get_sequence_visual_output(input_ids, segment_ids, input_mask, video, video_mask)
+                (sequence_output, seq_features), visual_output = model.get_sequence_visual_output(input_ids,
+                                                                                                  segment_ids,
+                                                                                                  input_mask, video,
+                                                                                                  video_mask)
 
                 batch_sequence_output_list.append(sequence_output)
                 batch_seq_features_list.append(seq_features)
@@ -536,17 +555,19 @@ def eval_epoch(args, model, test_dataloader, device, n_gpu, split="val"):
         # ----------------------------------
         # 2. calculate the similarity
         # ----------------------------------
-        sim_matrix = _run_on_single_gpu(model, batch_list_t, batch_list_v, batch_sequence_output_list, batch_seq_features_list, batch_visual_output_list)
+        sim_matrix = _run_on_single_gpu(model, batch_list_t, batch_list_v, batch_sequence_output_list,
+                                        batch_seq_features_list, batch_visual_output_list)
         sim_matrix = np.concatenate(tuple(sim_matrix), axis=0)
 
     if multi_sentence_:
         logger.info("before reshape, sim matrix size: {} x {}".format(sim_matrix.shape[0], sim_matrix.shape[1]))
         cut_off_points2len_ = [itm + 1 for itm in cut_off_points_]
-        max_length = max([e_-s_ for s_, e_ in zip([0]+cut_off_points2len_[:-1], cut_off_points2len_)])
+        max_length = max([e_ - s_ for s_, e_ in zip([0] + cut_off_points2len_[:-1], cut_off_points2len_)])
         sim_matrix_new = []
         for s_, e_ in zip([0] + cut_off_points2len_[:-1], cut_off_points2len_):
             sim_matrix_new.append(np.concatenate((sim_matrix[s_:e_],
-                                                  np.full((max_length-e_+s_, sim_matrix.shape[1]), -np.inf)), axis=0))
+                                                  np.full((max_length - e_ + s_, sim_matrix.shape[1]), -np.inf)),
+                                                 axis=0))
         sim_matrix = np.stack(tuple(sim_matrix_new), axis=0)
         logger.info("after reshape, sim matrix size: {} x {} x {}".
                     format(sim_matrix.shape[0], sim_matrix.shape[1], sim_matrix.shape[2]))
@@ -563,9 +584,10 @@ def eval_epoch(args, model, test_dataloader, device, n_gpu, split="val"):
     logger.info('\t>>>  R@1: {:.1f} - R@5: {:.1f} - R@10: {:.1f} - Median R: {:.1f} - Mean R: {:.1f}'.
                 format(tv_metrics['R1'], tv_metrics['R5'], tv_metrics['R10'], tv_metrics['MR'], tv_metrics['MeanR']))
     logger.info("Video-to-Text:")
-    logger.info('\t>>>  V2T$R@1: {:.1f} - V2T$R@5: {:.1f} - V2T$R@10: {:.1f} - V2T$Median R: {:.1f} - V2T$Mean R: {:.1f}'.
-                format(vt_metrics['R1'], vt_metrics['R5'], vt_metrics['R10'], vt_metrics['MR'], vt_metrics['MeanR']))
-    
+    logger.info(
+        '\t>>>  V2T$R@1: {:.1f} - V2T$R@5: {:.1f} - V2T$R@10: {:.1f} - V2T$Median R: {:.1f} - V2T$Mean R: {:.1f}'.
+        format(vt_metrics['R1'], vt_metrics['R5'], vt_metrics['R10'], vt_metrics['MR'], vt_metrics['MeanR']))
+
     # Log metrics to wandb if enabled (only on main process)
     if args.use_wandb and args.local_rank == 0:
         metrics_dict = {
@@ -584,6 +606,7 @@ def eval_epoch(args, model, test_dataloader, device, n_gpu, split="val"):
 
     R1 = tv_metrics['R1']
     return R1
+
 
 def main(args):
     global logger
@@ -609,7 +632,7 @@ def main(args):
             wandb.watch(model.module, log="all", log_freq=args.n_display)
         else:
             wandb.watch(model, log="all", log_freq=args.n_display)
-    
+
     # Log model architecture details if available
     if args.use_wandb and args.local_rank == 0 and hasattr(model, "config"):
         wandb.config.update({"model_config": model.config})
@@ -619,7 +642,7 @@ def main(args):
     ## ####################################
     frozen_params = 0
     trainable_params = 0
-    
+
     assert args.freeze_layer_num <= 12 and args.freeze_layer_num >= -1
     if hasattr(model, "clip") and args.freeze_layer_num > -1:
         for name, param in model.clip.named_parameters():
@@ -627,12 +650,12 @@ def main(args):
             if name.find("ln_final.") == 0 or name.find("text_projection") == 0 or name.find("logit_scale") == 0 \
                     or name.find("visual.ln_post.") == 0 or name.find("visual.proj") == 0:
                 trainable_params += param.numel()
-                continue    # need to train
+                continue  # need to train
             elif name.find("visual.transformer.resblocks.") == 0 or name.find("transformer.resblocks.") == 0:
                 layer_num = int(name.split(".resblocks.")[1].split(".")[0])
                 if layer_num >= args.freeze_layer_num:
                     trainable_params += param.numel()
-                    continue    # need to train
+                    continue  # need to train
 
             if args.linear_patch == "3d" and name.find("conv2."):
                 trainable_params += param.numel()
@@ -641,12 +664,12 @@ def main(args):
                 # parameters which < freeze_layer_num will be frozen
                 param.requires_grad = False
                 frozen_params += param.numel()
-    
+
     # Count all trainable parameters for logging
     for param in model.parameters():
         if param.requires_grad:
             trainable_params += param.numel()
-    
+
     # Log parameter counts to wandb
     if args.use_wandb and args.local_rank == 0:
         wandb.config.update({
@@ -685,7 +708,7 @@ def main(args):
         logger.info("  Num steps = %d", len(test_dataloader))
         logger.info("***** Running val *****")
         logger.info("  Num examples = %d", val_length)
-        
+
         # Log dataset info to wandb
         if args.use_wandb:
             wandb.config.update({
@@ -706,8 +729,9 @@ def main(args):
                                         / args.gradient_accumulation_steps) * args.epochs
 
         coef_lr = args.coef_lr
-        optimizer, scheduler, model = prep_optimizer(args, model, num_train_optimization_steps, device, n_gpu, args.local_rank, coef_lr=coef_lr)
-        
+        optimizer, scheduler, model = prep_optimizer(args, model, num_train_optimization_steps, device, n_gpu,
+                                                     args.local_rank, coef_lr=coef_lr)
+
         # Update wandb config with optimizer details
         if args.use_wandb and args.local_rank == 0:
             # Add optimizer and scheduler info to wandb config
@@ -719,7 +743,7 @@ def main(args):
                 "total_train_steps": num_train_optimization_steps,
             }
             wandb.config.update(optimizer_config)
-            
+
             # Set up wandb to watch model weights and gradients
             if args.wandb_watch:
                 if hasattr(model, "module"):
@@ -736,7 +760,7 @@ def main(args):
         best_score = 0.00001
         best_output_model_file = "None"
         best_epoch = -1
-        
+
         ## ##############################################################
         # resume optimizer state besides loss to continue train
         ## ##############################################################
@@ -781,14 +805,14 @@ def main(args):
             epoch_start_time = time.time()
             train_sampler.set_epoch(epoch)
             tr_loss, global_step = train_epoch(epoch, args, model, train_dataloader, device, n_gpu, optimizer,
-                                              scheduler, global_step, local_rank=args.local_rank)
-            
+                                               scheduler, global_step, local_rank=args.local_rank)
+
             epoch_time = time.time() - epoch_start_time
-            
+
             if args.local_rank == 0:
-                logger.info("Epoch %d/%s Finished, Train Loss: %f, Time: %f s", 
-                           epoch + 1, args.epochs, tr_loss, epoch_time)
-                
+                logger.info("Epoch %d/%s Finished, Train Loss: %f, Time: %f s",
+                            epoch + 1, args.epochs, tr_loss, epoch_time)
+
                 # Log epoch summary to wandb
                 if args.use_wandb:
                     wandb.log({
@@ -806,7 +830,7 @@ def main(args):
                 val_start_time = time.time()
                 R1 = eval_epoch(args, model, val_dataloader, device, n_gpu, split="val")
                 val_time = time.time() - val_start_time
-                
+
                 if args.use_wandb:
                     wandb.log({
                         "val/evaluation_time": val_time,
@@ -817,21 +841,21 @@ def main(args):
                     best_score = R1
                     best_epoch = epoch + 1
                     best_output_model_file = output_model_file
-                    
+
                     # Log best model to wandb
                     if args.use_wandb:
                         wandb.run.summary["best_val_r1"] = R1
                         wandb.run.summary["best_model_epoch"] = best_epoch
                         wandb.run.summary["best_model_path"] = best_output_model_file
-                        
+
                         # Optional: save the best model to wandb
                         if args.local_rank == 0:
                             # Only uncomment if you want to save model files to wandb
                             # wandb.save(best_output_model_file)
                             pass
-                            
-                logger.info("Current best model is from epoch %d with R1: %.4f", 
-                           best_epoch, best_score)
+
+                logger.info("Current best model is from epoch %d with R1: %.4f",
+                            best_epoch, best_score)
 
         # Calculate and log total training time
         total_training_time = time.time() - start_time
@@ -847,17 +871,18 @@ def main(args):
             test_start_time = time.time()
             test_r1 = eval_epoch(args, model, test_dataloader, device, n_gpu, split="test")
             test_time = time.time() - test_start_time
-            
+
             # Log final test results and finish wandb run
             if args.use_wandb:
                 wandb.run.summary["test_r1"] = test_r1
                 wandb.run.summary["test_time"] = test_time
                 # Create a results table for easier viewing
                 columns = ["Model", "Dataset", "Best Epoch", "Val R@1", "Test R@1", "Training Time (hrs)"]
-                data = [[args.pretrained_clip_name, args.datatype, best_epoch, best_score, test_r1, total_training_time/3600]]
+                data = [[args.pretrained_clip_name, args.datatype, best_epoch, best_score, test_r1,
+                         total_training_time / 3600]]
                 results_table = wandb.Table(columns=columns, data=data)
                 wandb.log({"results": results_table})
-                
+
                 # Finish the wandb run
                 wandb.finish()
 
@@ -866,15 +891,16 @@ def main(args):
             test_start_time = time.time()
             test_r1 = eval_epoch(args, model, test_dataloader, device, n_gpu, split="test")
             test_time = time.time() - test_start_time
-            
-            logger.info("Evaluation completed with R1: %.4f in %.2f seconds", 
-                       test_r1, test_time)
-            
+
+            logger.info("Evaluation completed with R1: %.4f in %.2f seconds",
+                        test_r1, test_time)
+
             # Log evaluation results and finish wandb run
             if args.use_wandb:
                 wandb.run.summary["test_r1"] = test_r1
                 wandb.run.summary["test_time"] = test_time
                 wandb.finish()
+
 
 if __name__ == "__main__":
     try:
@@ -883,7 +909,7 @@ if __name__ == "__main__":
     except Exception as e:
         # Log exception to wandb if it's initialized
         if 'args' in locals() and hasattr(args, 'use_wandb') and args.use_wandb and \
-           'wandb' in globals() and wandb.run is not None:
+                'wandb' in globals() and wandb.run is not None:
             wandb.run.summary["error"] = str(e)
             wandb.finish(exit_code=1)
         # Re-raise the exception
