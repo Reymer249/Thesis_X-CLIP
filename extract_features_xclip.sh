@@ -1,16 +1,16 @@
 #!/bin/bash
 
 # Set variables
-DATA_PATH="/data/s3705609/VATEX"
-job_name="xclip_vatex_run_vibranium_1"
+DATA_PATH="/vol/home/s3705609/Desktop/data_vatex"
+job_name="xclip_vatex_run_lu_pc_2"
 
 # Use torchrun instead of torch.distributed.launch (recommended in newer PyTorch)
-python -m torch.distributed.run --nproc_per_node=1 main_xclip_work.py \
-    --do_train \
+python -m torch.distributed.run --nproc_per_node=1 get_features.py \
+    --do_eval \
     --num_thread_reader=8 \
     --lr 1e-4 \
-    --batch_size=64 \
-    --batch_size_val=64 \
+    --batch_size=1 \
+    --batch_size_val=1 \
     --epochs=5 \
     --n_display=100 \
     --data_path ${DATA_PATH} \
@@ -28,6 +28,7 @@ python -m torch.distributed.run --nproc_per_node=1 main_xclip_work.py \
     --linear_patch 2d \
     --sim_header seqTransf \
     --pretrained_clip_name ViT-B/32 \
-    --use_wandb \
-    --wandb_project x-clip \
-    --wandb_name ${job_name}
+    --models_path /vol/home/s3705609/Desktop/weights_XCLIP/xclip_vatex_run_vibranium_1 \
+    --num_epochs=5 \
+    --changed_sentences_jsons_path /vol/home/s3705609/Desktop/data_vatex/splits_txt \
+    --test_id_path /vol/home/s3705609/Desktop/data_vatex/splits_txt/vatex_val_avail.txt

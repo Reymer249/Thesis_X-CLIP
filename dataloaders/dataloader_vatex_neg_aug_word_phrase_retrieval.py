@@ -156,58 +156,58 @@ class VATEX_TrainDataLoader(Dataset):
 
         return pairs_text, pairs_mask, pairs_segment, choice_video_ids
 
-    def _get_rawvideo(self, choice_video_ids):
-        video_mask = np.zeros((len(choice_video_ids), self.max_frames), dtype=np.int64)
-        max_video_length = [0] * len(choice_video_ids)
+    # def _get_rawvideo(self, choice_video_ids):
+    #     video_mask = np.zeros((len(choice_video_ids), self.max_frames), dtype=np.int64)
+    #     max_video_length = [0] * len(choice_video_ids)
+    #
+    #     # Pair x L x T x 3 x H x W
+    #     video = np.zeros((len(choice_video_ids), self.max_frames, 1, 3,
+    #                       self.rawVideoExtractor.size, self.rawVideoExtractor.size), dtype=np.float64)
+    #
+    #     for i, video_id in enumerate(choice_video_ids):
+    #         video_path = self.video_dict[video_id]
+    #
+    #         raw_video_data = self.rawVideoExtractor.get_video_data(video_path)
+    #         # print('-------',video_path)
+    #         raw_video_data = raw_video_data['video']
+    #
+    #         if len(raw_video_data.shape) > 3:
+    #             raw_video_data_clip = raw_video_data
+    #             # L x T x 3 x H x W
+    #             raw_video_slice = self.rawVideoExtractor.process_raw_data(raw_video_data_clip)
+    #             if self.max_frames < raw_video_slice.shape[0]:
+    #                 if self.slice_framepos == 0:
+    #                     video_slice = raw_video_slice[:self.max_frames, ...]
+    #                 elif self.slice_framepos == 1:
+    #                     video_slice = raw_video_slice[-self.max_frames:, ...]
+    #                 else:
+    #                     sample_indx = np.linspace(0, raw_video_slice.shape[0] - 1, num=self.max_frames, dtype=int)
+    #                     video_slice = raw_video_slice[sample_indx, ...]
+    #             else:
+    #                 video_slice = raw_video_slice
+    #
+    #             video_slice = self.rawVideoExtractor.process_frame_order(video_slice, frame_order=self.frame_order)
+    #
+    #             slice_len = video_slice.shape[0]
+    #             max_video_length[i] = max_video_length[i] if max_video_length[i] > slice_len else slice_len
+    #             if slice_len < 1:
+    #                 pass
+    #             else:
+    #                 video[i][:slice_len, ...] = video_slice
+    #         else:
+    #             print("video path: {} error. video id: {}".format(video_path, video_id))
+    #
+    #     for i, v_length in enumerate(max_video_length):
+    #         video_mask[i][:v_length] = [1] * v_length
+    #
+    #     return video, video_mask
 
-        # Pair x L x T x 3 x H x W
-        video = np.zeros((len(choice_video_ids), self.max_frames, 1, 3,
-                          self.rawVideoExtractor.size, self.rawVideoExtractor.size), dtype=np.float64)
-
-        for i, video_id in enumerate(choice_video_ids):
-            video_path = self.video_dict[video_id]
-
-            raw_video_data = self.rawVideoExtractor.get_video_data(video_path)
-            # print('-------',video_path)
-            raw_video_data = raw_video_data['video']
-
-            if len(raw_video_data.shape) > 3:
-                raw_video_data_clip = raw_video_data
-                # L x T x 3 x H x W
-                raw_video_slice = self.rawVideoExtractor.process_raw_data(raw_video_data_clip)
-                if self.max_frames < raw_video_slice.shape[0]:
-                    if self.slice_framepos == 0:
-                        video_slice = raw_video_slice[:self.max_frames, ...]
-                    elif self.slice_framepos == 1:
-                        video_slice = raw_video_slice[-self.max_frames:, ...]
-                    else:
-                        sample_indx = np.linspace(0, raw_video_slice.shape[0] - 1, num=self.max_frames, dtype=int)
-                        video_slice = raw_video_slice[sample_indx, ...]
-                else:
-                    video_slice = raw_video_slice
-
-                video_slice = self.rawVideoExtractor.process_frame_order(video_slice, frame_order=self.frame_order)
-
-                slice_len = video_slice.shape[0]
-                max_video_length[i] = max_video_length[i] if max_video_length[i] > slice_len else slice_len
-                if slice_len < 1:
-                    pass
-                else:
-                    video[i][:slice_len, ...] = video_slice
-            else:
-                print("video path: {} error. video id: {}".format(video_path, video_id))
-
-        for i, v_length in enumerate(max_video_length):
-            video_mask[i][:v_length] = [1] * v_length
-
-        return video, video_mask
-
-    def __getitem__(self, idx):
-        video_id, caption = self.sentences_dict[idx]
-
-        pairs_text, pairs_mask, pairs_segment, choice_video_ids = self._get_text(video_id, caption)
-        video, video_mask = self._get_rawvideo(choice_video_ids)
-        return pairs_text, pairs_mask, pairs_segment, video, video_mask
+    # def __getitem__(self, idx):
+    #     video_id, caption = self.sentences_dict[idx]
+    #
+    #     pairs_text, pairs_mask, pairs_segment, choice_video_ids = self._get_text(video_id, caption)
+    #     video, video_mask = self._get_rawvideo(choice_video_ids)
+    #     return pairs_text, pairs_mask, pairs_segment, video, video_mask
 
     def _get_text_wneg(self, video_id, caption,change_num=15):
         k = 1
@@ -403,13 +403,13 @@ class VATEX_TrainDataLoader(Dataset):
 
         do_neg_aug = False
         do_word_phrase_neg_aug = False
-        # change_num= self.batch_size*self.n_gpu - 1
+        change_num= self.batch_size*self.n_gpu - 1
         # 设置一个超参数 控制negative sample 和 batch size的 ratio
-        change_num= 16
+        # change_num= 16
         if do_neg_aug:
             pairs_text, pairs_mask, pairs_segment, choice_video_ids,pairs_text_neg,pairs_neg_mask,pairs_neg_segment = self._get_text_wneg(video_id, caption,change_num=change_num)
             video, video_mask = self._get_rawvideo(choice_video_ids)
-            return pairs_text, pairs_mask, pairs_segment, video, video_mask,word_text_neg,word_mask_neg,word_segment_neg
+            return pairs_text, pairs_mask, pairs_segment, video, video_mask, word_text_neg,word_mask_neg,word_segment_neg
         elif do_word_phrase_neg_aug ==True:
 
             pairs_text, pairs_mask, pairs_segment, choice_video_ids,word_text_neg,word_mask_neg,word_segment_neg,phrase_text_neg,phrase_mask_neg,phrase_segment_neg = self._get_text_wneg(video_id, caption,change_num=change_num)

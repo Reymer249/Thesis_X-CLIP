@@ -799,7 +799,7 @@ def main(args):
                 print(f"Resumed training from epoch {resumed_epoch}")
             else:
                 raise Excepion("No optimizer file found (pytorch_opt.bla-bla-bla)")
-
+        
         global_step = 0
         for epoch in range(resumed_epoch, args.epochs):
             epoch_start_time = time.time()

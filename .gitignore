@@ -16,3 +16,5 @@ test.py
 wandb/
 venv/*
 .gitignore
+*.pkl
+filtered_json_files/
