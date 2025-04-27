@@ -1,3 +1,6 @@
+"""
+This scripts extracts captions fot the specific videos from the *RE20.json file.
+"""
 import json
 
 def extract_captions_for_video(json_file_path, target_video_id):

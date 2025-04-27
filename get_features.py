@@ -114,7 +114,8 @@ def get_args(description='X-CLIP on Retrieval Task'):
                         help="The epoch number to take the model from (starts from 1)")
     parser.add_argument("--changed_sentences_jsons_path", default=None, type=str, required=True)
     parser.add_argument("--test_id_path", default='/home/caz/VisualSearch/vatex_data/VATEX_test.csv', type=str,
-                        required=True, help="Initial model.") 
+                        required=True, help="Initial model.")
+    parser.add_argument("--save_dir", type=str, required=True, help="Path so save extracted features")
 
     args = parser.parse_args()
 
@@ -370,15 +371,14 @@ def extract_video_features(args, model, dataloader, device, test_video_ids: list
             batch_video_mask_list.append(video_mask)
 
         # Save extracted features
-        base = "video_features_batch64/"
-        os.makedirs(base, exist_ok=True)
+        os.makedirs(args.save_dir, exist_ok=True)
         
-        with open(base+"batch_visual_output_list.pkl", "wb") as f:
+        with open(args.save_dir+"batch_visual_output_list.pkl", "wb") as f:
             pickle.dump(batch_visual_output_list, f)
-        with open(base+"batch_video_mask_list.pkl", "wb") as f:
+        with open(args.save_dir+"batch_video_mask_list.pkl", "wb") as f:
             pickle.dump(batch_video_mask_list, f)
         
-        print("\nFeatures saved to:", base)
+        print("\nFeatures saved to:", args.save_dir)
     
     # with torch.no_grad():
     #     for bid, batch in enumerate(dataloader):
@@ -466,7 +466,7 @@ def main():
     else:
         val_dataloader, val_length = test_dataloader, test_length
 
-    ## report validation results if the ["test"] is None
+    ## report validation results_batch16 if the ["test"] is None
     if test_dataloader is None:
         test_dataloader, test_length = val_dataloader, val_length
 

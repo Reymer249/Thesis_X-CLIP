@@ -1,3 +1,8 @@
+"""
+Before myy research I was provided with a *_RE20.json files. These are files with hard negative sentences. As I don't
+have all the videos described in these files, I had to filter them to leave only the descriptions for the
+videos I have. This file does that.
+"""
 import json
 import re
 import os

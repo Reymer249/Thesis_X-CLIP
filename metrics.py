@@ -48,7 +48,7 @@ def tensor_text_to_video_metrics(sim_tensor, top_k = [1,5,10]):
     permuted_original_data = torch.flatten(torch.diagonal(sim_tensor, dim1 = 0, dim2 = 2))
     mask = ~ torch.logical_or(torch.isinf(permuted_original_data), torch.isnan(permuted_original_data))
     valid_ranks = ranks[mask]
-    # A quick dimension check validates our results, there may be other correctness tests pending
+    # A quick dimension check validates our results_batch16, there may be other correctness tests pending
     # Such as dot product localization, but that is for other time.
     #assert int(valid_ranks.shape[0]) ==  sum([len(text_dict[k]) for k in text_dict])
     if not torch.is_tensor(valid_ranks):

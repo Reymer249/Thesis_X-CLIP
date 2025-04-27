@@ -71,11 +71,11 @@ def extract_words_by_pos(json_file_path):
 
 
 # Example usage
-file_path = '/Users/admin/Desktop/Thesis/thesis_code/captions_avail_formatted.json'
+file_path = '/captions_avail_formatted.json'
 pos_dictionary = extract_words_by_pos(file_path)
 
 # Save the result to a new JSON file
-with open('captions_avail_formatted_dict.json', 'w') as f:
+with open('../../captions_avail_formatted_dict.json', 'w') as f:
     json.dump(pos_dictionary, f, indent=4)
 
 print("Words by part of speech have been extracted and saved to 'captions_avail_formatted_dict.json'")

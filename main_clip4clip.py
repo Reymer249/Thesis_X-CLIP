@@ -508,7 +508,7 @@ def main():
     else:
         val_dataloader, val_length = test_dataloader, test_length
 
-    ## report validation results if the ["test"] is None
+    ## report validation results_batch16 if the ["test"] is None
     if test_dataloader is None:
         test_dataloader, test_length = val_dataloader, val_length
 
