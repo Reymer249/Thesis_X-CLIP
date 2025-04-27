@@ -1,0 +1,2 @@
+meanR of change filtered_vatex1k5_verb_RE20 is:0.2649858598164119
+GT @ R1 count filtered_vatex1k5_verb_RE20 is:1357
