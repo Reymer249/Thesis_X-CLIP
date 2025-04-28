@@ -8,6 +8,7 @@ from torch.utils.data import Dataset
 import numpy as np
 import pickle
 from dataloaders.rawvideo_util import RawVideoExtractor
+from dotenv import load_dotenv
 
 import json
 from gensim.models import KeyedVectors
@@ -24,7 +25,8 @@ cls = spacy.util.get_lang_class('en')
 stop_words = cls.Defaults.stop_words
 nlp = spacy.load("en_core_web_sm")
 
-dataset_based_vocab_path=  '/data/s3705609/VATEX/splits_txt/vatex_word_dic_20230924.json'
+load_dotenv()
+dataset_based_vocab_path = os.environ.get("VOCAB_PATH")
 from dataloaders.generated_negative_sentence import Get_Negative_text_samples
 
 
@@ -222,12 +224,12 @@ class VATEX_TrainDataLoader(Dataset):
         word_mask_neg = np.zeros((k, change_num, self.max_words), dtype=np.int64)
         word_segment_neg = np.zeros((k,change_num, self.max_words), dtype=np.int64)
 
-        word_neg_sents,word_change_pos = get_neg_word_level_sent_fun(caption.split(' '),change_num=change_num)#generated K sentences but only use K-1 as hard negative samples
+        word_neg_sents,word_change_pos = get_neg_word_level_sent_fun(caption,change_num=change_num)#generated K sentences but only use K-1 as hard negative samples
 
         phrase_text_neg = np.zeros((k, change_num, self.max_words), dtype=np.int64)
         phrase_mask_neg = np.zeros((k, change_num, self.max_words), dtype=np.int64)
         phrase_segment_neg = np.zeros((k,change_num, self.max_words), dtype=np.int64)
-        phrase_neg_sents,phrase_change_pos = get_neg_phrase_level_sent_fun(caption.split(' '),change_num=change_num)#generated K sentences but only use K-1 as hard negative samples
+        phrase_neg_sents,phrase_change_pos = get_neg_phrase_level_sent_fun(caption,change_num=change_num)#generated K sentences but only use K-1 as hard negative samples
         ## because there is no need for the phrase-level negative samples, so we only use word-level negative samples
         ## and use '  ' replace the phrase-level negative samples to save time
 
@@ -401,17 +403,16 @@ class VATEX_TrainDataLoader(Dataset):
     def __getitem__(self, idx):
         video_id, caption = self.sentences_dict[idx]
 
-        do_neg_aug = False
+        do_neg_aug = True
         do_word_phrase_neg_aug = False
-        change_num= self.batch_size*self.n_gpu - 1
+        #change_num= self.batch_size*self.n_gpu - 1
         # 设置一个超参数 控制negative sample 和 batch size的 ratio
-        # change_num= 16
+        change_num= 16
         if do_neg_aug:
-            pairs_text, pairs_mask, pairs_segment, choice_video_ids,pairs_text_neg,pairs_neg_mask,pairs_neg_segment = self._get_text_wneg(video_id, caption,change_num=change_num)
+            pairs_text, pairs_mask, pairs_segment, choice_video_ids, word_text_neg,word_mask_neg,word_segment_neg,phrase_text_neg,phrase_mask_neg,phrase_segment_neg = self._get_text_wneg(video_id, caption,change_num=change_num)
             video, video_mask = self._get_rawvideo(choice_video_ids)
             return pairs_text, pairs_mask, pairs_segment, video, video_mask, word_text_neg,word_mask_neg,word_segment_neg
-        elif do_word_phrase_neg_aug ==True:
-
+        elif do_word_phrase_neg_aug:
             pairs_text, pairs_mask, pairs_segment, choice_video_ids,word_text_neg,word_mask_neg,word_segment_neg,phrase_text_neg,phrase_mask_neg,phrase_segment_neg = self._get_text_wneg(video_id, caption,change_num=change_num)
             video, video_mask = self._get_rawvideo(choice_video_ids)
             return pairs_text, pairs_mask, pairs_segment, video, video_mask, word_text_neg,word_mask_neg,word_segment_neg,phrase_text_neg,phrase_mask_neg,phrase_segment_neg

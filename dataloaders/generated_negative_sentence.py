@@ -20,7 +20,7 @@ from spacy import displacy
 import textacy
 cls = spacy.util.get_lang_class('en')
 stop_words = cls.Defaults.stop_words
-# nlp = spacy.load("en_core_web_sm")
+nlp = spacy.load("en_core_web_sm")
 
 
 # # 1.Using VP/NP in other sentences to replace it.
