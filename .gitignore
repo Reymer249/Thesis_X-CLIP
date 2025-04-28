@@ -20,3 +20,4 @@ venv/*
 filtered_json_files/
 captions*.json
 vatex_dataset_chen/
+*.json
