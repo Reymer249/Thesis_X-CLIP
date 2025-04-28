@@ -1,2 +1,0 @@
-meanR of change filtered_vatex1k5_noun_RE20 is:0.32394159780865855
-GT @ R1 count filtered_vatex1k5_noun_RE20 is:1859

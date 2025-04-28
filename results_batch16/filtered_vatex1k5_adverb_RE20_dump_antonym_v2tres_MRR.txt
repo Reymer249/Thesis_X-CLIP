@@ -1,2 +1,0 @@
-meanR of change filtered_vatex1k5_adverb_RE20 is:0.2636288614553828
-GT @ R1 count filtered_vatex1k5_adverb_RE20 is:182

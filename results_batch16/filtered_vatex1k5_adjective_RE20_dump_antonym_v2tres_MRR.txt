@@ -1,2 +1,0 @@
-meanR of change filtered_vatex1k5_adjective_RE20 is:0.3682272705874961
-GT @ R1 count filtered_vatex1k5_adjective_RE20 is:1224

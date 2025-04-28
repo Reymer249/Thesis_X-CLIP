@@ -189,7 +189,8 @@ def main():
     # Write output
     output_file = f"hard_negatives_{args.pos_to_change}.json"
     with open(output_file, 'w') as f:
-        json.dump(hard_negatives, f, indent=2)
+        hard_negatives_serializable = {k: list(v) for k, v in hard_negatives.items()}
+        json.dump(hard_negatives_serializable, f, indent=4)
 
     print(f"Generated hard negatives saved to {output_file}")
 
