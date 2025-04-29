@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set variables
-DATA_PATH="/data/s3705609/VATEX"
+DATA_PATH="/vol/home/s3705609/Desktop/data_vatex"
 job_name="xclip_vatex_batch16_02data"
 
 # Use torchrun instead of torch.distributed.launch (recommended in newer PyTorch)
