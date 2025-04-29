@@ -40,6 +40,10 @@ class VATEX_TrainDataLoader(Dataset):
             features_path,
             tokenizer,
             output_dir,
+            train_path_from_data_folder,
+            test_path_from_data_folder,
+            val_path_from_data_folder,
+            captions_path_from_data_folder,
             max_words=30,
             feature_framerate=1.0,
             max_frames=100,
@@ -72,12 +76,10 @@ class VATEX_TrainDataLoader(Dataset):
         self.subset = subset
         assert self.subset in ["train", "val", "test"]
         video_id_path_dict = {}
-        splits_folder = 'splits_txt'
-        video_id_path_dict["train"] = os.path.join(self.data_path, splits_folder, "vatex_train_avail.txt")
-        video_id_path_dict["val"] = os.path.join(self.data_path, splits_folder, "vatex_val_avail.txt")
-        video_id_path_dict["test"] = os.path.join(self.data_path, splits_folder, "vatex_test_avail.txt")
-        # video_id_path_dict["test"] = os.path.join(self.data_path, "feat_test.txt")
-        caption_file = os.path.join(self.data_path, splits_folder, "captions_avail_formatted.json")
+        video_id_path_dict["train"] = os.path.join(self.data_path, train_path_from_data_folder)
+        video_id_path_dict["val"] = os.path.join(self.data_path, val_path_from_data_folder)
+        video_id_path_dict["test"] = os.path.join(self.data_path, test_path_from_data_folder)
+        caption_file = os.path.join(self.data_path, captions_path_from_data_folder)
 
         with open(video_id_path_dict[self.subset], 'r') as fp:
             video_ids = [itm.strip() for itm in fp.readlines()]

@@ -151,6 +151,14 @@ def get_args(description='X-CLIP on hard negatives augmented Retrieval Task'):
 
     parser.add_argument("--pretrained_clip_name", default="ViT-B/32", type=str, help="Choose a CLIP version")
 
+    parser.add_argument("--train_path_from_data_folder", type=str, required=True,
+                        help="The path to the txt file with video ids for training (video id per line) from the data folder path")
+    parser.add_argument("--val_path_from_data_folder", type=str, required=True,
+                        help="The path to the txt file with video ids for validation (video id per line) from the data folder path")
+    parser.add_argument("--test_path_from_data_folder", type=str, required=True,
+                        help="The path to the txt file with video ids for testing (video id per line) from the data folder path")
+    parser.add_argument("--captions_path_from_data_folder", type=str, required=True,
+                        help="The path to the json file with video captions from the data folder path")
 
     # Weights & Biases arguments
     parser.add_argument("--use_wandb", action='store_true', help="Whether to use Weights & Biases logging")
@@ -409,17 +417,6 @@ def train_epoch(epoch, args, model, train_dataloader, device, n_gpu, optimizer, 
 
         input_ids, input_mask, segment_ids, video, video_mask,input_ids_aug, input_mask_aug, segment_ids_aug = batch
         loss = model(input_ids, segment_ids, input_mask, video, input_ids_aug, segment_ids_aug, input_mask_aug, video_mask=video_mask)
-        print('----loss----', loss)
-        ##word and phrase
-        # input_ids, input_mask, segment_ids, video, video_mask, word_text_neg, word_mask_neg, word_segment_neg, phrase_text_neg, phrase_mask_neg, phrase_segment_neg = batch
-        # loss = model(input_ids, segment_ids, input_mask, video, word_text_neg, word_segment_neg, word_mask_neg,
-        #              phrase_text_neg, phrase_segment_neg, phrase_mask_neg, video_mask)
-        # loss, loss_t2v, loss_t2v, loss_word, loss_phrase = model(input_ids, segment_ids, input_mask, video, word_text_neg,word_mask_neg,word_segment_neg,phrase_text_neg,phrase_mask_neg,phrase_segment_neg, video_mask)
-        # loss_total.append(loss.item())
-        # loss_t2v.append(loss_t2v.item())
-        # loss_v2t.append(loss_v2t.item())
-        # loss_word.append(loss_phrase.item())
-        # loss_phrase.append(loss_word.item())
 
         if n_gpu > 1:
             loss = loss.mean()  # mean() to average on multi-gpu.
