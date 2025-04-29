@@ -5,6 +5,7 @@ from tqdm import tqdm
 import nltk
 from nltk.corpus import wordnet as wn
 import re
+import copy
 
 # Download required NLTK data
 nltk.download('punkt')
@@ -103,7 +104,24 @@ def find_replaceable_words(caption, pos_to_change):
     return replaceable_indices, tokens
 
 
-def generate_hard_negative(replaceable_words, tokens, pos_vocab):
+def make_replacement(replacement, word, tokens, idx):
+    # Preserve capitalization
+    new_replacement = replacement[0].upper() + replacement[1:] if word[0].isupper() else copy.deepcopy(replacement)
+    # Replace the word
+    new_tokens = copy.deepcopy(tokens)
+    new_tokens[idx] = new_replacement
+
+    # Reconstruct the sentence
+    # Simple space joining might not be perfect for punctuation
+    hard_negative = ' '.join(new_tokens)
+
+    # Fix spacing around punctuation
+    hard_negative = re.sub(r'\s+([.,!?:;])', r'\1', hard_negative)
+
+    return hard_negative
+
+
+def generate_hard_negative(replaceable_words, tokens, pos_vocab, generated_hard_negatives_set):
     """Generate hard negative by replacing a word of the target POS"""
 
     # Randomly choose a word to replace
@@ -117,30 +135,34 @@ def generate_hard_negative(replaceable_words, tokens, pos_vocab):
         # Try direct antonym
         replacement = get_antonym(word.lower(), wn_pos)
 
+        if replacement: 
+            trial_hard_negative = make_replacement(replacement, word, tokens, idx)
+            if trial_hard_negative not in generated_hard_negatives_set:
+                return trial_hard_negative
+            else:
+                replacement = None
+
         # Try antonyms of hypernyms/hyponyms
-        if not replacement:
+        if replacement is None:
             replacement = get_hypernym_hyponym_antonyms(word.lower(), wn_pos)
 
+            if replacement:
+                trial_hard_negative = make_replacement(replacement, word, tokens, idx)
+                if trial_hard_negative not in generated_hard_negatives_set:
+                    return trial_hard_negative
+                else:
+                    replacement = None
+
     # If no replacement found, randomly select a word of the same POS
-    if not replacement and pos_vocab:
+    while replacement is None:
         replacement = random.choice(pos_vocab)
+        trial_hard_negative = make_replacement(replacement, word, tokens, idx)
+        if trial_hard_negative not in generated_hard_negatives_set:
+            return trial_hard_negative
+        else:
+            replacement = None
 
-    if replacement:
-        # Preserve capitalization
-        if word[0].isupper():
-            replacement = replacement[0].upper() + replacement[1:]
-
-        # Replace the word
-        tokens[idx] = replacement
-
-    # Reconstruct the sentence
-    # Simple space joining might not be perfect for punctuation
-    hard_negative = ' '.join(tokens)
-
-    # Fix spacing around punctuation
-    hard_negative = re.sub(r'\s+([.,!?:;])', r'\1', hard_negative)
-
-    return hard_negative
+    raise Exception("Something went wrong")
 
 
 def main():
@@ -171,21 +193,11 @@ def main():
                 continue
 
             # Generate the requested number of hard negatives
-            for j in range(args.num_sentences):
-                acceptance_flag = False
-                counter = 0
-                while not acceptance_flag:
-                    if counter > 5:
-                        break
-                    replaceable_words, tokens = find_replaceable_words(caption, args.pos_to_change)
-                    hard_negative = generate_hard_negative(replaceable_words, tokens, pos_vocab)
-                    if hard_negative not in hard_negatives[key]:
-                        hard_negatives[key].add(hard_negative)
-                        acceptance_flag = True
-                        counter = 0
-                    else:
-                        counter += 1
-
+            for _ in range(args.num_sentences):
+                replaceable_words, tokens = find_replaceable_words(caption, args.pos_to_change)
+                hard_negative = generate_hard_negative(replaceable_words, tokens, pos_vocab, hard_negatives[key])
+                hard_negatives[key].add(hard_negative)
+                    
     # Write output
     output_file = f"hard_negatives_{args.pos_to_change}.json"
     with open(output_file, 'w') as f:
