@@ -28,4 +28,4 @@ python -m torch.distributed.run --nproc_per_node=1 main_xclip_aug.py \
     --linear_patch 2d \
     --sim_header seqTransf \
     --pretrained_clip_name ViT-B/32 \
-    --loss_func fineGrained
+    --loss_func maxcol_word

@@ -138,15 +138,16 @@ def get_args(description='X-CLIP on hard negatives augmented Retrieval Task'):
                         choices=["meanP", "seqLSTM", "seqTransf", "tightTransf"],
                         help="choice a similarity header.")
 
-    parser.add_argument('--loss_func', type=str, default="fineGrained",
-
-                        choices=["fineGrained", "triplet", 'maxcol', "boundary", "maxcol_word", 'maxcol_phrase',
-                                 "hierachicalRank_word", "hierachicalRank_phrase", 'mix', 'maxcol_v2t_word',
-                                 'maxcol_v2t_phrase', 'maxcol_v2t_word_phrase', 'maxcol_weight_coarse_word_phrase',
-                                 'maxcol_weight_word_phrase'],
-
+    parser.add_argument('--loss_func', type=str, default="maxcol_word",
+                        choices=["maxcol_word"],
                         help="choice a loss function.")
     parser.add_argument('--rank_margin', type=float, default=0.2, help='rank margin for hierachicalRank loss')
+    parser.add_argument('--do_neg_aug', type=bool, default=False, required=True,
+                        help='Whether to do negative augmentation (hard negatives) or not')
+    parser.add_argument('--neg_aug_num_sentences', type=int, required=True,
+                        help='Number of hard negatives to generate for every caption. That is the total number of'
+                             'hard negatives (not per part-of-speech group). We randomly select which part fo speech to'
+                             'change.')
 
     parser.add_argument("--pretrained_clip_name", default="ViT-B/32", type=str, help="Choose a CLIP version")
 

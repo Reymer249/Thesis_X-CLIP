@@ -262,6 +262,8 @@ def dataloader_vatex_train(args, tokenizer):
         max_frames=args.max_frames,
         frame_order=args.train_frame_order,
         slice_framepos=args.slice_framepos,
+        do_neg_aug=args.do_neg_aug,
+        neg_aug_num_sentences=args.neg_aug_num_sentences
     )
 
     train_sampler = torch.utils.data.distributed.DistributedSampler(vatex_dataset)
