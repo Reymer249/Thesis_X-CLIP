@@ -159,6 +159,8 @@ def get_args(description='X-CLIP on hard negatives augmented Retrieval Task'):
                         help="The path to the txt file with video ids for testing (video id per line) from the data folder path")
     parser.add_argument("--captions_path_from_data_folder", type=str, required=True,
                         help="The path to the json file with video captions from the data folder path")
+    parser.add_argument("--hard_negatives_json_path", type=str, required=True,
+                        help="The path to the json file with hard negative sentences")
 
     # Weights & Biases arguments
     parser.add_argument("--use_wandb", action='store_true', help="Whether to use Weights & Biases logging")

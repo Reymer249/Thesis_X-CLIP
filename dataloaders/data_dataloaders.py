@@ -21,7 +21,8 @@ def dataloader_vatex_train(args, tokenizer):
         train_path_from_data_folder=args.train_path_from_data_folder,
         test_path_from_data_folder=args.test_path_from_data_folder,
         val_path_from_data_folder=args.val_path_from_data_folder,
-        captions_path_from_data_folder=args.captions_path_from_data_folder
+        captions_path_from_data_folder=args.captions_path_from_data_folder,
+        hard_negatives_json_path=args.hard_negatives_json_path
     )
 
     train_sampler = torch.utils.data.distributed.DistributedSampler(vatex_dataset)

@@ -140,6 +140,17 @@ def get_args(description='X-CLIP on Retrieval Task'):
 
     parser.add_argument("--pretrained_clip_name", default="ViT-B/32", type=str, help="Choose a CLIP version")
 
+    parser.add_argument("--train_path_from_data_folder", type=str, required=True,
+                        help="The path to the txt file with video ids for training (video id per line) from the data folder path")
+    parser.add_argument("--val_path_from_data_folder", type=str, required=True,
+                        help="The path to the txt file with video ids for validation (video id per line) from the data folder path")
+    parser.add_argument("--test_path_from_data_folder", type=str, required=True,
+                        help="The path to the txt file with video ids for testing (video id per line) from the data folder path")
+    parser.add_argument("--captions_path_from_data_folder", type=str, required=True,
+                        help="The path to the json file with video captions from the data folder path")
+    parser.add_argument("--hard_negatives_json_path", type=str, required=True,
+                        help="The path to the json file with hard negative sentences")
+
     # Weights & Biases arguments
     parser.add_argument("--use_wandb", action='store_true', help="Whether to use Weights & Biases logging")
     parser.add_argument("--wandb_project", type=str, default="x-clip", help="Weights & Biases project name")

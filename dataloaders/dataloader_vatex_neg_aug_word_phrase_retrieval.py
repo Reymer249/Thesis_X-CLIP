@@ -25,9 +25,6 @@ cls = spacy.util.get_lang_class('en')
 stop_words = cls.Defaults.stop_words
 nlp = spacy.load("en_core_web_sm")
 
-load_dotenv()
-dataset_based_vocab_path = os.environ.get("VOCAB_PATH")
-hard_negatives_path = os.environ.get("HARD_NEGATIVES_JSON_PATH")
 from dataloaders.hard_negatives_sampler import HardNegativeSampler
 
 
@@ -51,6 +48,7 @@ class VATEX_TrainDataLoader(Dataset):
             frame_order=0,
             slice_framepos=0,
             do_neg_aug=False,
+            hard_negatives_json_path=None,
             neg_aug_num_sentences=16,
     ):
         self.output_dir=output_dir
@@ -71,7 +69,7 @@ class VATEX_TrainDataLoader(Dataset):
         self.do_neg_aug = do_neg_aug
         self.neg_aug_num_sentences = neg_aug_num_sentences
         if self.do_neg_aug:
-            self.HardNegSampler = HardNegativeSampler(negative_file_path=hard_negatives_path)
+            self.HardNegSampler = HardNegativeSampler(negative_file_path=hard_negatives_json_path)
 
         self.subset = subset
         assert self.subset in ["train", "val", "test"]
