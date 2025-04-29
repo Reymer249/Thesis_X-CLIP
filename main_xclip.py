@@ -151,6 +151,13 @@ def get_args(description='X-CLIP on Retrieval Task'):
     parser.add_argument("--hard_negatives_json_path", type=str, required=True,
                         help="The path to the json file with hard negative sentences")
 
+    parser.add_argument('--do_neg_aug', type=bool, default=False,
+                        help='Whether to do negative augmentation (hard negatives) or not')
+    parser.add_argument('--neg_aug_num_sentences', type=int, default=0,
+                        help='Number of hard negatives to generate for every caption. That is the total number of'
+                             'hard negatives (not per part-of-speech group). We randomly select which part fo speech to'
+                             'change.')
+
     # Weights & Biases arguments
     parser.add_argument("--use_wandb", action='store_true', help="Whether to use Weights & Biases logging")
     parser.add_argument("--wandb_project", type=str, default="x-clip", help="Weights & Biases project name")
