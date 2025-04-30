@@ -4,51 +4,51 @@ import os
 from typing import List, Tuple, Dict
 
 
-class HardNegativeSampler:
+class HardNegativeOrPositiveSampler:
     """
     Class to load and sample hard negative sentences from a JSON file.
     """
 
-    def __init__(self, negative_file_path: str):
+    def __init__(self, json_file_path: str):
         """
-        Initialize the sampler with the path to the JSON file containing negative samples.
+        Initialize the sampler with the path to the JSON file containing positive or negative samples.
 
         Args:
-            negative_file_path: Path to the JSON file with negative samples
+            json_file_path: Path to the JSON file with positive or negative samples
         """
-        self.negative_file_path = negative_file_path
-        self.negatives_dict = self._load_negatives()
+        self.file_path = json_file_path
+        self.changed_sentences_dict = self._load_positives_or_negatives()
 
-    def _load_negatives(self) -> Dict[str, List]:
+    def _load_positives_or_negatives(self) -> Dict[str, List]:
         """
-        Load negative samples from the JSON file.
+        Load positive/negative samples from the JSON file.
 
         Returns:
             Dict mapping video_id#sentence_num to list of [hard_neg, pos] pairs
         """
-        if not os.path.exists(self.negative_file_path):
-            raise FileNotFoundError(f"Negative samples file not found: {self.negative_file_path}")
+        if not os.path.exists(self.file_path):
+            raise FileNotFoundError(f"Positive/Negative samples file not found: {self.file_path}")
 
-        with open(self.negative_file_path, 'r') as f:
-            negatives_dict = json.load(f)
+        with open(self.file_path, 'r') as f:
+            changed_sentences_dict = json.load(f)
 
-        print(f"Loaded {len(negatives_dict)} entries from negative samples file")
-        return negatives_dict
+        print(f"Loaded {len(changed_sentences_dict)} entries from positive/negative samples file")
+        return changed_sentences_dict
 
     def get_neg_word_level_sentences(self, caption: str, video_id: str = None,
                                      sentence_num: int = 0, change_num: int = 15) -> Tuple[List[str], List[int]]:
         """
-        Get hard negative sentences for a caption from the loaded JSON file.
+        Get hard positive/negative sentences for a caption from the loaded JSON file.
 
         Args:
             caption: Original caption text
             video_id: Video ID associated with the caption
             sentence_num: Sentence number for the video
-            change_num: Number of hard negatives to sample
+            change_num: Number of hard positives/negatives to sample
 
         Returns:
             Tuple of:
-                - List of sentences (original + sampled negatives)
+                - List of sentences (original + sampled positives/negatives)
                 - List of positions that were changed (dummy list for compatibility)
         """
         # Create the key to lookup in the JSON file
@@ -62,12 +62,12 @@ class HardNegativeSampler:
         change_positions.append(None)  # No change for the original
 
         # If we have the key in our dictionary, sample from there
-        assert key is not None and key in self.negatives_dict
+        assert key is not None and key in self.changed_sentences_dict
 
-        negative_pairs = self.negatives_dict[key]
+        pairs = self.changed_sentences_dict[key]
 
-        # Sample change_num-1 items as we SHOULD have more hard negatives than change_num
-        sampled_pairs = random.sample(negative_pairs, change_num - 1)
+        # Sample change_num-1 items as we SHOULD have more hard positives/negatives than change_num
+        sampled_pairs = random.sample(pairs, change_num - 1)
 
         for neg_pair in sampled_pairs:
             hard_neg, pos = neg_pair

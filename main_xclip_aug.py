@@ -142,11 +142,17 @@ def get_args(description='X-CLIP on hard negatives augmented Retrieval Task'):
                         choices=["maxcol_word"],
                         help="choice a loss function.")
     parser.add_argument('--rank_margin', type=float, default=0.2, help='rank margin for hierachicalRank loss')
-    parser.add_argument('--do_neg_aug', type=bool, default=False, required=True,
+    parser.add_argument('--do_neg_aug', action="store_true", default=False,
                         help='Whether to do negative augmentation (hard negatives) or not')
-    parser.add_argument('--neg_aug_num_sentences', type=int, required=True,
+    parser.add_argument('--neg_aug_num_sentences', type=int, default=0,
                         help='Number of hard negatives to generate for every caption. That is the total number of'
                              'hard negatives (not per part-of-speech group). We randomly select which part fo speech to'
+                             'change.')
+    parser.add_argument('--do_pos_aug', action="store_true", default=False,
+                        help='Whether to do positive augmentation (hard positives) or not')
+    parser.add_argument('--pos_aug_num_sentences', type=int, default=0,
+                        help='Number of hard positive to generate for every caption. That is the total number of'
+                             'hard positives (not per part-of-speech group). We randomly select which part fo speech to'
                              'change.')
 
     parser.add_argument("--pretrained_clip_name", default="ViT-B/32", type=str, help="Choose a CLIP version")
@@ -405,19 +411,13 @@ def train_epoch(epoch, args, model, train_dataloader, device, n_gpu, optimizer, 
     log_step = args.n_display
     start_time = time.time()
     total_loss = 0
-    loss_t2v = []
-    loss_v2t = []
-    loss_total = []
-    loss_word = []
-    loss_phrase = []
-    loss_diffu = []
 
     for step, batch in enumerate(train_dataloader):
         if n_gpu == 1:
             # multi-gpu does scattering it-self
             batch = tuple(t.to(device=device, non_blocking=True) for t in batch)
 
-        input_ids, input_mask, segment_ids, video, video_mask,input_ids_aug, input_mask_aug, segment_ids_aug = batch
+        input_ids, input_mask, segment_ids, video, video_mask, input_ids_aug, input_mask_aug, segment_ids_aug = batch
         loss = model(input_ids, segment_ids, input_mask, video, input_ids_aug, segment_ids_aug, input_mask_aug, video_mask=video_mask)
 
         if n_gpu > 1:

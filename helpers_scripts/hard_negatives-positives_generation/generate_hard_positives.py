@@ -6,6 +6,9 @@ import nltk
 from nltk.corpus import wordnet as wn
 import re
 import copy
+import numpy as np
+import matplotlib.pyplot as plt
+import pickle
 
 # Download required NLTK data
 nltk.download('punkt')
@@ -14,10 +17,10 @@ nltk.download('wordnet')
 
 
 def parse_arguments():
-    parser = argparse.ArgumentParser(description='Generate hard negatives by replacing words of specific POS.')
+    parser = argparse.ArgumentParser(description='Generate hard positives by replacing words with synonyms.')
     parser.add_argument('--captions_file', help='Path to JSON file with video captions')
-    parser.add_argument('--dictionary_file', help='Path to JSON file with POS dictionaries')
-    parser.add_argument('--num_sentences', type=int, help='Number of hard negatives to generate per caption')
+    parser.add_argument('--num_sentences', type=int, default=20,
+                        help='Maximum number of hard positives to generate per caption')
     return parser.parse_args()
 
 
@@ -35,21 +38,20 @@ def get_wordnet_pos(treebank_tag):
         return None
 
 
-def get_antonyms(word, pos):
-    """Get antonym of a word if available"""
-    antonyms = []
+def get_synonyms(word, pos):
+    """Get synonyms of a word"""
+    synonyms = []
     for syn in wn.synsets(word, pos=pos):
         for lemma in syn.lemmas():
-            if lemma.antonyms():
-                antonyms.extend([ant.name() for ant in lemma.antonyms()])
+            synonym = lemma.name().replace('_', ' ')
+            if synonym.lower() != word.lower():  # Exclude the original word
+                synonyms.append(synonym)
 
-    if antonyms:
-        return [ant.replace('_', ' ') for ant in antonyms]
-    return []
+    return list(set(synonyms))  # Remove duplicates
 
 
-def get_hypernym_hyponym_antonyms(word, pos):
-    """Get antonyms of hypernyms or hyponyms"""
+def get_hypernym_hyponym_synonyms(word, pos):
+    """Get synonyms from hypernyms or hyponyms"""
     candidates = []
 
     # Get synsets for the word
@@ -58,19 +60,21 @@ def get_hypernym_hyponym_antonyms(word, pos):
         return []
 
     for syn in synsets:
-        # Get hypernyms and their antonyms
+        # Get synonyms from hypernyms
         for hypernym in syn.hypernyms():
             for lemma in hypernym.lemmas():
-                for ant in lemma.antonyms():
-                    candidates.append(ant.name().replace('_', ' '))
+                synonym = lemma.name().replace('_', ' ')
+                if synonym.lower() != word.lower():
+                    candidates.append(synonym)
 
-        # Get hyponyms and their antonyms
+        # Get synonyms from hyponyms
         for hyponym in syn.hyponyms():
             for lemma in hyponym.lemmas():
-                for ant in lemma.antonyms():
-                    candidates.append(ant.name().replace('_', ' '))
+                synonym = lemma.name().replace('_', ' ')
+                if synonym.lower() != word.lower():
+                    candidates.append(synonym)
 
-    return candidates
+    return list(set(candidates))  # Remove duplicates
 
 
 def find_replaceable_words(caption):
@@ -113,82 +117,54 @@ def make_replacement(replacement, word, tokens, idx):
     new_tokens[idx] = new_replacement
 
     # Reconstruct the sentence
-    hard_negative = ' '.join(new_tokens)
+    hard_positive = ' '.join(new_tokens)
 
     # Fix spacing around punctuation
-    hard_negative = re.sub(r'\s+([.,!?:;])', r'\1', hard_negative)
+    hard_positive = re.sub(r'\s+([.,!?:;])', r'\1', hard_positive)
 
-    return hard_negative
+    return hard_positive
 
 
-def collect_possible_changes(replaceable_words, tokens, pos_vocabs, num_sentences):
+def collect_possible_changes(replaceable_words, tokens, num_sentences):
     """Collect all possible word replacements for a caption"""
     possible_changes = []
 
-    # First try direct antonyms for all replaceable words
+    # First try direct synonyms for all replaceable words
     for pos_category, words in replaceable_words.items():
         for idx, word, tag in words:
             wn_pos = get_wordnet_pos(tag)
             if wn_pos:
-                antonyms = get_antonyms(word.lower(), wn_pos)
-                for antonym in antonyms:
+                synonyms = get_synonyms(word.lower(), wn_pos)
+                for synonym in synonyms:
                     possible_changes.append({
                         'idx': idx,
                         'word': word,
-                        'replacement': antonym,
-                        'source': 'direct_antonym',
+                        'replacement': synonym,
+                        'source': 'direct_synonym',
                         'pos': pos_category
                     })
 
-    # Then try hypernym/hyponym antonyms if needed
-    if len(possible_changes) < num_sentences:  # Arbitrary limit to avoid collecting too many
+    # Then try hypernym/hyponym synonyms if needed
+    if len(possible_changes) < num_sentences:
         for pos_category, words in replaceable_words.items():
             for idx, word, tag in words:
                 wn_pos = get_wordnet_pos(tag)
                 if wn_pos:
-                    hyper_hypo_antonyms = get_hypernym_hyponym_antonyms(word.lower(), wn_pos)
-                    for antonym in hyper_hypo_antonyms:
+                    hyper_hypo_synonyms = get_hypernym_hyponym_synonyms(word.lower(), wn_pos)
+                    for synonym in hyper_hypo_synonyms:
                         possible_changes.append({
                             'idx': idx,
                             'word': word,
-                            'replacement': antonym,
-                            'source': 'hyper_hypo_antonym',
+                            'replacement': synonym,
+                            'source': 'hyper_hypo_synonym',
                             'pos': pos_category
                         })
 
     return possible_changes
 
 
-def generate_random_replacements(replaceable_words, pos_vocabs, num_needed):
-    """Generate random word replacements from vocabulary"""
-    random_replacements = []
-
-    # Flatten the replaceable words across all POS categories
-    all_replaceable = []
-    for pos_category, words in replaceable_words.items():
-        for word_info in words:
-            all_replaceable.append((word_info, pos_category))
-
-    if not all_replaceable:
-        return []
-
-    # Generate random replacements
-    for _ in range(num_needed):
-        (idx, word, tag), pos_category = random.choice(all_replaceable)
-        replacement = random.choice(pos_vocabs[pos_category])
-        random_replacements.append({
-            'idx': idx,
-            'word': word,
-            'replacement': replacement,
-            'source': 'random_vocab',
-            'pos': pos_category
-        })
-
-    return random_replacements
-
-
-def generate_hard_negatives(caption, num_sentences, pos_vocabs):
-    """Generate hard negatives for a caption"""
+def generate_hard_positives(caption, num_sentences):
+    """Generate hard positives for a caption"""
     replaceable_words, tokens = find_replaceable_words(caption)
 
     # Check if there are any replaceable words
@@ -197,20 +173,14 @@ def generate_hard_negatives(caption, num_sentences, pos_vocabs):
         return []
 
     # Collect all possible changes
-    possible_changes = collect_possible_changes(replaceable_words, tokens, pos_vocabs, num_sentences)
-
-    # If we still don't have enough changes, add random replacements
-    if len(possible_changes) < num_sentences:
-        num_needed = num_sentences - len(possible_changes)
-        random_replacements = generate_random_replacements(replaceable_words, pos_vocabs, num_needed)
-        possible_changes.extend(random_replacements)
+    possible_changes = collect_possible_changes(replaceable_words, tokens, num_sentences)
 
     # Deduplicate changes by creating a dictionary using (idx, replacement) as keys
     deduped_changes = {}
     for change in possible_changes:
         key = (change['idx'], change['replacement'])
-        # Prioritize direct antonyms over hyper/hypo, and those over random
-        source_priority = {'direct_antonym': 0, 'hyper_hypo_antonym': 1, 'random_vocab': 2}
+        # Prioritize direct synonyms over hyper/hypo
+        source_priority = {'direct_synonym': 0, 'hyper_hypo_synonym': 1}
         if key not in deduped_changes or source_priority[change['source']] < source_priority[
             deduped_changes[key]['source']]:
             deduped_changes[key] = change
@@ -223,20 +193,34 @@ def generate_hard_negatives(caption, num_sentences, pos_vocabs):
         possible_changes = random.sample(possible_changes, num_sentences)
 
     # Generate the sentences
-    hard_negatives = []
+    hard_positives = []
     generated_set = set()
 
     for change in possible_changes:
-        hard_negative = make_replacement(change['replacement'], change['word'], tokens, change['idx'])
+        hard_positive = make_replacement(change['replacement'], change['word'], tokens, change['idx'])
 
         # Skip duplicates
-        if hard_negative in generated_set or hard_negative == caption:
+        if hard_positive in generated_set or hard_positive == caption:
             continue
         else:
-            hard_negatives.append([hard_negative, change["pos"]])
-            generated_set.add(hard_negative)
+            hard_positives.append([hard_positive, change["pos"]])
+            generated_set.add(hard_positive)
 
-    return hard_negatives
+    return hard_positives
+
+
+def plot_distribution(distribution, num_sentences):
+    """Plot distribution of number of generated sentences"""
+    plt.figure(figsize=(10, 6))
+    x = np.arange(num_sentences + 1)  # 0 to num_sentences
+    plt.bar(x, distribution)
+    plt.xlabel('Number of Generated Hard Positives')
+    plt.ylabel('Count')
+    plt.title('Distribution of Generated Hard Positives per Caption')
+    plt.xticks(x)
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.savefig('hard_positives_distribution.png')
+    plt.close()
 
 
 def main():
@@ -246,30 +230,42 @@ def main():
     with open(args.captions_file, 'r') as f:
         captions_data = json.load(f)
 
-    # Load dictionary
-    with open(args.dictionary_file, 'r') as f:
-        pos_vocabs = json.load(f)
+    hard_positives = {}
 
-    hard_negatives = {}
+    # Initialize distribution array
+    distribution = np.zeros(args.num_sentences + 1, dtype=int)
 
     # Process each video and its captions
     for video_id, captions in tqdm(captions_data.items()):
         for i, caption in enumerate(captions):
             key = f"{video_id}#{i}"
 
-            # Generate hard negatives for this caption
-            negatives = generate_hard_negatives(caption, args.num_sentences, pos_vocabs)
+            # Generate hard positives for this caption
+            positives = generate_hard_positives(caption, args.num_sentences)
 
-            # Only add if we have any negatives
-            if negatives:
-                hard_negatives[key] = negatives
+            # Update distribution count
+            count = min(len(positives), args.num_sentences)
+            distribution[count] += 1
+
+            # Only add if we have any positives
+            if positives:
+                hard_positives[key] = positives
+
+    # Save distribution to pickle file
+    with open('hard_positives_distribution.pkl', 'wb') as f:
+        pickle.dump(distribution, f)
+
+    # Plot distribution
+    plot_distribution(distribution, args.num_sentences)
 
     # Write output
-    output_file = "hard_negatives_all_pos.json"
+    output_file = "hard_positives.json"
     with open(output_file, 'w') as f:
-        json.dump(hard_negatives, f, indent=4)
+        json.dump(hard_positives, f, indent=4)
 
-    print(f"Generated hard negatives saved to {output_file}")
+    print(f"Generated hard positives saved to {output_file}")
+    print(f"Distribution saved to hard_positives_distribution.pkl and hard_positives_distribution.png")
+    print(f"Distribution: {distribution}")
 
 
 if __name__ == "__main__":

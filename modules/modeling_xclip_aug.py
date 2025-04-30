@@ -182,8 +182,7 @@ class XCLIP(CLIP4ClipPreTrainedModel):
         self.apply(self.init_weights)
 
     def forward(self, input_ids, token_type_ids, attention_mask, video, word_ids_aug, word_token_type_ids_aug,
-                word_attention_mask_aug, phrase_ids_aug=None, phrase_token_type_ids_aug=None, phrase_attention_mask_aug=None,
-                video_mask=None):
+                word_attention_mask_aug, video_mask):
         # def forward(self, input_ids, token_type_ids, attention_mask, video, video_mask=None):
         input_ids = input_ids.view(-1, input_ids.shape[-1])
         token_type_ids = token_type_ids.view(-1, token_type_ids.shape[-1])

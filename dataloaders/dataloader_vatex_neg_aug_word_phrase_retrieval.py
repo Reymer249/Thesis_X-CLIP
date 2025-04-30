@@ -16,20 +16,23 @@ import re
 import nltk
 from nltk.corpus import wordnet
 import random
+
 # 下载WordNet语料库
 nltk.download('wordnet')
 import spacy
 from spacy import displacy
 import textacy
+
 cls = spacy.util.get_lang_class('en')
 stop_words = cls.Defaults.stop_words
 nlp = spacy.load("en_core_web_sm")
 
-from dataloaders.hard_negatives_sampler import HardNegativeSampler
+from dataloaders.hard_negatives_sampler import HardNegativeOrPositiveSampler
 
 
 class VATEX_TrainDataLoader(Dataset):
     """UVO dataset loader."""
+
     def __init__(
             self,
             subset,
@@ -50,9 +53,12 @@ class VATEX_TrainDataLoader(Dataset):
             do_neg_aug=False,
             hard_negatives_json_path=None,
             neg_aug_num_sentences=16,
+            do_pos_aug=False,
+            hard_positives_json_path=None,
+            pos_aug_num_sentences=16,
     ):
-        self.output_dir=output_dir
-        self.temp_wr = open('{}/neg_train.txt'.format(self.output_dir),'a')
+        self.output_dir = output_dir
+        self.temp_wr = open('{}/neg_train.txt'.format(self.output_dir), 'a')
         self.data_path = data_path
         self.features_path = features_path
         self.feature_framerate = feature_framerate
@@ -69,7 +75,12 @@ class VATEX_TrainDataLoader(Dataset):
         self.do_neg_aug = do_neg_aug
         self.neg_aug_num_sentences = neg_aug_num_sentences
         if self.do_neg_aug:
-            self.HardNegSampler = HardNegativeSampler(negative_file_path=hard_negatives_json_path)
+            self.HardNegSampler = HardNegativeOrPositiveSampler(json_file_path=hard_negatives_json_path)
+
+        self.do_pos_aug = do_pos_aug
+        self.pos_aug_num_sentences = pos_aug_num_sentences
+        if self.do_pos_aug:
+            self.HardPosSampler = HardNegativeOrPositiveSampler(json_file_path=hard_positives_json_path)
 
         self.subset = subset
         assert self.subset in ["train", "val", "test"]
@@ -108,7 +119,7 @@ class VATEX_TrainDataLoader(Dataset):
         # self.cut_off_points: used to tag the label when calculate the metric
         # self.sentence_num: used to cut the sentence representation
         # self.video_num: used to cut the video representation
-        self.multi_sentence_per_video = True    # !!! important tag for eval
+        self.multi_sentence_per_video = True  # !!! important tag for eval
         if self.subset == "val" or self.subset == "test":
             self.sentence_num = len(self.sentences_dict)
             self.video_num = len(video_ids)
@@ -160,26 +171,38 @@ class VATEX_TrainDataLoader(Dataset):
 
         return pairs_text, pairs_mask, pairs_segment, choice_video_ids
 
-    def _get_text_word_neg(self, video_id, caption, caption_number, change_num=15):
+    def _get_text_word(self, video_id, caption, caption_number, change_num_neg=16, change_num_pos=16):
         k = 1  # batch size for the neg gen
         choice_video_ids = [video_id]
         pairs_text = np.zeros((k, self.max_words), dtype=np.int64)
         pairs_mask = np.zeros((k, self.max_words), dtype=np.int64)
         pairs_segment = np.zeros((k, self.max_words), dtype=np.int64)
-        #产生change_num个 hard negative samples
+        # 产生change_num个 hard negative samples
         # neg_word_level_sents,change_word_pos = get_neg_word_level_sent_fun(caption,change_num=change_num)#generated K sentences but only use K-1 as hard negative samples
         ## 输出 word-level and phrase-level
-        word_text_neg = np.zeros((k, change_num, self.max_words), dtype=np.int64)
-        word_mask_neg = np.zeros((k, change_num, self.max_words), dtype=np.int64)
-        word_segment_neg = np.zeros((k,change_num, self.max_words), dtype=np.int64)
+        if self.do_neg_aug:
+            word_text_neg = np.zeros((k, change_num_neg, self.max_words), dtype=np.int64)
+            word_mask_neg = np.zeros((k, change_num_neg, self.max_words), dtype=np.int64)
+            word_segment_neg = np.zeros((k, change_num_neg, self.max_words), dtype=np.int64)
+            word_neg_sents, word_neg_change_pos = self.HardNegSampler.get_neg_word_level_sentences(
+                video_id=video_id,
+                caption=caption,
+                sentence_num=caption_number,
+                change_num=change_num_neg
+            )
+            # generated K sentences but only use K-1 as hard negative samples
 
-        word_neg_sents, word_change_pos = self.HardNegSampler.get_neg_word_level_sentences(
-            video_id=video_id,
-            caption=caption,
-            sentence_num=caption_number,
-            change_num=change_num
-        )
-        # generated K sentences but only use K-1 as hard negative samples
+        if self.do_pos_aug:
+            word_text_pos = np.zeros((k, change_num_pos, self.max_words), dtype=np.int64)
+            word_mask_pos = np.zeros((k, change_num_pos, self.max_words), dtype=np.int64)
+            word_segment_pos = np.zeros((k, change_num_pos, self.max_words), dtype=np.int64)
+            word_pos_sents, word_pos_change_pos = self.HardPosSampler.get_neg_word_level_sentences(
+                video_id=video_id,
+                caption=caption,
+                sentence_num=caption_number,
+                change_num=change_num_pos
+            )
+            # generated K sentences but only use K-1 as hard positive samples (same logic as Chen)
 
         for i, video_id in enumerate(choice_video_ids):
             words = self.tokenizer.tokenize(caption)
@@ -203,48 +226,80 @@ class VATEX_TrainDataLoader(Dataset):
             pairs_text[i] = np.array(input_ids)
             pairs_mask[i] = np.array(input_mask)
             pairs_segment[i] = np.array(segment_ids)
-            ## negative 
 
-            pairs_text[i] = np.array(input_ids)
-            pairs_mask[i] = np.array(input_mask)
-            pairs_segment[i] = np.array(segment_ids)
-            for j, t_neg_sent in enumerate(word_neg_sents):
-                words = self.tokenizer.tokenize(t_neg_sent)
-                words = [self.SPECIAL_TOKEN["CLS_TOKEN"]] + words
-                total_length_with_CLS = self.max_words - 1
-                if len(words) > total_length_with_CLS:
-                    words = words[:total_length_with_CLS]
-                words = words + [self.SPECIAL_TOKEN["SEP_TOKEN"]]
+            # negative
+            if self.do_neg_aug:
+                for j, t_pos_sent in enumerate(word_neg_sents):
+                    words = self.tokenizer.tokenize(t_pos_sent)
+                    words = [self.SPECIAL_TOKEN["CLS_TOKEN"]] + words
+                    total_length_with_CLS = self.max_words - 1
+                    if len(words) > total_length_with_CLS:
+                        words = words[:total_length_with_CLS]
+                    words = words + [self.SPECIAL_TOKEN["SEP_TOKEN"]]
 
-                input_ids_aug = self.tokenizer.convert_tokens_to_ids(words)
-                input_mask_aug = [1] * len(input_ids_aug)
-                segment_ids_aug = [0] * len(input_ids_aug)
+                    input_ids_aug = self.tokenizer.convert_tokens_to_ids(words)
+                    input_mask_aug = [1] * len(input_ids_aug)
+                    segment_ids_aug = [0] * len(input_ids_aug)
 
-                while len(input_ids_aug) < self.max_words:
-                    input_ids_aug.append(0)
-                    input_mask_aug.append(0)
-                    segment_ids_aug.append(0)
-                assert len(input_ids_aug) == self.max_words
-                assert len(input_mask_aug) == self.max_words
-                assert len(segment_ids_aug) == self.max_words
-                
-                if j==i:# i和j 因为i始终为0 所以，每一个list中，第一个句子为original sentence
-                    word_text_neg[i][j]= np.array(input_ids)
-                    word_mask_neg[i][j] =  np.array(input_mask)
-                    word_segment_neg[i][j] = np.array(segment_ids)
-                    
+                    while len(input_ids_aug) < self.max_words:
+                        input_ids_aug.append(0)
+                        input_mask_aug.append(0)
+                        segment_ids_aug.append(0)
+                    assert len(input_ids_aug) == self.max_words
+                    assert len(input_mask_aug) == self.max_words
+                    assert len(segment_ids_aug) == self.max_words
 
-                else:
-                    word_text_neg[i][j]= np.array(input_ids_aug)
-                    word_mask_neg[i][j] =  np.array(input_mask_aug)
-                    word_segment_neg[i][j] = np.array(segment_ids_aug)
-                
-                
-                # pairs_text_neg[i][j]= np.array(input_ids_aug)
-                # pairs_mask_neg[i][j] =  np.array(input_mask_aug)
-                # pairs_segment_neg[i][j] = np.array(segment_ids_aug)
+                    if j == i:  # i和j 因为i始终为0 所以，每一个list中，第一个句子为original sentence
+                        word_text_neg[i][j] = np.array(input_ids)
+                        word_mask_neg[i][j] = np.array(input_mask)
+                        word_segment_neg[i][j] = np.array(segment_ids)
+                    else:
+                        word_text_neg[i][j] = np.array(input_ids_aug)
+                        word_mask_neg[i][j] = np.array(input_mask_aug)
+                        word_segment_neg[i][j] = np.array(segment_ids_aug)
 
-        return pairs_text, pairs_mask, pairs_segment, choice_video_ids, word_text_neg, word_mask_neg, word_segment_neg
+            # positive
+            if self.do_pos_aug:
+                for j, t_pos_sent in enumerate(word_pos_sents):
+                    words = self.tokenizer.tokenize(t_pos_sent)
+                    words = [self.SPECIAL_TOKEN["CLS_TOKEN"]] + words
+                    total_length_with_CLS = self.max_words - 1
+                    if len(words) > total_length_with_CLS:
+                        words = words[:total_length_with_CLS]
+                    words = words + [self.SPECIAL_TOKEN["SEP_TOKEN"]]
+
+                    input_ids_aug = self.tokenizer.convert_tokens_to_ids(words)
+                    input_mask_aug = [1] * len(input_ids_aug)
+                    segment_ids_aug = [0] * len(input_ids_aug)
+
+                    while len(input_ids_aug) < self.max_words:
+                        input_ids_aug.append(0)
+                        input_mask_aug.append(0)
+                        segment_ids_aug.append(0)
+                    assert len(input_ids_aug) == self.max_words
+                    assert len(input_mask_aug) == self.max_words
+                    assert len(segment_ids_aug) == self.max_words
+
+                    if j == i:  # i和j 因为i始终为0 所以，每一个list中，第一个句子为original sentence
+                        word_text_pos[i][j] = np.array(input_ids)
+                        word_mask_pos[i][j] = np.array(input_mask)
+                        word_segment_pos[i][j] = np.array(segment_ids)
+                    else:
+                        word_text_pos[i][j] = np.array(input_ids_aug)
+                        word_mask_pos[i][j] = np.array(input_mask_aug)
+                        word_segment_pos[i][j] = np.array(segment_ids_aug)
+
+        if self.do_neg_aug and self.do_pos_aug:
+            return pairs_text, pairs_mask, pairs_segment, choice_video_ids, word_text_neg, word_mask_neg,\
+                word_segment_neg, word_text_pos, word_mask_pos, word_segment_pos
+        elif self.do_neg_aug:
+            return pairs_text, pairs_mask, pairs_segment, choice_video_ids, word_text_neg, word_mask_neg,\
+                word_segment_neg
+        elif self.do_pos_aug:
+            return pairs_text, pairs_mask, pairs_segment, choice_video_ids, word_text_pos, word_mask_pos,\
+                word_segment_pos
+        else:
+            raise Exception("Neither pos_aug nor neg_aug was specified, but _gen_hard_sentences function was called")
 
     def _get_rawvideo(self, choice_video_ids):
         video_mask = np.zeros((len(choice_video_ids), self.max_frames), dtype=np.int64)
@@ -294,10 +349,34 @@ class VATEX_TrainDataLoader(Dataset):
     def __getitem__(self, idx):
         video_id, caption_number, caption = self.sentences_dict[idx]
 
-        if self.do_neg_aug:
-            pairs_text, pairs_mask, pairs_segment, choice_video_ids, word_text_neg, word_mask_neg, word_segment_neg = self._get_text_word_neg(video_id, caption, caption_number, change_num=self.neg_aug_num_sentences)
+        if self.do_neg_aug and self.do_pos_aug:
+            pairs_text, pairs_mask, pairs_segment, choice_video_ids, word_text_neg, word_mask_neg, word_segment_neg, \
+                word_text_pos, word_mask_pos, word_segment_pos = self._get_text_word(
+                video_id, caption, caption_number,
+                change_num_neg=self.neg_aug_num_sentences,
+                change_num_pos=self.pos_aug_num_sentences
+            )
             video, video_mask = self._get_rawvideo(choice_video_ids)
-            return pairs_text, pairs_mask, pairs_segment, video, video_mask, word_text_neg, word_mask_neg, word_segment_neg
+            return pairs_text, pairs_mask, pairs_segment, video, video_mask, word_text_neg, word_mask_neg,\
+                word_segment_neg, word_text_pos, word_mask_pos, word_segment_pos
+        elif self.do_neg_aug:
+            pairs_text, pairs_mask, pairs_segment, choice_video_ids, word_text_neg, word_mask_neg, word_segment_neg = \
+                self._get_text_word(
+                video_id, caption, caption_number,
+                    change_num_neg=self.neg_aug_num_sentences
+            )
+            video, video_mask = self._get_rawvideo(choice_video_ids)
+            return pairs_text, pairs_mask, pairs_segment, video, video_mask, word_text_neg, word_mask_neg, \
+                word_segment_neg
+        elif self.do_pos_aug:
+            pairs_text, pairs_mask, pairs_segment, choice_video_ids, word_text_pos, word_mask_pos, word_segment_pos = \
+                self._get_text_word(
+                    video_id, caption, caption_number,
+                    change_num_pos=self.pos_aug_num_sentences
+                )
+            video, video_mask = self._get_rawvideo(choice_video_ids)
+            return pairs_text, pairs_mask, pairs_segment, video, video_mask, word_text_pos, word_mask_pos, \
+                word_segment_pos
         else:
             pairs_text, pairs_mask, pairs_segment, choice_video_ids = self._get_text(video_id, caption)
             video, video_mask = self._get_rawvideo(choice_video_ids)
