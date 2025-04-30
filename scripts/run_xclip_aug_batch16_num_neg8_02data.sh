@@ -2,7 +2,7 @@
 
 # Set variables
 DATA_PATH="/vol/home/s3705609/Desktop/data_vatex"
-job_name="xclip_vatex_aug_run_batch16_num_neg4"
+job_name="xclip_vatex_aug_run_batch16_num_neg8"
 
 # Use torchrun instead of torch.distributed.launch (recommended in newer PyTorch)
 python -m torch.distributed.run --nproc_per_node=1 main_xclip_aug.py \
@@ -35,4 +35,7 @@ python -m torch.distributed.run --nproc_per_node=1 main_xclip_aug.py \
     --val_path_from_data_folder splits_txt/vatex_val_avail_020.txt \
     --test_path_from_data_folder splits_txt/vatex_test_avail_020.txt \
     --captions_path_from_data_folder splits_txt/captions_avail_formatted.json \
-    --hard_negatives_json_path ${DATA_PATH}/splits_txt/hard_negatives_all_pos.json
+    --hard_negatives_json_path ${DATA_PATH}/splits_txt/hard_negatives_all_pos.json \
+    --use_wandb \
+    --wandb_project x-clip \
+    --wandb_name ${job_name}

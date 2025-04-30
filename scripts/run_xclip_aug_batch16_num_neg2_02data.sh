@@ -35,4 +35,7 @@ python -m torch.distributed.run --nproc_per_node=1 main_xclip_aug.py \
     --val_path_from_data_folder splits_txt/vatex_val_avail_020.txt \
     --test_path_from_data_folder splits_txt/vatex_test_avail_020.txt \
     --captions_path_from_data_folder splits_txt/captions_avail_formatted.json \
-    --hard_negatives_json_path ${DATA_PATH}/splits_txt/hard_negatives_all_pos.json
+    --hard_negatives_json_path ${DATA_PATH}/splits_txt/hard_negatives_all_pos.json \
+    --use_wandb \
+    --wandb_project x-clip \
+    --wandb_name ${job_name}
