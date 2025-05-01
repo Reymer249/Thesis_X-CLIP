@@ -31,10 +31,14 @@ def get_args(description='Fine evaluation on X-CLIP'):
                         help="The path of visual mask.")
     parser.add_argument("--test_model",  # path to the model
                         type=str, required=False, help="Initial model.")
-    parser.add_argument("--test_id_path", default='/home/caz/VisualSearch/vatex_data/VATEX_test.csv', type=str,
+    parser.add_argument("--test_id_path", type=str,
                         required=True, help="Initial model.")  # test_csv_ids_path
-    parser.add_argument("--part_of_speech",  default='all', type=str,
+    parser.add_argument("--part_of_speech", type=str,
                          required=True, help="Part of speeh to test for. 'all' for all of them")  # test_csv_ids_path
+    parser.add_argument("--all_captions_txt_path", type=str, help="Path to the txt file with all captions")
+    parser.add_argument("--hard_negatives_folder_with_jsons_path", type=str,
+                        help="Path to the folder with json files with hard negatives per part of speech. They were"
+                             "provided by Chen")
 
     args = parser.parse_args()
     return args
@@ -133,14 +137,14 @@ def main():
     for video_id, f_mask in zip(test_video_ids, visual_mask):
         video_frame_mask[video_id] = f_mask
 
-    test_p = '/vol/home/s3705609/Desktop/data_vatex/splits_txt/captions.txt'
+    test_p = args.all_captions_txt_path
     msrvtt_s = open(test_p).read().strip().split('\n')
     raw_caps = {}
     for line in msrvtt_s:
         tt_sent_id = line.split(' ')[0]
         raw_caps[tt_sent_id] = ' '.join(line.split(' ')[1:])
 
-    changeS_P = '/vol/home/s3705609/Desktop/thesis_code/filtered_json_files'
+    changeS_P = args.hard_negatives_folder_with_jsons_path
     if args.part_of_speech == 'all':
         test_list = ['filtered_vatex1k5_adjective_RE20.json', 'filtered_vatex1k5_adverb_RE20.json',
                     'filtered_vatex1k5_noun_RE20.json', 'filtered_vatex1k5_preposition_RE20.json',
