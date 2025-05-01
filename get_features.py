@@ -382,9 +382,9 @@ def extract_video_features(args, model, dataloader, device, test_video_ids: list
         # Save extracted features
         os.makedirs(args.save_dir, exist_ok=True)
         
-        with open(args.save_dir+"batch_visual_output_list.pkl", "wb") as f:
+        with open(os.path.join(args.save_dir, "batch_visual_output_list.pkl"), "wb") as f:
             pickle.dump(batch_visual_output_list, f)
-        with open(args.save_dir+"batch_video_mask_list.pkl", "wb") as f:
+        with open(os.path.join(args.save_dir, "batch_video_mask_list.pkl"), "wb") as f:
             pickle.dump(batch_video_mask_list, f)
         
         print("\nFeatures saved to:", args.save_dir)
