@@ -2,7 +2,7 @@
 
 # Set variables
 DATA_PATH="/vol/home/s3705609/Desktop/data_vatex"
-job_name="xclip_vatex_run_lu_pc_2"
+job_name="xclip_vatex_batch16_num_neg8_02data"
 
 # Use torchrun instead of torch.distributed.launch (recommended in newer PyTorch)
 python -m torch.distributed.run --nproc_per_node=1 get_features.py \
@@ -28,6 +28,11 @@ python -m torch.distributed.run --nproc_per_node=1 get_features.py \
     --linear_patch 2d \
     --sim_header seqTransf \
     --pretrained_clip_name ViT-B/32 \
-    --models_path /vol/home/s3705609/Desktop/weights_XCLIP/xclip_vatex_run_vibranium_1 \
+    --models_path ${DATA_PATH}/x-clip_checkpoints/${job_name} \
     --num_epochs=5 \
-    --test_id_path /vol/home/s3705609/Desktop/data_vatex/splits_txt/vatex_val_avail.txt
+    --test_id_path ${DATA_PATH}/splits_txt/vatex_val_avail.txt \
+    --save_dir ${DATA_PATH}/x-clip_checkpoints/${job_name}/vatex_val_video_features \
+    --train_path_from_data_folder splits_txt/vatex_train_avail.txt \
+    --val_path_from_data_folder splits_txt/vatex_val_avail.txt \
+    --test_path_from_data_folder splits_txt/vatex_test_avail.txt \
+    --captions_path_from_data_folder splits_txt/captions_avail_formatted.json
