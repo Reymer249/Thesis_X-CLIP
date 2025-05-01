@@ -108,14 +108,23 @@ def get_args(description='X-CLIP on Retrieval Task'):
 
     parser.add_argument("--pretrained_clip_name", default="ViT-B/32", type=str, help="Choose a CLIP version")
 
+    parser.add_argument("--train_path_from_data_folder", type=str, required=True,
+                        help="The path to the txt file with video ids for training (video id per line) from the data folder path")
+    parser.add_argument("--val_path_from_data_folder", type=str, required=True,
+                        help="The path to the txt file with video ids for validation (video id per line) from the data folder path")
+    parser.add_argument("--test_path_from_data_folder", type=str, required=True,
+                        help="The path to the txt file with video ids for testing (video id per line) from the data folder path")
+    parser.add_argument("--captions_path_from_data_folder", type=str, required=True,
+                        help="The path to the json file with video captions from the data folder path")
+
+    # Get arguments specific params
     parser.add_argument("--models_path", default=None, type=str, required=True,
                         help="The directory of the checkpoints of the model you want to test")
     parser.add_argument("--num_epochs", default=None, type=int, required=True,
                         help="The epoch number to take the model from (starts from 1)")
-    parser.add_argument("--changed_sentences_jsons_path", default=None, type=str, required=True)
-    parser.add_argument("--test_id_path", default='/home/caz/VisualSearch/vatex_data/VATEX_test.csv', type=str,
-                        required=True, help="Initial model.")
-    parser.add_argument("--save_dir", type=str, required=True, help="Path so save extracted features")
+    parser.add_argument("--test_id_path", type=str, required=True,
+                        help="Path to the txt files with the ids of the videos to test on")
+    parser.add_argument("--save_dir", type=str, required=True, help="Path to save extracted features into")
 
     args = parser.parse_args()
 
@@ -485,12 +494,6 @@ def main():
     if args.do_eval:
         if args.local_rank == 0:
             test_video_ids = open(args.test_id_path).read().strip().split('\n')
-            # files_with_changed_sentences = ["vatex1k5_noun_RE20.json", "vatex1k5_adjective_RE20.json",
-            #                                 "vatex1k5_adverb_RE20.json", "vatex1k5_noun_RE20.json",
-            #                                 "vatex1k5_preposition_RE20.json"]
-            # files_with_changed_sentences = [
-            #     os.path.join(args.changed_sentences_jsons_path, file) for file in files_with_changed_sentences]
-
             extract_video_features(args, model, val_dataloader, device, test_video_ids=test_video_ids)
 
 
