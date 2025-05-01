@@ -143,8 +143,8 @@ class XCLIP(CLIP4ClipPreTrainedModel):
         num_words = task_config.max_words
         num_frames = task_config.max_frames
 
-        self.loss_func = task_config.loss_func
-        #
+        self.hard_neg_coef = task_config.loss_func_hard_neg_coef
+        self.hard_pos_coef = task_config.loss_func_hard_pos_coefewor
 
         # recommend set True
         self.use_original_clip_for_frame_features = True
@@ -183,7 +183,6 @@ class XCLIP(CLIP4ClipPreTrainedModel):
 
     def forward(self, input_ids, token_type_ids, attention_mask, video, word_ids_aug, word_token_type_ids_aug,
                 word_attention_mask_aug, video_mask):
-        # def forward(self, input_ids, token_type_ids, attention_mask, video, video_mask=None):
         input_ids = input_ids.view(-1, input_ids.shape[-1])
         token_type_ids = token_type_ids.view(-1, token_type_ids.shape[-1])
         attention_mask = attention_mask.view(-1, attention_mask.shape[-1])
@@ -216,8 +215,6 @@ class XCLIP(CLIP4ClipPreTrainedModel):
             neg_seq_features.append(tep_seq_features_neg)
 
         if self.training:
-            assert self.loss_func == "maxcol_word", "Losses other than maxcol_word are not supported"
-
             sim_matrix, *_tmp = self.get_similarity_logits(sequence_output, seq_features, visual_output,
                                                            attention_mask,
                                                            video_mask, shaped=True, loose_type=self.loose_type)

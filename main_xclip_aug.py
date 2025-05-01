@@ -138,25 +138,9 @@ def get_args(description='X-CLIP on hard negatives augmented Retrieval Task'):
                         choices=["meanP", "seqLSTM", "seqTransf", "tightTransf"],
                         help="choice a similarity header.")
 
-    parser.add_argument('--loss_func', type=str, default="maxcol_word",
-                        choices=["maxcol_word"],
-                        help="choice a loss function.")
-    parser.add_argument('--rank_margin', type=float, default=0.2, help='rank margin for hierachicalRank loss')
-    parser.add_argument('--do_neg_aug', action="store_true", default=False,
-                        help='Whether to do negative augmentation (hard negatives) or not')
-    parser.add_argument('--neg_aug_num_sentences', type=int, default=0,
-                        help='Number of hard negatives to generate for every caption. That is the total number of'
-                             'hard negatives (not per part-of-speech group). We randomly select which part fo speech to'
-                             'change.')
-    parser.add_argument('--do_pos_aug', action="store_true", default=False,
-                        help='Whether to do positive augmentation (hard positives) or not')
-    parser.add_argument('--pos_aug_num_sentences', type=int, default=0,
-                        help='Number of hard positive to generate for every caption. That is the total number of'
-                             'hard positives (not per part-of-speech group). We randomly select which part fo speech to'
-                             'change.')
-
     parser.add_argument("--pretrained_clip_name", default="ViT-B/32", type=str, help="Choose a CLIP version")
 
+    # Pathes to the text/json data
     parser.add_argument("--train_path_from_data_folder", type=str, required=True,
                         help="The path to the txt file with video ids for training (video id per line) from the data folder path")
     parser.add_argument("--val_path_from_data_folder", type=str, required=True,
@@ -165,8 +149,32 @@ def get_args(description='X-CLIP on hard negatives augmented Retrieval Task'):
                         help="The path to the txt file with video ids for testing (video id per line) from the data folder path")
     parser.add_argument("--captions_path_from_data_folder", type=str, required=True,
                         help="The path to the json file with video captions from the data folder path")
-    parser.add_argument("--hard_negatives_json_path", type=str, required=True,
+
+    ### AUGMENTED PART - we add a loss function and positive-negative augmentation
+    parser.add_argument('--loss_func_hard_neg_coef', type=int, default=0.2,
+                        help="Coefficient for the hard negatives term in the loss function (alpha)")
+    parser.add_argument('--loss_func_hard_pos_coef', type=int, default=0.2,
+                        help="Coefficient for the hard positives term in the loss function (beta)")
+
+    # hard negatives
+    parser.add_argument('--do_neg_aug', action="store_true",
+                        help='Whether to do negative augmentation (hard negatives) or not')
+    parser.add_argument('--neg_aug_num_sentences', type=int, default=None,
+                        help='Number of hard negatives to generate for every caption. That is the total number of'
+                             'hard negatives (not per part-of-speech group). We randomly select which part fo speech to'
+                             'change.')
+    parser.add_argument("--hard_negatives_json_path", type=str, default=None,
                         help="The path to the json file with hard negative sentences")
+
+    # hard positives
+    parser.add_argument('--do_pos_aug', action="store_true",
+                        help='Whether to do positive augmentation (hard positives) or not')
+    parser.add_argument('--pos_aug_num_sentences', type=int, default=None,
+                        help='Number of hard positive to generate for every caption. That is the total number of'
+                             'hard positives (not per part-of-speech group). We randomly select which part fo speech to'
+                             'change.')
+    parser.add_argument("--hard_positives_json_path", type=str, default=None,
+                        help="The path to the json file with hard positives sentences")
 
     # Weights & Biases arguments
     parser.add_argument("--use_wandb", action='store_true', help="Whether to use Weights & Biases logging")
@@ -179,6 +187,14 @@ def get_args(description='X-CLIP on hard negatives augmented Retrieval Task'):
     # parser.add_argument("--local_rank", default=0, type=int, help="distribted training")
 
     args = parser.parse_args()
+
+    if args.do_neg_aug:  # if we do negative augmentation
+        assert args.neg_aug_num_sentences is not None, "do_neg_aug flag is set but no neg_aug_num_sentences provided"
+        assert args.hard_negatives_json_path is not None, "do_neg_aug flag is set but no hard_negatives_json_path provided"
+
+    if args.do_pos_aug:  # if we do positive augmentation
+        assert args.pos_aug_num_sentences is not None, "do_pos_aug flag is set but no pos_aug_num_sentences provided"
+        assert args.hard_positives_json_path is not None, "do_neg_aug flag is set but no hard_positives_json_path provided"
 
     # Get local_rank from environment variable instead
     if 'LOCAL_RANK' in os.environ:
@@ -417,8 +433,22 @@ def train_epoch(epoch, args, model, train_dataloader, device, n_gpu, optimizer, 
             # multi-gpu does scattering it-self
             batch = tuple(t.to(device=device, non_blocking=True) for t in batch)
 
-        input_ids, input_mask, segment_ids, video, video_mask, input_ids_aug, input_mask_aug, segment_ids_aug = batch
-        loss = model(input_ids, segment_ids, input_mask, video, input_ids_aug, segment_ids_aug, input_mask_aug, video_mask=video_mask)
+        if args.do_neg_aug and args.do_pos_aug:
+            (input_ids, input_mask, segment_ids, video, video_mask, input_ids_neg, input_mask_neg,
+             segment_ids_neg, input_ids_pos, input_mask_pos, segment_ids_pos) = batch
+            loss = None
+        elif args.do_neg_aug:
+            (input_ids, input_mask, segment_ids, video, video_mask, input_ids_neg,
+             input_mask_neg, segment_ids_neg) = batch
+            loss = None
+        elif args.do_neg_aug:
+            (input_ids, input_mask, segment_ids, video, video_mask, input_ids_pos,
+             input_mask_pos, segment_ids_pos) = batch
+            loss = None
+        else:
+            input_ids, input_mask, segment_ids, video, video_mask = batch
+            loss = None
+
 
         if n_gpu > 1:
             loss = loss.mean()  # mean() to average on multi-gpu.

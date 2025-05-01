@@ -76,11 +76,13 @@ class VATEX_TrainDataLoader(Dataset):
         self.neg_aug_num_sentences = neg_aug_num_sentences
         if self.do_neg_aug:
             self.HardNegSampler = HardNegativeOrPositiveSampler(json_file_path=hard_negatives_json_path)
+            print("Loaded Hard Negatives dictionary")
 
         self.do_pos_aug = do_pos_aug
         self.pos_aug_num_sentences = pos_aug_num_sentences
         if self.do_pos_aug:
             self.HardPosSampler = HardNegativeOrPositiveSampler(json_file_path=hard_positives_json_path)
+            print("Loaded Hard Positives dictionary")
 
         self.subset = subset
         assert self.subset in ["train", "val", "test"]

@@ -16,13 +16,16 @@ def dataloader_vatex_train(args, tokenizer):
         max_frames=args.max_frames,
         frame_order=args.train_frame_order,
         slice_framepos=args.slice_framepos,
-        do_neg_aug=args.do_neg_aug,
-        neg_aug_num_sentences=args.neg_aug_num_sentences,
         train_path_from_data_folder=args.train_path_from_data_folder,
         test_path_from_data_folder=args.test_path_from_data_folder,
         val_path_from_data_folder=args.val_path_from_data_folder,
         captions_path_from_data_folder=args.captions_path_from_data_folder,
-        hard_negatives_json_path=args.hard_negatives_json_path
+        do_neg_aug=args.do_neg_aug,
+        neg_aug_num_sentences=args.neg_aug_num_sentences,
+        hard_negatives_json_path=args.hard_negatives_json_path,
+        do_pos_aug=args.do_pos_aug,
+        pos_aug_num_sentences=args.pos_aug_num_sentences,
+        hard_positives_json_path=args.hard_positives_json_path,
     )
 
     train_sampler = torch.utils.data.distributed.DistributedSampler(vatex_dataset)
