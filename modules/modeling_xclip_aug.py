@@ -76,7 +76,6 @@ class XCLIP(CLIP4ClipPreTrainedModel):
         show_log(task_config, "\t transformer_width: {}".format(transformer_width))
         show_log(task_config, "\t transformer_heads: {}".format(transformer_heads))
         show_log(task_config, "\t transformer_layers: {}".format(transformer_layers))
-        show_log(task_config, "\t loss function: {}".format(task_config.loss_func))
 
         self.linear_patch = '2d'
         if hasattr(task_config, "linear_patch"):
@@ -146,7 +145,7 @@ class XCLIP(CLIP4ClipPreTrainedModel):
         self.do_neg_aug = task_config.do_neg_aug
         self.do_pos_aug = task_config.do_pos_aug
         self.hard_neg_coef = task_config.loss_func_hard_neg_coef
-        self.hard_pos_coef = task_config.loss_func_hard_pos_coefewor
+        self.hard_pos_coef = task_config.loss_func_hard_pos_coef
 
         # recommend set True
         self.use_original_clip_for_frame_features = True
@@ -247,7 +246,40 @@ class XCLIP(CLIP4ClipPreTrainedModel):
                 loss += self.hard_neg_coef * sim_loss_neg_word
 
             if self.do_pos_aug:
-                pass
+                assert word_ids_pos.shape == word_token_type_ids_pos.shape, "The shapes of the hard positives" \
+                                                                            " sentences encoding is not the same"
+                assert word_token_type_ids_pos.shape == word_attention_mask_pos.shape, "The shapes of the hard " \
+                                                                                       "positives encoding is " \
+                                                                                       "not the same"
+                hard_positives_losses_batch_size = torch.zeros(8)
+                for hard_positive_number in range(word_ids_pos.shape[2]):  # iterate over the hard positives
+                    # the hard positives of the same index from different instances. So if we have a batch size of 8
+                    # and 3 hard positives for every sentence, the shape[0] for the following variables will be 8
+                    # and for loop with iterate 3 times
+                    # [batch_size, num_tokens/features] - dimensions (shape)
+                    word_ids_pos_loop = word_ids_pos[:, :, hard_positive_number, :].squeeze(1)
+                    word_token_type_ids_pos_loop = word_token_type_ids_pos[:, :, hard_positive_number, :].squeeze(1)
+                    word_attention_mask_pos_loop = word_attention_mask_pos[:, :, hard_positive_number, :]. squeeze(1)
+
+                    (sequence_output, seq_features), visual_output = self.get_sequence_visual_output(word_ids_pos_loop,
+                                                                                                     word_token_type_ids_pos_loop,
+                                                                                                     word_attention_mask_pos_loop,
+                                                                                                     video, video_mask,
+                                                                                                     shaped=True,
+                                                                                                     video_frame=video_frame)
+
+                    sim_matrix, *_tmp = self.get_similarity_logits(sequence_output, seq_features, visual_output,
+                                                                   word_attention_mask_pos_loop.view(-1, attention_mask.shape[-1]),
+                                                                   video_mask, shaped=True, loose_type=self.loose_type)
+                    loss = self.loss_fct(sim_matrix, return_diagonal=True)
+                    hard_positives_losses_batch_size += loss
+
+                hard_positives_losses_batch_size /= word_ids_pos.shape[2]  # we divide "stacked" losses for every hard
+                # positive sentence by the number of hard positive sentences to get the loss for original sentence
+                hard_positives_loss = hard_positives_losses_batch_size.sum().float()  # then, we sum losses of every
+                # sentence in a batch, as in the formula
+                # TODO: check the formula with Hazel
+                loss += self.hard_pos_coef * hard_positives_loss
 
             return loss
         else:
