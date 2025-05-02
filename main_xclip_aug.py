@@ -436,18 +436,66 @@ def train_epoch(epoch, args, model, train_dataloader, device, n_gpu, optimizer, 
         if args.do_neg_aug and args.do_pos_aug:
             (input_ids, input_mask, segment_ids, video, video_mask, input_ids_neg, input_mask_neg,
              segment_ids_neg, input_ids_pos, input_mask_pos, segment_ids_pos) = batch
-            loss = None
+            loss = model(
+                input_ids=input_ids,
+                token_type_ids=segment_ids,
+                attention_mask=input_mask,
+                video=video,
+                video_mask=video_mask,
+                word_ids_neg=input_ids_neg,
+                word_token_type_ids_neg=segment_ids_neg,
+                word_attention_mask_neg=input_mask_neg,
+                word_ids_pos=input_ids_pos,
+                word_token_type_ids_pos=segment_ids_pos,
+                word_attention_mask_pos=input_mask_pos
+            )
         elif args.do_neg_aug:
             (input_ids, input_mask, segment_ids, video, video_mask, input_ids_neg,
              input_mask_neg, segment_ids_neg) = batch
-            loss = None
+            loss = model(
+                input_ids=input_ids,
+                token_type_ids=segment_ids,
+                attention_mask=input_mask,
+                video=video,
+                video_mask=video_mask,
+                word_ids_neg=input_ids_neg,
+                word_token_type_ids_neg=segment_ids_neg,
+                word_attention_mask_neg=input_mask_neg,
+                word_ids_pos=None,
+                word_token_type_ids_pos=None,
+                word_attention_mask_pos=None
+            )
         elif args.do_neg_aug:
             (input_ids, input_mask, segment_ids, video, video_mask, input_ids_pos,
              input_mask_pos, segment_ids_pos) = batch
-            loss = None
+            loss = model(
+                input_ids=input_ids,
+                token_type_ids=segment_ids,
+                attention_mask=input_mask,
+                video=video,
+                video_mask=video_mask,
+                word_ids_neg=None,
+                word_token_type_ids_neg=None,
+                word_attention_mask_neg=None,
+                word_ids_pos=input_ids_pos,
+                word_token_type_ids_pos=segment_ids_pos,
+                word_attention_mask_pos=input_mask_pos
+            )
         else:
             input_ids, input_mask, segment_ids, video, video_mask = batch
-            loss = None
+            loss = model(
+                input_ids=input_ids,
+                token_type_ids=segment_ids,
+                attention_mask=input_mask,
+                video=video,
+                video_mask=video_mask,
+                word_ids_neg=None,
+                word_token_type_ids_neg=None,
+                word_attention_mask_neg=None,
+                word_ids_pos=None,
+                word_token_type_ids_pos=None,
+                word_attention_mask_pos=None
+            )
 
 
         if n_gpu > 1:

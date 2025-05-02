@@ -143,6 +143,8 @@ class XCLIP(CLIP4ClipPreTrainedModel):
         num_words = task_config.max_words
         num_frames = task_config.max_frames
 
+        self.do_neg_aug = task_config.do_neg_aug
+        self.do_pos_aug = task_config.do_pos_aug
         self.hard_neg_coef = task_config.loss_func_hard_neg_coef
         self.hard_pos_coef = task_config.loss_func_hard_pos_coefewor
 
@@ -181,8 +183,9 @@ class XCLIP(CLIP4ClipPreTrainedModel):
 
         self.apply(self.init_weights)
 
-    def forward(self, input_ids, token_type_ids, attention_mask, video, word_ids_aug, word_token_type_ids_aug,
-                word_attention_mask_aug, video_mask):
+    def forward(self, input_ids, token_type_ids, attention_mask, video, video_mask,
+                word_ids_neg, word_token_type_ids_neg, word_attention_mask_neg,
+                word_ids_pos, word_token_type_ids_pos, word_attention_mask_pos):
         input_ids = input_ids.view(-1, input_ids.shape[-1])
         token_type_ids = token_type_ids.view(-1, token_type_ids.shape[-1])
         attention_mask = attention_mask.view(-1, attention_mask.shape[-1])
@@ -193,49 +196,58 @@ class XCLIP(CLIP4ClipPreTrainedModel):
         video = video.view(b * pair * bs * ts, channel, h, w)
         video_frame = bs * ts
 
-        # [bs, 1, dim], [bs, num_words, dim], [bs, num_frames, dim]
-        (sequence_output, seq_features), visual_output = self.get_sequence_visual_output(input_ids, token_type_ids,
-                                                                                         attention_mask,
-                                                                                         video, video_mask, shaped=True,
-                                                                                         video_frame=video_frame)
-        neg_sequence_output = []
-        neg_seq_features = []
-        for tep_input_ids_aug, tep_token_type_ids_aug, tep_attention_mask_aug in zip(word_ids_aug,
-                                                                                     word_token_type_ids_aug,
-                                                                                     word_attention_mask_aug):
-            tep_input_ids_aug = tep_input_ids_aug.squeeze(dim=0)
-            tep_token_type_ids_aug = tep_token_type_ids_aug.squeeze(dim=0)
-            tep_attention_mask_aug = tep_attention_mask_aug.squeeze(dim=0)
-            tep_sequence_output_neg, tep_seq_features_neg = self.get_sequence_output(tep_input_ids_aug,
-                                                                                     tep_token_type_ids_aug,
-                                                                                     tep_attention_mask_aug,
-                                                                                     shaped=True)
-            # import pdb;pdb.set_trace()
-            neg_sequence_output.append(tep_sequence_output_neg)
-            neg_seq_features.append(tep_seq_features_neg)
-
         if self.training:
+            # [bs, 1, dim], [bs, num_words, dim], [bs, num_frames, dim]
+            (sequence_output, seq_features), visual_output = self.get_sequence_visual_output(input_ids, token_type_ids,
+                                                                                             attention_mask,
+                                                                                             video, video_mask,
+                                                                                             shaped=True,
+                                                                                             video_frame=video_frame)
+
             sim_matrix, *_tmp = self.get_similarity_logits(sequence_output, seq_features, visual_output,
                                                            attention_mask,
                                                            video_mask, shaped=True, loose_type=self.loose_type)
             sim_loss1 = self.loss_fct(sim_matrix)
             sim_loss2 = self.loss_fct(sim_matrix.T)
-            v2negt_sim_matrix_word = []
-            for singel_video_feat, singel_video_mask, k_neg_sent_feat, k_neg_seq_features, k_neg_attention_mask in zip(
-                    visual_output, video_mask, neg_sequence_output, neg_seq_features, word_attention_mask_aug):
-                singel_video_feat = singel_video_feat.unsqueeze(dim=0)
-                singel_video_mask = singel_video_mask.unsqueeze(dim=0)
-                singe_v2t_sim_matrix_semantic, *_tmp = self.get_similarity_logits(k_neg_sent_feat,
-                                                                                  k_neg_seq_features,
-                                                                                  singel_video_feat,
-                                                                                  k_neg_attention_mask,
-                                                                                  singel_video_mask, shaped=True,
-                                                                                  loose_type=self.loose_type)
-                v2negt_sim_matrix_word.append(singe_v2t_sim_matrix_semantic.T)
-            # v2negt_sim_matrix[:, 1:] why TypeError: list indices must be integers or slices, not tuple？
-            v2negt_sim_matrix_word = torch.cat(v2negt_sim_matrix_word, dim=0)
-            sim_loss_neg_word = self.loss_fct_col(v2negt_sim_matrix_word)
-            loss = (sim_loss1 + sim_loss2) / 2 + 0.2 * sim_loss_neg_word
+            loss = (sim_loss1 + sim_loss2) / 2
+
+            if self.do_neg_aug:
+                neg_sequence_output = []
+                neg_seq_features = []
+                for tep_input_ids_aug, tep_token_type_ids_aug, tep_attention_mask_aug in zip(word_ids_neg,
+                                                                                             word_token_type_ids_neg,
+                                                                                             word_attention_mask_neg):
+                    tep_input_ids_aug = tep_input_ids_aug.squeeze(dim=0)
+                    tep_token_type_ids_aug = tep_token_type_ids_aug.squeeze(dim=0)
+                    tep_attention_mask_aug = tep_attention_mask_aug.squeeze(dim=0)
+                    tep_sequence_output_neg, tep_seq_features_neg = self.get_sequence_output(tep_input_ids_aug,
+                                                                                             tep_token_type_ids_aug,
+                                                                                             tep_attention_mask_aug,
+                                                                                             shaped=True)
+                    # import pdb;pdb.set_trace()
+                    neg_sequence_output.append(tep_sequence_output_neg)
+                    neg_seq_features.append(tep_seq_features_neg)
+
+                v2negt_sim_matrix_word = []
+                for singel_video_feat, singel_video_mask, k_neg_sent_feat, k_neg_seq_features, k_neg_attention_mask in zip(
+                        visual_output, video_mask, neg_sequence_output, neg_seq_features, word_attention_mask_neg):
+                    singel_video_feat = singel_video_feat.unsqueeze(dim=0)
+                    singel_video_mask = singel_video_mask.unsqueeze(dim=0)
+                    singe_v2t_sim_matrix_semantic, *_tmp = self.get_similarity_logits(k_neg_sent_feat,
+                                                                                      k_neg_seq_features,
+                                                                                      singel_video_feat,
+                                                                                      k_neg_attention_mask,
+                                                                                      singel_video_mask, shaped=True,
+                                                                                      loose_type=self.loose_type)
+                    v2negt_sim_matrix_word.append(singe_v2t_sim_matrix_semantic.T)
+                # v2negt_sim_matrix[:, 1:] why TypeError: list indices must be integers or slices, not tuple？
+                v2negt_sim_matrix_word = torch.cat(v2negt_sim_matrix_word, dim=0)
+                sim_loss_neg_word = self.loss_fct_col(v2negt_sim_matrix_word)
+
+                loss += self.hard_neg_coef * sim_loss_neg_word
+
+            if self.do_pos_aug:
+                pass
 
             return loss
         else:
