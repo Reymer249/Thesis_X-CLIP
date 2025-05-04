@@ -251,7 +251,8 @@ class XCLIP(CLIP4ClipPreTrainedModel):
                 assert word_token_type_ids_pos.shape == word_attention_mask_pos.shape, "The shapes of the hard " \
                                                                                        "positives encoding is " \
                                                                                        "not the same"
-                hard_positives_losses_batch_size = torch.zeros(8)
+                device = input_ids.device
+                hard_positives_losses_batch_size = torch.zeros(8, device=device)
                 for hard_positive_number in range(word_ids_pos.shape[2]):  # iterate over the hard positives
                     # the hard positives of the same index from different instances. So if we have a batch size of 8
                     # and 3 hard positives for every sentence, the shape[0] for the following variables will be 8
