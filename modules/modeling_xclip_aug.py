@@ -274,8 +274,8 @@ class XCLIP(CLIP4ClipPreTrainedModel):
                     sim_matrix, *_tmp = self.get_similarity_logits(sequence_output, seq_features, visual_output,
                                                                    word_attention_mask_pos_loop.view(-1, attention_mask.shape[-1]),
                                                                    video_mask, shaped=True, loose_type=self.loose_type)
-                    loss = self.loss_fct(sim_matrix, return_diagonal=True)
-                    hard_positives_losses_batch_size += loss
+                    intermediate_hard_pos_loss = self.loss_fct(sim_matrix, return_diagonal=True)
+                    hard_positives_losses_batch_size += intermediate_hard_pos_loss
 
                 hard_positives_losses_batch_size /= word_ids_pos.shape[2]  # we divide "stacked" losses for every hard
                 # positive sentence by the number of hard positive sentences to get the loss for original sentence
