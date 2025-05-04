@@ -277,7 +277,7 @@ class XCLIP(CLIP4ClipPreTrainedModel):
 
                 hard_positives_losses_batch_size /= word_ids_pos.shape[2]  # we divide "stacked" losses for every hard
                 # positive sentence by the number of hard positive sentences to get the loss for original sentence
-                hard_positives_loss = hard_positives_losses_batch_size.sum().float()  # then, we sum losses of every
+                hard_positives_loss = hard_positives_losses_batch_size.sum()  # then, we sum losses of every
                 # sentence in a batch, as in the formula
                 # TODO: check the formula with Hazel
                 loss += self.hard_pos_coef * hard_positives_loss
