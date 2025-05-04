@@ -209,7 +209,6 @@ class XCLIP(CLIP4ClipPreTrainedModel):
             sim_loss1 = self.loss_fct(sim_matrix)
             sim_loss2 = self.loss_fct(sim_matrix.T)
             loss = (sim_loss1 + sim_loss2) / 2
-            print("Loss shape 1", loss.shape)
 
             if self.do_neg_aug:
                 neg_sequence_output = []
@@ -245,7 +244,6 @@ class XCLIP(CLIP4ClipPreTrainedModel):
                 sim_loss_neg_word = self.loss_fct_col(v2negt_sim_matrix_word)
 
                 loss += self.hard_neg_coef * sim_loss_neg_word
-                print("Loss shape 2:", loss.shape)
 
             if self.do_pos_aug:
                 assert word_ids_pos.shape == word_token_type_ids_pos.shape, "The shapes of the hard positives" \
@@ -282,8 +280,6 @@ class XCLIP(CLIP4ClipPreTrainedModel):
                 hard_positives_loss = hard_positives_losses_batch_size.sum()  # then, we sum losses of every
                 # sentence in a batch, as in the formula
                 # TODO: check the formula with Hazel
-                print("HP shape", hard_positives_loss.shape)
-                print("Loss sshape 3", loss.shape)
                 loss += self.hard_pos_coef * hard_positives_loss
 
             return loss
