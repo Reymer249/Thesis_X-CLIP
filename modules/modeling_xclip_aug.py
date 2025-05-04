@@ -280,6 +280,7 @@ class XCLIP(CLIP4ClipPreTrainedModel):
                 hard_positives_loss = hard_positives_losses_batch_size.sum()  # then, we sum losses of every
                 # sentence in a batch, as in the formula
                 # TODO: check the formula with Hazel
+                print(hard_positives_loss.shape)
                 loss += self.hard_pos_coef * hard_positives_loss
 
             return loss
