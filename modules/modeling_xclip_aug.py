@@ -262,12 +262,12 @@ class XCLIP(CLIP4ClipPreTrainedModel):
                     word_token_type_ids_pos_loop = word_token_type_ids_pos[:, :, hard_positive_number, :].squeeze(1)
                     word_attention_mask_pos_loop = word_attention_mask_pos[:, :, hard_positive_number, :]. squeeze(1)
 
-                    (sequence_output, seq_features), visual_output = self.get_sequence_visual_output(word_ids_pos_loop,
-                                                                                                     word_token_type_ids_pos_loop,
-                                                                                                     word_attention_mask_pos_loop,
-                                                                                                     video, video_mask,
-                                                                                                     shaped=True,
-                                                                                                     video_frame=video_frame)
+                    sequence_output, seq_features = self.get_sequence_output(
+                        word_ids_pos_loop,
+                        word_token_type_ids_pos_loop,
+                        word_attention_mask_pos_loop,
+                        shaped=True,
+                    )
 
                     sim_matrix, *_tmp = self.get_similarity_logits(sequence_output, seq_features, visual_output,
                                                                    word_attention_mask_pos_loop.view(-1, attention_mask.shape[-1]),
