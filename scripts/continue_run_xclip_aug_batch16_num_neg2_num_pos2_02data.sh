@@ -1,8 +1,10 @@
 #!/bin/bash
 
 # Set variables
-DATA_PATH="/data/s3705609/VATEX"
+EPOCH=0
+DATA_PATH="/vol/home/s3705609/Desktop/data_vatex"
 job_name="xclip_vatex_aug_run_batch16_num_neg2_num_pos2"
+CHECKPOINT_PATH="${DATA_PATH}/x-clip_checkpoints/${job_name}/pytorch_model.bin.${EPOCH}" # Replace {EPOCH} with actual epoch number
 
 # Use torchrun instead of torch.distributed.launch (recommended in newer PyTorch)
 python -m torch.distributed.run --nproc_per_node=1 main_xclip_aug.py \
@@ -16,6 +18,7 @@ python -m torch.distributed.run --nproc_per_node=1 main_xclip_aug.py \
     --data_path ${DATA_PATH} \
     --features_path ${DATA_PATH}/clips \
     --output_dir ${DATA_PATH}/x-clip_checkpoints/${job_name} \
+    --resume_model ${CHECKPOINT_PATH} \
     --max_words 32 \
     --max_frames 12 \
     --datatype vatex \
@@ -31,7 +34,7 @@ python -m torch.distributed.run --nproc_per_node=1 main_xclip_aug.py \
     --do_neg_aug \
     --neg_aug_num_sentences 2 \
     --do_pos_aug \
-    --pos_aug_num_sentences 2\
+    --pos_aug_num_sentences 2 \
     --train_path_from_data_folder splits_txt/vatex_train_avail_020.txt \
     --val_path_from_data_folder splits_txt/vatex_val_avail_020.txt \
     --test_path_from_data_folder splits_txt/vatex_test_avail_020.txt \
