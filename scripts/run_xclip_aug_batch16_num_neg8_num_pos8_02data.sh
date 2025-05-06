@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set variables
-DATA_PATH="/vol/home/s3705609/Desktop/data_vatex"
+DATA_PATH="/data/s3705609/VATEX"
 job_name="xclip_vatex_aug_run_batch16_num_neg8_num_pos8"
 
 # Use torchrun instead of torch.distributed.launch (recommended in newer PyTorch)
@@ -14,7 +14,7 @@ python -m torch.distributed.run --nproc_per_node=1 main_xclip_aug.py \
     --epochs=5 \
     --n_display=100 \
     --data_path ${DATA_PATH} \
-    --features_path ${DATA_PATH}/clips \
+    --features_path /local/s3705609/clips \
     --output_dir ${DATA_PATH}/x-clip_checkpoints/${job_name} \
     --max_words 32 \
     --max_frames 12 \
