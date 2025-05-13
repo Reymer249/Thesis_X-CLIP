@@ -39,6 +39,7 @@ def get_args(description='Fine evaluation on X-CLIP'):
     parser.add_argument("--hard_negatives_folder_with_jsons_path", type=str,
                         help="Path to the folder with json files with hard negatives per part of speech. They were"
                              "provided by Chen")
+    parser.add_argument("--calc_brit", action="store_true")
 
     args = parser.parse_args()
     return args
@@ -146,34 +147,43 @@ def main():
 
     changeS_P = args.hard_negatives_folder_with_jsons_path
     if args.part_of_speech == 'all':
-        test_list = ['filtered_vatex1k5_adjective_RE20.json', 'filtered_vatex1k5_adverb_RE20.json',
+        test_list_neg = ['filtered_vatex1k5_adjective_RE20.json', 'filtered_vatex1k5_adverb_RE20.json',
                     'filtered_vatex1k5_noun_RE20.json', 'filtered_vatex1k5_preposition_RE20.json',
                     'filtered_vatex1k5_verb_RE20.json']
-    elif args.part_of_speech == 'adjective':
-        test_list = ['filtered_vatex1k5_adjective_RE20.json']
-    elif args.part_of_speech == 'adverb':
-        test_list = ['filtered_vatex1k5_adverb_RE20.json']
-    elif args.part_of_speech == 'noun':
-        test_list = ['filtered_vatex1k5_noun_RE20.json']
-    elif args.part_of_speech == 'preposition':
-        test_list = ['filtered_vatex1k5_preposition_RE20.json']
-    elif args.part_of_speech == 'verb':
-        test_list = ['filtered_vatex1k5_verb_RE20.json']
     else:
-        raise ValueError('Invalid part of speech specified. Choose from: all, adjective, adverb, noun, preposition, verb.')
+        try:
+            test_list_neg = [f'filtered_vatex1k5_{args.part_of_speech}_RE20.json']
+        except:
+            raise ValueError('Invalid part of speech specified. Choose from: all, adjective, adverb, noun, preposition, verb.')
+
+    if args.calc_brit:
+        if args.part_of_speech == 'all':
+            test_list_pos = ['filtered_vatex1k5_pos_adjective_RE20.json', 'filtered_vatex1k5_pos_adverb_RE20.json',
+                             'filtered_vatex1k5_pos_noun_RE20.json', 'filtered_vatex1k5_pos_preposition_RE20.json',
+                             'filtered_vatex1k5_pos_verb_RE20.json']
+        else:
+            try:
+                test_list_pos = [f'filtered_vatex1k5_pos_{args.part_of_speech}_RE20.json']
+            except:
+                raise ValueError(
+                    'Invalid part of speech specified. Choose from: all, adjective, adverb, noun, preposition, verb.')
 
     save_p = args.save_dir
     if not os.path.exists(save_p):
         os.mkdir(save_p)
 
-    for i in test_list:
-        changejs = json.load(open(os.path.join(changeS_P, i)))
-        testname = i.split('.json')[0]
+    for position, neg in enumerate(test_list_neg):
+        changejs_neg = json.load(open(os.path.join(changeS_P, neg)))
+        if args.calc_brit:
+            changejs_pos = json.load(open(os.path.join(changeS_P, test_list_pos[position])))
+        testname = neg.split('.json')[0]
 
         rank_GT = []  # append rank of gt sentence
         res_list = {}
+        brit_counter = 0
+        brit_num_comparisons = 0
 
-        for sent_id in tqdm(list(changejs.keys())):
+        for sent_id in tqdm(list(changejs_neg.keys())):
 
             video_id = sent_id.split('#')[0]
             video_feat = torch.tensor(np.array(video_frame_feat[video_id].cpu())).to(device)#.unsqueeze(dim=0)
@@ -182,12 +192,25 @@ def main():
             # r_sent_id = sent_id.replace('#', '#enc#')
             raw_sent = raw_caps[sent_id]  # use the encoded sentence
 
-            chage_s = list(changejs[sent_id].values())
+            chage_s = list(changejs_neg[sent_id].values())
             temp_test_sent = [raw_sent] + chage_s
+            if args.calc_brit:
+                try:
+                    change_s_pos = list(changejs_pos[sent_id].values())
+                    if len(change_s_pos) != len(chage_s):  # we don't have as many hard positives as negatives
+                        continue
+                except KeyError:  # if we could not generate hard positive for the given hard negative sentence
+                    continue
+                change_s_pos = [None] + change_s_pos
             temp_sim_res = []
-            for S in temp_test_sent:
-                temp_sim = smi_value(S, video_feat, video_mask)
-                temp_sim_res.append(temp_sim)
+            for number, S in enumerate(temp_test_sent):
+                temp_neg_sim = smi_value(S, video_feat, video_mask)
+                temp_sim_res.append(temp_neg_sim)
+                if args.calc_brit and number > 0:  # not the firs one, as it is the original one
+                    temp_pos_sim = smi_value(change_s_pos[number], video_feat, video_mask)
+                    brit_num_comparisons += 1
+                    if temp_sim_res[0] > temp_neg_sim > temp_pos_sim or temp_pos_sim > temp_neg_sim > temp_sim_res[0]:
+                        brit_counter += 1
             temp_sim_res = np.array(temp_sim_res).squeeze()
             temp_sort_res = np.argsort(temp_sim_res)  # [-1] is the index of largest one
 
@@ -204,6 +227,10 @@ def main():
         avg_rank_GT = rank_GT.count(1) / len(rank_GT)
         print('GT @ R1 count {} is:'.format(testname), rank_GT.count(1))
         wr.write('GT @ R1 count {} is:{}\n'.format(testname, rank_GT.count(1)))
+        if args.calc_brit:
+            brit_result_str = f"Brittleness: {brit_counter/brit_num_comparisons} ({brit_counter}/{brit_num_comparisons})"
+            print(brit_result_str)
+            wr.write(brit_result_str)
         wr.close()
 
         # with open(os.path.join(save_p, '{}_dump_antonym_v2tres.json'.format(testname)), 'w') as json_file:

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set variables
-EPOCH=2
+EPOCH=3
 DATA_PATH="/vol/home/s3705609/Desktop/data_vatex"
 job_name="xclip_vatex_aug_run_batch16_num_neg2_num_pos2"
 CHECKPOINT_PATH="${DATA_PATH}/x-clip_checkpoints/${job_name}/pytorch_model.bin.${EPOCH}" # Replace {EPOCH} with actual epoch number
