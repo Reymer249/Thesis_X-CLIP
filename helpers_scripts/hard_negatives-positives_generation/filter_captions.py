@@ -55,9 +55,9 @@ def filter_json_with_video_ids(captions_json_path, video_ids_txt_path, output_js
 
 if __name__ == "__main__":
     # Prompt user for file paths
-    captions_json_path = "/vol/home/s3705609/Desktop/data_vatex/splits_txt/captions_avail_formatted.json"
-    video_ids_txt_path = "/vol/home/s3705609/Desktop/data_vatex/splits_txt/vatex_train_avail_020.txt"
-    output_json_path = None
+    captions_json_path = input("Captions path:")
+    video_ids_txt_path = input("IDs path:")
+    output_json_path = input("Output path:")
 
     if not output_json_path:
         output_json_path = "filtered_captions.json"
