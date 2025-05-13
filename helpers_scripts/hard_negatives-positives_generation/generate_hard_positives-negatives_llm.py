@@ -89,13 +89,19 @@ def generate_hard_positives_batch(captions_data, num_sentences, pipe, batch_size
 
     # Process batches with progress bar
     results = []
+    batch_counter = 0
     for batch_results in tqdm(pipe(caption_generator(),
                                    max_new_tokens=NUM_TOKENS*num_sentences,
-                                   batch_size=batch_size,
-                                   return_full_text=False),
+                                   batch_size=batch_size),
                               total=len(all_captions),
                               desc="Generating paraphrases"):
         results.append(batch_results)
+        batch_counter += 1
+        if batch_counter % 5 == 0:
+            with open("tmp_results.pkl", "wb") as f:
+                pickle.dump(results, f)
+            with open("batch_counter.pkl", "wb") as b_f:
+                pickle.dump(batch_counter, b_f)
 
     # Process results
     for i, result in enumerate(results):
