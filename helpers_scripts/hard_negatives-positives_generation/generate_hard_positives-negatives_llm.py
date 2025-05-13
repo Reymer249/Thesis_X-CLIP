@@ -245,18 +245,11 @@ def plot_distribution(distribution, num_sentences, type_of_sentences):
 
 def load_video_ids(file_path):
     """Load video IDs from a text file, one ID per line"""
-    if not file_path:
-        return None
-
-    try:
-        with open(file_path, 'r') as f:
-            # Read lines and strip whitespace
-            video_ids = [line.strip() for line in f if line.strip()]
-        print(f"Loaded {len(video_ids)} video IDs from {file_path}")
-        return set(video_ids)  # Convert to set for faster lookups
-    except Exception as e:
-        print(f"Error loading video IDs file: {e}")
-        return None
+    with open(file_path, 'r') as f:
+        # Read lines and strip whitespace
+        video_ids = [line.strip() for line in f if line.strip()]
+    print(f"Loaded {len(video_ids)} video IDs from {file_path}")
+    return set(video_ids)  # Convert to set for faster lookups
 
 
 def main():
