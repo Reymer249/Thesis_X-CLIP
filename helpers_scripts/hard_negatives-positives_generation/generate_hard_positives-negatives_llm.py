@@ -162,7 +162,7 @@ def main():
         model=model,
         tokenizer=tokenizer,
         temperature=0.6,
-        device=0  # Use GPU if available
+        device=1  # Use GPU if available
     )
 
     # Load captions
