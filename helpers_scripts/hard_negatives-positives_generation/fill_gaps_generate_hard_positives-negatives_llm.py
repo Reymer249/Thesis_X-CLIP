@@ -276,16 +276,8 @@ def main():
     # Determine sentence type for naming
     sentences_type = "negatives" if args.gen_hard_neg else "positives"
 
-    # Save the updated data with original filename pattern
-    output_filename = os.path.basename(args.generated_file)
-
-    # Check if the filename follows the expected pattern and create a new one if not
-    if not output_filename.startswith(f"hard_{sentences_type}"):
-        output_file = f"hard_{sentences_type}_filled_{timestamp}.json"
-    else:
-        # Keep the same name but add _filled
-        name, ext = os.path.splitext(output_filename)
-        output_file = f"{name}_filled{ext}"
+    # Save the updated data
+    output_file = f"hard_{sentences_type}_filled_{timestamp}.json"
 
     with open(output_file, 'w') as f:
         json.dump(updated_data, f, indent=4)
