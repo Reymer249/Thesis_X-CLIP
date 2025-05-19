@@ -6,8 +6,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pickle
 from transformers import pipeline
+from transformers import AutoTokenizer, AutoModelForCausalLM
 import re
-import os
 
 ESTIMATED_NUM_WORDS_PER_SENTENCE = 20
 # 1 word ≈ 1.3 to 1.5 tokens (for English text, using models like GPT or BERT).
@@ -221,55 +221,7 @@ def calculate_original_distribution(generated_data, num_sentences):
     return distribution
 
 
-def main():
-    args = parse_arguments()
-
-    # Load captions
-    with open(args.captions_file, 'r') as f:
-        captions_data = json.load(f)
-
-    # Load previously generated data
-    with open(args.generated_file, 'r') as f:
-        generated_data = json.load(f)
-
-    # Find captions that need additional sentences
-    missing_captions, captions_map = find_missing_sentences(captions_data, generated_data, args.num_sentences)
-
-    if not missing_captions:
-        print("No missing sentences found. All captions have the target number of sentences.")
-        return
-
-    print(f"Found {len(missing_captions)} captions that need additional sentences.")
-
-    # Initialize the LLM pipeline
-    print(f"Loading LLM model: {args.model_name}")
-    from transformers import AutoTokenizer, AutoModelForCausalLM
-
-    tokenizer = AutoTokenizer.from_pretrained(args.model_name)
-    tokenizer.padding_side = 'left'  # Set padding side to left for decoder-only models
-    model = AutoModelForCausalLM.from_pretrained(args.model_name)
-
-    pipe = pipeline(
-        "text-generation",
-        model=model,
-        tokenizer=tokenizer,
-        temperature=0.6,
-        device=0  # Use GPU if available
-    )
-
-    # Calculate original distribution
-    original_distribution = calculate_original_distribution(generated_data, args.num_sentences)
-
-    # Generate missing sentences
-    updated_data, updated_distribution = generate_missing_sentences_batch(
-        missing_captions,
-        generated_data,
-        args.num_sentences,
-        pipe,
-        batch_size=args.batch_size,
-        gen_hard_neg=args.gen_hard_neg
-    )
-
+def save_files(updated_data, updated_distribution, original_distribution, args):
     # Get timestamp for file naming
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
 
@@ -293,6 +245,112 @@ def main():
     print(f"Distribution saved to hard_{sentences_type}_distribution_filled_{timestamp}.pkl")
     print(f"Original distribution: {original_distribution}")
     print(f"Updated distribution: {updated_distribution}")
+
+
+def remove_duplicates(data):
+    """
+    Remove duplicate paraphrases for each ID in the data.
+    Duplicates are identified based on the exact string match of the paraphrase text.
+    """
+    cleaned_data = {}
+
+    for id_key, paraphrases in data.items():
+        # Use a set to track unique paraphrases
+        seen_paraphrases = set()
+        unique_paraphrases = []
+
+        for paraphrase_pair in paraphrases:
+            # The first element in the pair is the paraphrase text
+            paraphrase_text = paraphrase_pair[0]
+
+            # If we haven't seen this paraphrase before, add it to our result
+            if paraphrase_text not in seen_paraphrases:
+                seen_paraphrases.add(paraphrase_text)
+                unique_paraphrases.append(paraphrase_pair)
+
+        # Add the deduplicated list to our result
+        cleaned_data[id_key] = unique_paraphrases
+
+    return cleaned_data
+
+
+def main():
+    args = parse_arguments()
+
+    # Load captions
+    with open(args.captions_file, 'r') as f:
+        captions_data = json.load(f)
+
+    # Load previously generated data
+    with open(args.generated_file, 'r') as f:
+        generated_data = json.load(f)
+
+    original_counts = {id_key: len(paraphrases) for id_key, paraphrases in generated_data.items()}
+    generated_data = remove_duplicates(generated_data)
+    cleaned_counts = {id_key: len(paraphrases) for id_key, paraphrases in generated_data.items()}
+
+    total_original = sum(original_counts.values())
+    total_cleaned = sum(cleaned_counts.values())
+
+    print(f"Original data contained {total_original} total paraphrases.")
+    print(f"After deduplication, {total_cleaned} unique paraphrases remain.")
+    print(f"Removed {total_original - total_cleaned} duplicates.")
+
+    # Initialize the LLM pipeline
+    print(f"Loading LLM model: {args.model_name}")
+
+    tokenizer = AutoTokenizer.from_pretrained(args.model_name)
+    tokenizer.padding_side = 'left'  # Set padding side to left for decoder-only models
+    model = AutoModelForCausalLM.from_pretrained(args.model_name)
+
+    pipe = pipeline(
+        "text-generation",
+        model=model,
+        tokenizer=tokenizer,
+        temperature=0.6,
+        device=0  # Use GPU if available
+    )
+
+    finished_flag = False
+    updated_distribution, original_distribution = None, None
+
+    while not finished_flag:
+        # Find captions that need additional sentences
+        missing_captions, captions_map = find_missing_sentences(captions_data, generated_data, args.num_sentences)
+
+        if not missing_captions:
+            print("No missing sentences found. All captions have the target number of sentences.")
+            return
+
+        print(f"Found {len(missing_captions)} captions that need additional sentences.")
+
+        # Calculate original distribution
+        original_distribution = calculate_original_distribution(generated_data, args.num_sentences)
+
+        # Generate missing sentences
+        updated_data, updated_distribution = generate_missing_sentences_batch(
+            missing_captions,
+            generated_data,
+            args.num_sentences,
+            pipe,
+            batch_size=args.batch_size,
+            gen_hard_neg=args.gen_hard_neg
+        )
+
+        generated_data = remove_duplicates(updated_data)
+        original_counts = {id_key: len(paraphrases) for id_key, paraphrases in updated_data.items()}
+        cleaned_counts = {id_key: len(paraphrases) for id_key, paraphrases in generated_data.items()}
+
+        total_original = sum(original_counts.values())
+        total_cleaned = sum(cleaned_counts.values())
+
+        if total_original - total_cleaned == 0:  # so all the captions are unique
+            finished_flag = True
+
+    if generated_data is not None and updated_distribution is not None and original_distribution is not None:
+        save_files(generated_data, updated_distribution, original_distribution, args)
+    else:
+        raise Exception("Some error occurred")
 
 
 if __name__ == "__main__":
