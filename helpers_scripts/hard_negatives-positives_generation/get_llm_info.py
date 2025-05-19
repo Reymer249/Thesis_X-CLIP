@@ -1,15 +1,14 @@
 import pickle
 
 
-with open("batch_counter.pkl", "rb") as f:
-    counter = pickle.load(f)
+distribution_file_1 = input("Disrt 1:")
+distribution_file_2 = input("Distr 2:")
 
-with open("tmp_results.pkl", "rb") as res_f:
-    results = pickle.load(res_f)
+with open(distribution_file_1, "rb") as f:
+    distr1 = pickle.load(f)
 
-with open("hard_positives_distribution.pkl", "rb") as f:
-    distr = pickle.load(f)
+with open(distribution_file_2, "rb") as f:
+    distr2 = pickle.load(f)
 
-# print("Counter", counter)
-# print("Len captions:", len(results))
-print(distr)
+print(distr1)
+print(distr2)
