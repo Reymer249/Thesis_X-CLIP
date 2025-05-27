@@ -465,7 +465,7 @@ def train_epoch(epoch, args, model, train_dataloader, device, n_gpu, optimizer, 
                 word_token_type_ids_pos=None,
                 word_attention_mask_pos=None
             )
-        elif args.do_neg_aug:
+        elif args.do_pos_aug:
             (input_ids, input_mask, segment_ids, video, video_mask, input_ids_pos,
              input_mask_pos, segment_ids_pos) = batch
             loss = model(
