@@ -40,17 +40,18 @@ fig.update_layout(
     barmode="group",
     title={
         "text": "PosRank on evaluation set",
-        "font": {"size": 36}
+        "font": {"size": 76},
+        "y": 0.99
     },
     legend={
-        "title": {"text": "Training Condition", "font": {"size": 28}},
-        "font": {"size": 24},
+        "title": {"text": "Training Condition", "font": {"size": 56}},
+        "font": {"size": 48},
     },
     xaxis={
-        "tickfont": {"size": 24}  # X-axis tick labels size
+        "tickfont": {"size": 48}  # X-axis tick labels size
     },
     yaxis={
-        "tickfont": {"size": 24}  # Y-axis tick labels size
+        "tickfont": {"size": 48}  # Y-axis tick labels size
     },
     height=1080,
     width=1920
@@ -58,3 +59,4 @@ fig.update_layout(
 
 
 fig.show()
+fig.write_image("posrank.svg")
