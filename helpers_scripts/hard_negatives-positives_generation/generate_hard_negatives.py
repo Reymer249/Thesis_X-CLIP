@@ -220,7 +220,7 @@ def generate_hard_negatives(caption, num_sentences, pos_vocabs):
 
     # Randomly select changes if we have more than needed
     if len(possible_changes) > num_sentences:
-        possible_changes = random.sample(possible_changes, num_sentences)
+        possible_changes = possible_changes[:num_sentences]
 
     # Generate the sentences
     hard_negatives = []
@@ -265,7 +265,7 @@ def main():
                 hard_negatives[key] = negatives
 
     # Write output
-    output_file = "hard_negatives_all_pos.json"
+    output_file = f"hard_negatives_all_pos_{args.num_sentences}.json"
     with open(output_file, 'w') as f:
         json.dump(hard_negatives, f, indent=4)
 
