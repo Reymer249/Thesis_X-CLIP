@@ -190,7 +190,7 @@ def generate_hard_positives(caption, num_sentences):
 
     # Randomly select changes if we have more than needed
     if len(possible_changes) > num_sentences:
-        possible_changes = random.sample(possible_changes, num_sentences)
+        possible_changes = possible_changes[:num_sentences]
 
     # Generate the sentences
     hard_positives = []
@@ -259,7 +259,7 @@ def main():
     plot_distribution(distribution, args.num_sentences)
 
     # Write output
-    output_file = "hard_positives.json"
+    output_file = f"hard_positives_all_pos_{args.num_sentences}.json"
     with open(output_file, 'w') as f:
         json.dump(hard_positives, f, indent=4)
 

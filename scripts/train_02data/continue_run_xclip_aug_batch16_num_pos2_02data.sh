@@ -1,8 +1,10 @@
 #!/bin/bash
 
 # Set variables
+EPOCH=3
 DATA_PATH="/vol/home/s3705609/Desktop/data_vatex"
 job_name="xclip_vatex_aug_run_batch16_num_pos2"
+CHECKPOINT_PATH="${DATA_PATH}/x-clip_checkpoints/${job_name}/pytorch_model.bin.${EPOCH}" # Replace {EPOCH} with actual epoch number
 
 # Use torchrun instead of torch.distributed.launch (recommended in newer PyTorch)
 python -m torch.distributed.run --nproc_per_node=1 main_xclip_aug.py \
@@ -16,6 +18,7 @@ python -m torch.distributed.run --nproc_per_node=1 main_xclip_aug.py \
     --data_path ${DATA_PATH} \
     --features_path ${DATA_PATH}/clips \
     --output_dir ${DATA_PATH}/x-clip_checkpoints/${job_name} \
+    --resume_model ${CHECKPOINT_PATH} \
     --max_words 32 \
     --max_frames 12 \
     --datatype vatex \
