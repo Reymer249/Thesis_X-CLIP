@@ -7,25 +7,17 @@ x_recall = ["R@1", "R@5", "R@10", "Avg. Recall"]
 x_rank = ["Mean Rank"]
 
 # Shared group names and colors
-group_labels = ["Neg=2, Pos=2", "Neg=2, Pos=2 - LLM", "Neg=2, Pos=2;<br>Set size 20", "Neg=1, Pos=1;<br>Set size 20",
-    "Neg=1, Pos=1;<br>Set size 5"]
-title_font_size = 36
-title_font_size_x = 20
-title_font_size_y = 20
-ticks_font_size_x = 24
-ticks_font_size_y = 24
-legend_title_font_size = 28
-legend_font_size = 24
-subplots_name_size = 24
+group_labels = ["Batch 64<br>(Original Study;<br>Coarse)", "Batch 64<br>(Original Study;<br>Fine)",
+                "Batch 16;<br>0.2 data<br>(Replicated)", "Batch 16;<br>0.2 data<br>Neg=2"]
 
 # V2T Data
 v2t_data = {
-    "Batch 64<br>(Original Study;<br>Coarse)":([0, 0, 0, 91.1], 0),
-    "Batch 64<br>(Original Study;<br>Fine)":([0, 0, 0, 85.3], 0),
+    "Batch 64<br>(Original Study;<br>Coarse)": ([0, 0, 0, 91.1], 0),
+    "Batch 64<br>(Original Study;<br>Fine)": ([0, 0, 0, 85.3], 0),
     "Batch 64<br>(Replicated)": ([55.2, 85.1, 91.8], 5.05),
     "Batch 16<br>(Replicated)": ([53.5, 83.9, 90.9], 5.67),
-    "Control": ([73.4, 94.4, 97.6], 2.21),
-    "Neg=2": ([65.3, 92.9, 97.8], 2.38),
+    "Batch 16;<br>0.2 data<br>(Replicated)": ([73.4, 94.4, 97.6], 2.21),
+    "Batch 16;<br>0.2 data<br>Neg=2": ([65.3, 92.9, 97.8], 2.38),
     "Neg=2 - LLM": ([70.9, 93.8, 96.9], 2.26),
     "Neg=4": ([65.0, 93.7, 97.0], 2.23),
     "Neg=8": ([62.1, 91.3, 96.2], 2.72),
@@ -43,8 +35,8 @@ t2v_data = {
     "Batch 64<br>(Original Study;<br>Fine)": ([0, 0, 0, 78.2], 0),
     "Batch 64<br>(Replicated)": ([39.0, 70.2, 81.5], 15.33),
     "Batch 16<br>(Replicated)": ([37.2, 68.8, 80.3], 24.0),
-    "Control": ([56.1, 85.0, 91.3], 5.19),
-    "Neg=2": ([57.1, 85.7, 92.7], 5.63),
+    "Batch 16;<br>0.2 data<br>(Replicated)": ([56.1, 85.0, 91.3], 5.19),
+    "Batch 16;<br>0.2 data<br>Neg=2": ([57.1, 85.7, 92.7], 5.63),
     "Neg=2 - LLM": ([57.7, 85.2, 92.0], 4.77),
     "Neg=4": ([57.3, 86.1, 92.7], 5.03),
     "Neg=8": ([56.5, 85.9, 92.7], 5.18),
@@ -159,7 +151,8 @@ fig.update_layout(
     barmode="group",
     title={
         "text": "Recalls and Mean Rank on Evaluation Set (training with 0.2 data, batch=16)",
-        "font": {"size": title_font_size}
+        "font": {"size": title_font},
+        "y": title_y
     },
     legend={
         "title": {"text": "Training Condition", "font": {"size": legend_title_font_size}},
@@ -174,8 +167,9 @@ for annotation in fig['layout']['annotations']:
 
 for i in range(1, 3):
     for j in range(1, 3):
-        fig.update_xaxes(title_font={"size": title_font_size_x}, tickfont={"size": ticks_font_size_x}, row=i, col=j)
-        fig.update_yaxes(title_font={"size": title_font_size_y}, tickfont={"size": ticks_font_size_y}, row=i, col=j)
+        fig.update_xaxes(title_font={"size": xaxis_title_size}, tickfont={"size": xaxis_tickfont_size}, row=i, col=j)
+        fig.update_yaxes(title_font={"size": yaxis_title_size}, tickfont={"size": yaxis_tickfont_size}, row=i, col=j)
 
 # Show the figure
 fig.show()
+fig.write_image("recall.svg")
