@@ -7,8 +7,8 @@ x_recall = ["R@1", "R@5", "R@10", "Avg. Recall"]
 x_rank = ["Mean Rank"]
 
 # Shared group names and colors
-group_labels = ["Batch 64<br>(Original Study;<br>Coarse)", "Batch 64<br>(Original Study;<br>Fine)",
-                "Batch 16;<br>0.2 data<br>(Replicated)", "Batch 16;<br>0.2 data<br>Neg=2"]
+group_labels = ["Control                         <br>(Neg=0, Pos=0)", "Neg=2",
+                "Neg=2 - LLM", "Neg=2, Pos=2", "Neg=2, Pos=2 - LLM"]
 
 # V2T Data
 v2t_data = {
@@ -16,8 +16,8 @@ v2t_data = {
     "Batch 64<br>(Original Study;<br>Fine)": ([0, 0, 0, 85.3], 0),
     "Batch 64<br>(Replicated)": ([55.2, 85.1, 91.8], 5.05),
     "Batch 16<br>(Replicated)": ([53.5, 83.9, 90.9], 5.67),
-    "Batch 16;<br>0.2 data<br>(Replicated)": ([73.4, 94.4, 97.6], 2.21),
-    "Batch 16;<br>0.2 data<br>Neg=2": ([65.3, 92.9, 97.8], 2.38),
+    "Control                         <br>(Neg=0, Pos=0)": ([73.4, 94.4, 97.6], 2.21),
+    "Neg=2": ([65.3, 92.9, 97.8], 2.38),
     "Neg=2 - LLM": ([70.9, 93.8, 96.9], 2.26),
     "Neg=4": ([65.0, 93.7, 97.0], 2.23),
     "Neg=8": ([62.1, 91.3, 96.2], 2.72),
@@ -35,8 +35,8 @@ t2v_data = {
     "Batch 64<br>(Original Study;<br>Fine)": ([0, 0, 0, 78.2], 0),
     "Batch 64<br>(Replicated)": ([39.0, 70.2, 81.5], 15.33),
     "Batch 16<br>(Replicated)": ([37.2, 68.8, 80.3], 24.0),
-    "Batch 16;<br>0.2 data<br>(Replicated)": ([56.1, 85.0, 91.3], 5.19),
-    "Batch 16;<br>0.2 data<br>Neg=2": ([57.1, 85.7, 92.7], 5.63),
+    "Control                         <br>(Neg=0, Pos=0)": ([56.1, 85.0, 91.3], 5.19),
+    "Neg=2": ([57.1, 85.7, 92.7], 5.63),
     "Neg=2 - LLM": ([57.7, 85.2, 92.0], 4.77),
     "Neg=4": ([57.3, 86.1, 92.7], 5.03),
     "Neg=8": ([56.5, 85.9, 92.7], 5.18),
@@ -61,7 +61,7 @@ fig = make_subplots(
     cols=2,
     subplot_titles=("V2T Recall", "V2T Mean Rank", "T2V Recall", "T2V Mean Rank"),
     column_widths=[0.75, 0.25],
-    horizontal_spacing=0.05
+    horizontal_spacing=0.07
 )
 
 # Plot traces
@@ -147,19 +147,32 @@ fig.update_yaxes(title_text="Mean Rank", row=1, col=2)
 fig.update_yaxes(title_text="Recall (%)", row=2, col=1)
 fig.update_yaxes(title_text="Mean Rank", row=2, col=2)
 
+coef = 0.66
+
+title_font = int(76*coef)
+title_y = 0.99
+legend_font_size = int(48*coef)
+legend_title_font_size = int(56*coef)
+xaxis_tickfont_size = int(48*coef)
+xaxis_title_size = int(48*coef)
+yaxis_tickfont_size = int(48*coef)
+yaxis_title_size = int(48*coef)
+subplots_name_size = int(48*coef)
+
 fig.update_layout(
     barmode="group",
     title={
-        "text": "Recalls and Mean Rank on Evaluation Set (training with 0.2 data, batch=16)",
+        "text": "Recalls and Mean Rank on Evaluation Set (0.2 data, batch=16)",
         "font": {"size": title_font},
         "y": title_y
     },
     legend={
-        "title": {"text": "Training Condition", "font": {"size": legend_title_font_size}},
+        "title": {"text": "Training Condition    ", "font": {"size": legend_title_font_size}},
         "font": {"size": legend_font_size}
     },
     height=1080,
-    width=1920
+    width=1920,
+    margin=dict(r=300)  # Add this line
 )
 
 for annotation in fig['layout']['annotations']:
@@ -171,5 +184,4 @@ for i in range(1, 3):
         fig.update_yaxes(title_font={"size": yaxis_title_size}, tickfont={"size": yaxis_tickfont_size}, row=i, col=j)
 
 # Show the figure
-fig.show()
 fig.write_image("recall.svg")

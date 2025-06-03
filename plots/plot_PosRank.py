@@ -25,25 +25,25 @@ chen_hard_neg = go.Bar(x=x, y=y_chen_hard_neg, name="Batch 64<br>(Original Study
 
 batch_64_full_data = go.Bar(x=x, y=y_batch_64_full_data, name="Batch 64<br>(Replicated)", marker_color=colors[0], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 batch_16_full_data = go.Bar(x=x, y=y_batch_16_full_data, name="Batch 16<br>(Replicated)", marker_color=colors[0], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
-batch_16_02_data = go.Bar(x=x, y=y_batch_16_02data, name="Batch 16;<br>0.2 data<br>(Replicated)", marker_color=colors[2], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
+batch_16_02_data = go.Bar(x=x, y=y_batch_16_02data, name="Control                                 <br>(Neg=0, Pos=0)", marker_color=colors[0], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 
-neg_2 = go.Bar(x=x, y=y_neg_2, name="Batch 16;<br>0.2 data<br>Neg=2", marker_color=colors[3], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
+neg_2 = go.Bar(x=x, y=y_neg_2, name="Neg=2", marker_color=colors[1], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 neg_2_llm = go.Bar(x=x, y=y_neg_2_llm, name="Neg=2 - LLM", marker_color=colors[2], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 neg_4 = go.Bar(x=x, y=y_neg_4, name="Neg=4", marker_color=colors[2], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 neg_8 = go.Bar(x=x, y=y_neg_8, name="Neg=8", marker_color=colors[3], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 
-neg_2_pos_2 = go.Bar(x=x, y=y_neg_2_pos_2, name="Neg=2, Pos=2", marker_color=colors[0], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
-neg_2_pos_2_llm = go.Bar(x=x, y=y_neg_2_pos_2_llm, name="Neg=2, Pos=2 - LLM", marker_color=colors[1], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
+neg_2_pos_2 = go.Bar(x=x, y=y_neg_2_pos_2, name="Neg=2, Pos=2", marker_color=colors[3], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
+neg_2_pos_2_llm = go.Bar(x=x, y=y_neg_2_pos_2_llm, name="Neg=2, Pos=2 - LLM", marker_color=colors[4], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 
 neg_2_pos_2_set20 = go.Bar(x=x, y=y_neg_2_pos_2_set20, name="Neg=2, Pos=2;<br>Set size 20", marker_color=colors[2], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 neg_1_pos_1_set20 = go.Bar(x=x, y=y_neg_1_pos_1_set20, name="Neg=1, Pos=1;<br>Set size 20", marker_color=colors[3], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 neg_1_pos_1_set5 = go.Bar(x=x, y=y_neg_1_pos_1_set5, name="Neg=1, Pos=1;<br>Set size 5", marker_color=colors[4], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 
-fig = go.Figure(data=[chen_coarse, chen_hard_neg, batch_16_02_data, neg_2])
+fig = go.Figure(data=[batch_16_02_data, neg_2, neg_2_llm, neg_2_pos_2, neg_2_pos_2_llm])
 fig.update_layout(
     barmode="group",
     title={
-        "text": "PosRank on evaluation set",
+        "text": "PosRank on Evaluation Set (0.2 data, batch 16)",
         "font": {"size": title_font},
         "y": title_y
     },
@@ -61,6 +61,4 @@ fig.update_layout(
     width=1920
 )
 
-
-fig.show()
 fig.write_image("posrank.svg")

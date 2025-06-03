@@ -6,6 +6,8 @@ import plotly.express as px
 import plotly.figure_factory as ff
 from collections import Counter
 
+from constants import *
+
 
 def analyze_sentence_lengths(json_file_path):
     # Load the JSON data from file
@@ -90,7 +92,7 @@ def plot_distribution(word_counts):
             marker_color='skyblue',
             marker_line_color='black',
             marker_line_width=1.5,  # Slightly thicker lines
-            opacity=0.7,
+            opacity=0.75,
             name='Frequency'
         ),
         row=1, col=1
@@ -103,7 +105,7 @@ def plot_distribution(word_counts):
             marker_color='lightseagreen',
             name='Word Counts',
             boxmean=True,  # adds a marker for the mean
-            line=dict(width=2)  # Thicker box lines
+            line=dict(width=2)  # Thicker box lines,
         ),
         row=2, col=1
     )
@@ -115,42 +117,42 @@ def plot_distribution(word_counts):
         showlegend=False,
         font=dict(
             family="Arial, sans-serif",
-            size=18,  # Larger base font size
+            size=48,  # Larger base font size
             color="#333"
         ),
     )
-
+    coef = 0.66
     # Update subplot titles with larger font
     for i in range(len(fig.layout.annotations)):
-        fig.layout.annotations[i].font.size = 24
+        fig.layout.annotations[i].font.size = subplots_name_size*coef
 
     # Update x and y axis labels with larger font sizes
     fig.update_xaxes(
         title_text="Number of Words",
-        title_font=dict(size=20, family="Arial, sans-serif"),
-        tickfont=dict(size=16),
+        title_font=dict(size=int(xaxis_title_size*coef), family="Arial, sans-serif"),
+        tickfont=dict(size=int(xaxis_tickfont_size*coef)),
         row=1, col=1
     )
     fig.update_yaxes(
         title_text="Frequency",
-        title_font=dict(size=20, family="Arial, sans-serif"),
-        tickfont=dict(size=16),
+        title_font=dict(size=int(yaxis_title_size*coef), family="Arial, sans-serif"),
+        tickfont=dict(size=int(yaxis_tickfont_size*coef)),
         row=1, col=1
     )
 
     fig.update_xaxes(
         title_text="Number of Words",
-        title_font=dict(size=20, family="Arial, sans-serif"),
-        tickfont=dict(size=16),
+        title_font=dict(size=int(xaxis_title_size*coef), family="Arial, sans-serif"),
+        tickfont=dict(size=int(xaxis_tickfont_size*coef)),
         row=2, col=1
     )
     fig.update_yaxes(
-        tickfont=dict(size=16),
+        tickfont=dict(size=int(yaxis_tickfont_size*coef)),
         row=2, col=1
     )
 
     # Save as HTML file for interactivity
-    fig.write_html('sentence_length_distribution.html')
+    fig.write_image('sentence_length_distribution.svg')
 
     # Create a frequency distribution for the most common sentence lengths
     counter = Counter(word_counts)
@@ -201,7 +203,7 @@ def plot_distribution(word_counts):
     )
 
     # Save as HTML file
-    bar_fig.write_html('common_sentence_lengths.html')
+    bar_fig.write_image('common_sentence_lengths.svg')
 
 
 # Example usage
