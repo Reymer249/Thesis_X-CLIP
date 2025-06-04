@@ -6,7 +6,7 @@ from collections import Counter
 from constants import *
 
 type = "Negative"
-set_size = 100
+set_size = 5
 file_path = f"/vol/home/s3705609/Desktop/data_vatex/splits_txt/hard_{type.lower()}s_all_pos_{set_size}.json"
 # Load the JSON file
 with open(file_path, 'r') as f:
