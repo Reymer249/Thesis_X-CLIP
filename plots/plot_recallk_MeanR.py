@@ -17,8 +17,6 @@ ticks_font_size_y = 24
 legend_title_font_size = 28
 legend_font_size = 24
 subplots_name_size = 24
-group_labels = ["Control                         <br>(Neg=0, Pos=0)", "Neg=2",
-                "Neg=2 - LLM", "Neg=2, Pos=2", "Neg=2, Pos=2 - LLM"]
 
 # V2T Data
 v2t_data = {

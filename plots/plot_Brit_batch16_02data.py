@@ -44,8 +44,8 @@ fig.update_layout(
         "x": 0.02
     },
     legend={
-        "title": {"text": "Training Condition", "font": {"size": 28}},
-        "font": {"size": 24},
+        "title": {"text": "Training Condition", "font": {"size": legend_title_font_size}},
+        "font": {"size": legend_font_size},
     },
     xaxis={
         "tickfont": {"size": xaxis_tickfont_size}  # X-axis tick labels size
