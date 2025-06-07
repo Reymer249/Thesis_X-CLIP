@@ -47,19 +47,19 @@ fig = go.Figure(data=[batch_16_02_data, neg_2_pos_2, neg_2_pos_2_set20, neg_2_po
 fig.update_layout(
     barmode="group",
     title={
-        "text": "PosRank on evaluation set (0.2 data, batch 16)",
-        "font": {"size": 76},
-        "y": 0.99
+        "text": "PosRank on Evaluation Set (0.2 data, batch 16)",
+        "font": {"size": title_font},
+        "y": title_y
     },
     legend={
-        "title": {"text": "Training Condition", "font": {"size": 56}},
-        "font": {"size": 48},
+        "title": {"text": "Training Condition", "font": {"size": legend_title_font_size}},
+        "font": {"size": legend_font_size},
     },
     xaxis={
-        "tickfont": {"size": 48}  # X-axis tick labels size
+        "tickfont": {"size": xaxis_tickfont_size}  # X-axis tick labels size
     },
     yaxis={
-        "tickfont": {"size": 48}  # Y-axis tick labels size
+        "tickfont": {"size": yaxis_tickfont_size}  # Y-axis tick labels size
     },
     height=1080,
     width=1920

@@ -17,6 +17,8 @@ ticks_font_size_y = 24
 legend_title_font_size = 28
 legend_font_size = 24
 subplots_name_size = 24
+group_labels = ["Control                         <br>(Neg=0, Pos=0)", "Neg=2",
+                "Neg=2 - LLM", "Neg=2, Pos=2", "Neg=2, Pos=2 - LLM"]
 
 # V2T Data
 v2t_data = {
@@ -161,18 +163,32 @@ fig.update_yaxes(title_text="Mean Rank", row=1, col=2)
 fig.update_yaxes(title_text="Recall (%)", row=2, col=1)
 fig.update_yaxes(title_text="Mean Rank", row=2, col=2)
 
+coef = 0.66
+
+title_font = int(76*coef)
+title_y = 0.99
+legend_font_size = int(48*coef)
+legend_title_font_size = int(56*coef)
+xaxis_tickfont_size = int(48*coef)
+xaxis_title_size = int(48*coef)
+yaxis_tickfont_size = int(48*coef)
+yaxis_title_size = int(48*coef)
+subplots_name_size = int(48*coef)
+
 fig.update_layout(
     barmode="group",
     title={
         "text": "Recalls and Mean Rank on Evaluation Set (0.2 data, batch=16)",
-        "font": {"size": title_font_size}
+        "font": {"size": title_font},
+        "y": title_y
     },
     legend={
-        "title": {"text": "Training Condition", "font": {"size": legend_title_font_size}},
+        "title": {"text": "Training Condition    ", "font": {"size": legend_title_font_size}},
         "font": {"size": legend_font_size}
     },
     height=1080,
-    width=1920
+    width=1920,
+    margin=dict(r=300)  # Add this line
 )
 
 for annotation in fig['layout']['annotations']:
@@ -180,9 +196,8 @@ for annotation in fig['layout']['annotations']:
 
 for i in range(1, 3):
     for j in range(1, 3):
-        fig.update_xaxes(title_font={"size": title_font_size_x}, tickfont={"size": ticks_font_size_x}, row=i, col=j)
-        fig.update_yaxes(title_font={"size": title_font_size_y}, tickfont={"size": ticks_font_size_y}, row=i, col=j)
+        fig.update_xaxes(title_font={"size": xaxis_title_size}, tickfont={"size": xaxis_tickfont_size}, row=i, col=j)
+        fig.update_yaxes(title_font={"size": yaxis_title_size}, tickfont={"size": yaxis_tickfont_size}, row=i, col=j)
 
 # Show the figure
-fig.show()
 fig.write_image("recall.svg")

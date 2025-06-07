@@ -38,18 +38,20 @@ fig = go.Figure(data=[trace_control, trace2_2, trace2_2_20, trace2_2_5])
 fig.update_layout(
     barmode="group",
     title={
-        "text": "Brittleness on Evaluation Set (0.2 data, batch=16)",
-        "font": {"size": 36}
+        "text": "Brittleness on Evaluation Set (0.2 data, batch 16)              ",
+        "font": {"size": title_font},
+        "y": title_y,
+        "x": 0.02
     },
     legend={
         "title": {"text": "Training Condition", "font": {"size": 28}},
         "font": {"size": 24},
     },
     xaxis={
-        "tickfont": {"size": 24}  # X-axis tick labels size
+        "tickfont": {"size": xaxis_tickfont_size}  # X-axis tick labels size
     },
     yaxis={
-        "tickfont": {"size": 24}  # Y-axis tick labels size
+        "tickfont": {"size": yaxis_tickfont_size}  # Y-axis tick labels size
     },
     height=1080,
     width=1920

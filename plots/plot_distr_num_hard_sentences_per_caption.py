@@ -3,9 +3,11 @@ import plotly.graph_objects as go
 import pandas as pd
 from collections import Counter
 
+from constants import *
 
-type = "Positive"
-file_path = f"/vol/home/s3705609/Desktop/data_vatex/splits_txt/hard_{type.lower()}s_all_pos_100.json"
+type = "Negative"
+set_size = 5
+file_path = f"/vol/home/s3705609/Desktop/data_vatex/splits_txt/hard_{type.lower()}s_all_pos_{set_size}.json"
 # Load the JSON file
 with open(file_path, 'r') as f:
     data = json.load(f)
@@ -30,9 +32,11 @@ fig.add_trace(go.Bar(
     opacity=0.7
 ))
 
+coef = 0.66
+
 # Update layout
 fig.update_layout(
-    title=f'Distribution of Hard {type} Sentences per Caption',
+    title=f'Distribution of Hard {type} Sentences per Caption (max length is {set_size})',
     xaxis_title='Number of Sentences',
     yaxis_title='Frequency (Number of Captions)',
     bargap=0,
@@ -46,12 +50,18 @@ fig.update_layout(
 )
 
 fig.update_xaxes(
-    title_font=dict(size=20, family="Arial, sans-serif"),
-    tickfont=dict(size=16)
+    title_font=dict(size=int(xaxis_title_size*coef), family="Arial, sans-serif"),
+    tickfont=dict(size=int(xaxis_tickfont_size*coef))
 )
 fig.update_yaxes(
-    title_font=dict(size=20, family="Arial, sans-serif"),
-    tickfont=dict(size=16)
+    title_font=dict(size=int(yaxis_title_size*coef), family="Arial, sans-serif"),
+    tickfont=dict(size=int(yaxis_tickfont_size*coef))
+)
+
+fig.update_layout(
+    title={
+        "font": {"size": int(title_font*coef)},
+    }
 )
 
 # Show statistics
@@ -82,7 +92,7 @@ if len(videos_with_least) > 5:
     print(f"  ...and {len(videos_with_least) - 5} more")
 
 # Show plot
-fig.show()
+fig.write_image(f"disrt_{type.lower()}_sentences_set_{set_size}.svg")
 
 # Save plot if needed
 # fig.write_html("video_sentence_distribution.html")
