@@ -7,8 +7,8 @@ x_recall = ["R@1", "R@5", "R@10", "Avg. Recall"]
 x_rank = ["Mean Rank"]
 
 # Shared group names and colors
-group_labels = ["Neg=2, Pos=2", "Neg=2, Pos=2 - LLM", "Neg=2, Pos=2;<br>Set size 20", "Neg=1, Pos=1;<br>Set size 20",
-    "Neg=1, Pos=1;<br>Set size 5"]
+group_labels = ["Control<br>(Neg=0, Pos=0)", "Neg=2 (set size 100)<br>Pos=2 (set size 40)",
+                "Neg=2 (set size 20)<br>Pos=2 (set size 20)", "Neg=2 (set size 5)<br>Pos=2 (set size 5)"]
 title_font_size = 36
 title_font_size_x = 20
 title_font_size_y = 20
@@ -24,15 +24,18 @@ v2t_data = {
     "Batch 64<br>(Original Study;<br>Fine)":([0, 0, 0, 85.3], 0),
     "Batch 64<br>(Replicated)": ([55.2, 85.1, 91.8], 5.05),
     "Batch 16<br>(Replicated)": ([53.5, 83.9, 90.9], 5.67),
-    "Control": ([73.4, 94.4, 97.6], 2.21),
+    "Control<br>(Neg=0, Pos=0)": ([73.4, 94.4, 97.6], 2.21),
     "Neg=2": ([65.3, 92.9, 97.8], 2.38),
     "Neg=2 - LLM": ([70.9, 93.8, 96.9], 2.26),
     "Neg=4": ([65.0, 93.7, 97.0], 2.23),
     "Neg=8": ([62.1, 91.3, 96.2], 2.72),
-    "Neg=2, Pos=2": ([62.1, 93.4, 97.9], 2.51),
+    "Neg=2 (set size 100)<br>Pos=2 (set size 40)": ([62.1, 93.4, 97.9], 2.51),
     "Neg=2, Pos=2 - LLM": ([67.8, 93.1, 97.1], 2.57),
-    "Neg=2, Pos=2;<br>Set size 20": ([62.5, 92.9, 96.6], 2.81),
+    "Neg=2 (set size 20)<br>Pos=2 (set size 20)": ([62.5, 92.9, 96.6], 2.81),
+    "Neg=1, Pos=2;<br>Set size 20": ([70.1, 94.4, 96.6], 2.60),
+    "Neg=2, Pos=1;<br>Set size 20": ([64.5, 93.1, 97.5], 2.42),
     "Neg=1, Pos=1;<br>Set size 20": ([68.7, 94.2, 97.5], 2.35),
+    "Neg=2 (set size 5)<br>Pos=2 (set size 5)": ([66.4, 93.5, 97.8], 2.40),
     "Neg=1, Pos=1;<br>Set size 5": ([70.2, 94.1, 97.3], 2.40),
 
 }
@@ -43,16 +46,19 @@ t2v_data = {
     "Batch 64<br>(Original Study;<br>Fine)": ([0, 0, 0, 78.2], 0),
     "Batch 64<br>(Replicated)": ([39.0, 70.2, 81.5], 15.33),
     "Batch 16<br>(Replicated)": ([37.2, 68.8, 80.3], 24.0),
-    "Control": ([56.1, 85.0, 91.3], 5.19),
+    "Control<br>(Neg=0, Pos=0)": ([56.1, 85.0, 91.3], 5.19),
     "Neg=2": ([57.1, 85.7, 92.7], 5.63),
     "Neg=2 - LLM": ([57.7, 85.2, 92.0], 4.77),
     "Neg=4": ([57.3, 86.1, 92.7], 5.03),
     "Neg=8": ([56.5, 85.9, 92.7], 5.18),
-    "Neg=2, Pos=2": ([57.2, 85.7, 92.7], 4.5),
+    "Neg=2 (set size 100)<br>Pos=2 (set size 40)": ([57.2, 85.7, 92.7], 4.5),
     "Neg=2, Pos=2 - LLM": ([57.7, 85.8, 92.5], 4.5),
-    "Neg=2, Pos=2;<br>Set size 20": ([56.5, 84.5, 92.1], 4.84),
+    "Neg=2 (set size 20)<br>Pos=2 (set size 20)": ([56.5, 84.5, 92.1], 4.84),
+    "Neg=1, Pos=2;<br>Set size 20": ([57.2, 85.8, 92.0], 4.75),
+    "Neg=2, Pos=1;<br>Set size 20": ([55.6, 85.0, 92.4], 5.26),
     "Neg=1, Pos=1;<br>Set size 20": ([56.6, 85.4, 91.8], 4.98),
-    "Neg=1, Pos=1;<br>Set size 5": ([57.0, 85.0, 91.9], 5.08),
+    "Neg=2, Pos=2;<br>Set size 5": ([57.1, 85.6, 92.1], 5.11),
+    "Neg=2 (set size 5)<br>Pos=2 (set size 5)": ([57.0, 85.0, 91.9], 5.08),
 
 }
 
@@ -158,7 +164,7 @@ fig.update_yaxes(title_text="Mean Rank", row=2, col=2)
 fig.update_layout(
     barmode="group",
     title={
-        "text": "Recalls and Mean Rank on Evaluation Set (training with 0.2 data, batch=16)",
+        "text": "Recalls and Mean Rank on Evaluation Set (0.2 data, batch=16)",
         "font": {"size": title_font_size}
     },
     legend={
@@ -179,3 +185,4 @@ for i in range(1, 3):
 
 # Show the figure
 fig.show()
+fig.write_image("recall.svg")
