@@ -38,18 +38,21 @@ neg_8 = go.Bar(x=x, y=y_neg_8, name="Neg=8", marker_color=colors[3], opacity=opa
 neg_2_pos_2 = go.Bar(x=x, y=y_neg_2_pos_2, name="Neg=2 (set size 100)<br>Pos=2 (set size 40)", marker_color=colors[1], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 neg_2_pos_2_llm = go.Bar(x=x, y=y_neg_2_pos_2_llm, name="Neg=2, Pos=2 - LLM", marker_color=colors[1], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 
-neg_2_pos_2_set20 = go.Bar(x=x, y=y_neg_2_pos_2_set20, name="Neg=2 (set size 20)<br>Pos=2 (set size 20)", marker_color=colors[2], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
-neg_1_pos_1_set20 = go.Bar(x=x, y=y_neg_1_pos_1_set20, name="Neg=1 (set size 20)<br>Pos=1 (set size 20)", marker_color=colors[3], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
+neg_2_pos_2_set20 = go.Bar(x=x, y=y_neg_2_pos_2_set20, name="Neg=2, Pos=2", marker_color=colors[1], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
+neg_1_pos_2_set20 = go.Bar(x=x, y=y_neg_1_pos_2_set20, name="Neg=1, Pos=2", marker_color=colors[2], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
+neg_2_pos_1_set20 = go.Bar(x=x, y=y_neg_2_pos_1_set20, name="Neg=2, Pos=1", marker_color=colors[3], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
+neg_1_pos_1_set20 = go.Bar(x=x, y=y_neg_1_pos_1_set20, name="Neg=1, Pos=1", marker_color=colors[4], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 neg_2_pos_2_set5 = go.Bar(x=x, y=y_neg_2_pos_2_set5, name="Neg=2 (set size 5)<br>Pos=2 (set size 5)", marker_color=colors[3], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 neg_1_pos_1_set5 = go.Bar(x=x, y=y_neg_1_pos_1_set5, name="Neg=1 (set size 5)<br>Pos=1 (set size 5)", marker_color=colors[4], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 
-fig = go.Figure(data=[batch_16_02_data, neg_2_pos_2, neg_2_pos_2_set20, neg_2_pos_2_set5])
+fig = go.Figure(data=[batch_16_02_data, neg_2_pos_2_set20, neg_1_pos_2_set20, neg_2_pos_1_set20, neg_1_pos_1_set20])
 fig.update_layout(
     barmode="group",
     title={
-        "text": "PosRank on Evaluation Set (0.2 data, batch 16)",
+        "text": "PosRank on Evaluation Set (0.2 data, batch 16, set 20)",
         "font": {"size": title_font},
-        "y": title_y
+        "y": title_y,
+        "x": 0.02
     },
     legend={
         "title": {"text": "Training Condition", "font": {"size": legend_title_font_size}},

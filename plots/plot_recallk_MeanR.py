@@ -7,8 +7,7 @@ x_recall = ["R@1", "R@5", "R@10", "Avg. Recall"]
 x_rank = ["Mean Rank"]
 
 # Shared group names and colors
-group_labels = ["Control<br>(Neg=0, Pos=0)", "Neg=2 (set size 100)<br>Pos=2 (set size 40)",
-                "Neg=2 (set size 20)<br>Pos=2 (set size 20)", "Neg=2 (set size 5)<br>Pos=2 (set size 5)"]
+group_labels = ["Control<br>(Neg=0, Pos=0)", "Neg=2, Pos=2", "Neg=1, Pos=2", "Neg=2, Pos=1", "Neg=1, Pos=1"]
 title_font_size = 36
 title_font_size_x = 20
 title_font_size_y = 20
@@ -31,10 +30,10 @@ v2t_data = {
     "Neg=8": ([62.1, 91.3, 96.2], 2.72),
     "Neg=2 (set size 100)<br>Pos=2 (set size 40)": ([62.1, 93.4, 97.9], 2.51),
     "Neg=2, Pos=2 - LLM": ([67.8, 93.1, 97.1], 2.57),
-    "Neg=2 (set size 20)<br>Pos=2 (set size 20)": ([62.5, 92.9, 96.6], 2.81),
-    "Neg=1, Pos=2;<br>Set size 20": ([70.1, 94.4, 96.6], 2.60),
-    "Neg=2, Pos=1;<br>Set size 20": ([64.5, 93.1, 97.5], 2.42),
-    "Neg=1, Pos=1;<br>Set size 20": ([68.7, 94.2, 97.5], 2.35),
+    "Neg=2, Pos=2": ([62.5, 92.9, 96.6], 2.81),
+    "Neg=1, Pos=2": ([70.1, 94.4, 96.6], 2.60),
+    "Neg=2, Pos=1": ([64.5, 93.1, 97.5], 2.42),
+    "Neg=1, Pos=1": ([68.7, 94.2, 97.5], 2.35),
     "Neg=2 (set size 5)<br>Pos=2 (set size 5)": ([66.4, 93.5, 97.8], 2.40),
     "Neg=1, Pos=1;<br>Set size 5": ([70.2, 94.1, 97.3], 2.40),
 
@@ -53,10 +52,10 @@ t2v_data = {
     "Neg=8": ([56.5, 85.9, 92.7], 5.18),
     "Neg=2 (set size 100)<br>Pos=2 (set size 40)": ([57.2, 85.7, 92.7], 4.5),
     "Neg=2, Pos=2 - LLM": ([57.7, 85.8, 92.5], 4.5),
-    "Neg=2 (set size 20)<br>Pos=2 (set size 20)": ([56.5, 84.5, 92.1], 4.84),
-    "Neg=1, Pos=2;<br>Set size 20": ([57.2, 85.8, 92.0], 4.75),
-    "Neg=2, Pos=1;<br>Set size 20": ([55.6, 85.0, 92.4], 5.26),
-    "Neg=1, Pos=1;<br>Set size 20": ([56.6, 85.4, 91.8], 4.98),
+    "Neg=2, Pos=2": ([56.5, 84.5, 92.1], 4.84),
+    "Neg=1, Pos=2": ([57.2, 85.8, 92.0], 4.75),
+    "Neg=2, Pos=1": ([55.6, 85.0, 92.4], 5.26),
+    "Neg=1, Pos=1": ([56.6, 85.4, 91.8], 4.98),
     "Neg=2, Pos=2;<br>Set size 5": ([57.1, 85.6, 92.1], 5.11),
     "Neg=2 (set size 5)<br>Pos=2 (set size 5)": ([57.0, 85.0, 91.9], 5.08),
 
@@ -75,7 +74,7 @@ fig = make_subplots(
     cols=2,
     subplot_titles=("V2T Recall", "V2T Mean Rank", "T2V Recall", "T2V Mean Rank"),
     column_widths=[0.75, 0.25],
-    horizontal_spacing=0.05
+    horizontal_spacing=0.07
 )
 
 # Plot traces
@@ -176,7 +175,7 @@ subplots_name_size = int(48*coef)
 fig.update_layout(
     barmode="group",
     title={
-        "text": "Recalls and Mean Rank on Evaluation Set (0.2 data, batch=16)",
+        "text": "Recalls and Mean Rank on Evaluation Set (0.2 data, batch=16, set 20)",
         "font": {"size": title_font},
         "y": title_y
     },
