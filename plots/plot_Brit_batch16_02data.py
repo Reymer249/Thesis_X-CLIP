@@ -6,7 +6,7 @@ x = ["noun", "adj", "verb", "adv", "prep"]
 y_control = [0.17, 0.24, 0.28, 0.25, 0.31]
 y_neg_2 = [0.48, 0.55, 0.39, 0.39, 0.64]
 y_neg_2_llm = [0.37, 0.29, 0.28, 0.29, 0.29]
-y_neg_2_2 = [0.36, 0.57, 0.36, 0.39, 0.63]
+y_neg_2_2 = [0.39, 0.57, 0.36, 0.39, 0.63]
 y_neg_2_llm_2_llm = [0.31, 0.26, 0.27, 0.25, 0.3]
 
 y_neg_4 = [0.50, 0.57, 0.38, 0.41, 0.65]
@@ -29,7 +29,7 @@ trace2_2_20 = go.Bar(x=x, y=y_neg_2_pos_2_set20, name="Neg=2, Pos=2", marker_col
 trace1_2_20 = go.Bar(x=x, y=y_neg_1_pos_2_set20, name="Neg=1, Pos=2", marker_color=colors[2], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 trace2_1_20 = go.Bar(x=x, y=y_neg_2_pos_1_set20, name="Neg=2, Pos=1", marker_color=colors[3], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 trace1_1_20 = go.Bar(x=x, y=y_neg_1_pos_1_set20, name="Neg=1, Pos=1", marker_color=colors[4], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
-trace2_2_5 = go.Bar(x=x, y=y_neg_1_pos_1_set5, name="Neg=2 (set size 5)<br>Pos=2 (set size 5)", marker_color=colors[3], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
+trace2_2_5 = go.Bar(x=x, y=y_neg_2_pos_2_set5, name="Neg=2 (set size 5)<br>Pos=2 (set size 5)", marker_color=colors[3], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 trace1_1_5 = go.Bar(x=x, y=y_neg_1_pos_1_set5, name="Neg=1, Pos=1;<br>Set size 5", marker_color=colors[4], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 
 
