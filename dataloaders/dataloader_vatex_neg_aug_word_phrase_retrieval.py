@@ -27,7 +27,7 @@ cls = spacy.util.get_lang_class('en')
 stop_words = cls.Defaults.stop_words
 nlp = spacy.load("en_core_web_sm")
 
-from dataloaders.hard_negatives_sampler import HardNegativeOrPositiveSampler
+from dataloaders.hard_negatives_positives_sampler import HardNegativeOrPositiveSampler
 
 
 class VATEX_TrainDataLoader(Dataset):

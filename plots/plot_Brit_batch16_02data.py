@@ -9,6 +9,8 @@ y_neg_2_llm = [0.37, 0.29, 0.28, 0.29, 0.29]
 y_neg_2_2 = [0.39, 0.57, 0.36, 0.39, 0.63]
 y_neg_2_llm_2_llm = [0.31, 0.26, 0.27, 0.25, 0.3]
 
+y_pos_2 = [0.145, 0.248, 0.302, 0.261, 0.30]
+
 y_neg_4 = [0.50, 0.57, 0.38, 0.41, 0.65]
 y_neg_8 = [0.51, 0.58, 0.37, 0.39, 0.64]
 
@@ -32,15 +34,16 @@ trace1_1_20 = go.Bar(x=x, y=y_neg_1_pos_1_set20, name="Neg=1, Pos=1", marker_col
 trace2_2_5 = go.Bar(x=x, y=y_neg_2_pos_2_set5, name="Neg=2 (set size 5)<br>Pos=2 (set size 5)", marker_color=colors[3], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 trace1_1_5 = go.Bar(x=x, y=y_neg_1_pos_1_set5, name="Neg=1, Pos=1;<br>Set size 5", marker_color=colors[4], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 
+trace2_pos = go.Bar(x=x, y=y_pos_2, name="Pos=2", marker_color=colors[2], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 
 trace4 = go.Bar(x=x, y=y_neg_4, name="Neg=4", marker_color=colors[2], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 trace8 = go.Bar(x=x, y=y_neg_8, name="Neg=8", marker_color=colors[3], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 
-fig = go.Figure(data=[trace_control, trace2_2_20, trace1_2_20, trace2_1_20, trace1_1_20])
+fig = go.Figure(data=[trace_control, trace2, trace2_pos, trace2_2])
 fig.update_layout(
     barmode="group",
     title={
-        "text": "Brittleness on Evaluation Set (0.2 data, batch 16, set 20)                              ",
+        "text": "Brittleness on Evaluation Set (0.2 data, batch 16)                              ",
         "font": {"size": title_font},
         "y": title_y,
         "x": 0.01

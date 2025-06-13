@@ -7,7 +7,7 @@ x_recall = ["R@1", "R@5", "R@10", "Avg. Recall"]
 x_rank = ["Mean Rank"]
 
 # Shared group names and colors
-group_labels = ["Control<br>(Neg=0, Pos=0)", "Neg=2, Pos=2", "Neg=1, Pos=2", "Neg=2, Pos=1", "Neg=1, Pos=1"]
+group_labels = ["Control<br>(Neg=0, Pos=0)", "Neg=2", "Pos=2", "Neg=2, Pos=2"]
 title_font_size = 36
 title_font_size_x = 20
 title_font_size_y = 20
@@ -28,9 +28,10 @@ v2t_data = {
     "Neg=2 - LLM": ([70.9, 93.8, 96.9], 2.26),
     "Neg=4": ([65.0, 93.7, 97.0], 2.23),
     "Neg=8": ([62.1, 91.3, 96.2], 2.72),
-    "Neg=2 (set size 100)<br>Pos=2 (set size 40)": ([62.1, 93.4, 97.9], 2.51),
+    "Pos=2": ([71.5, 93.8, 97.1], 2.19),
+    "Neg=2, Pos=2": ([62.1, 93.4, 97.9], 2.51),
     "Neg=2, Pos=2 - LLM": ([67.8, 93.1, 97.1], 2.57),
-    "Neg=2, Pos=2": ([62.5, 92.9, 96.6], 2.81),
+    "Neg=2, Pos=2 (set 20)": ([62.5, 92.9, 96.6], 2.81),
     "Neg=1, Pos=2": ([70.1, 94.4, 96.6], 2.60),
     "Neg=2, Pos=1": ([64.5, 93.1, 97.5], 2.42),
     "Neg=1, Pos=1": ([68.7, 94.2, 97.5], 2.35),
@@ -50,9 +51,10 @@ t2v_data = {
     "Neg=2 - LLM": ([57.7, 85.2, 92.0], 4.77),
     "Neg=4": ([57.3, 86.1, 92.7], 5.03),
     "Neg=8": ([56.5, 85.9, 92.7], 5.18),
-    "Neg=2 (set size 100)<br>Pos=2 (set size 40)": ([57.2, 85.7, 92.7], 4.5),
+    "Pos=2": ([56.2, 85.6, 92.2], 4.63),
+    "Neg=2, Pos=2": ([57.2, 85.7, 92.7], 4.5),
     "Neg=2, Pos=2 - LLM": ([57.7, 85.8, 92.5], 4.5),
-    "Neg=2, Pos=2": ([56.5, 84.5, 92.1], 4.84),
+    "Neg=2, Pos=2 (set 20)": ([56.5, 84.5, 92.1], 4.84),
     "Neg=1, Pos=2": ([57.2, 85.8, 92.0], 4.75),
     "Neg=2, Pos=1": ([55.6, 85.0, 92.4], 5.26),
     "Neg=1, Pos=1": ([56.6, 85.4, 91.8], 4.98),
@@ -175,7 +177,7 @@ subplots_name_size = int(48*coef)
 fig.update_layout(
     barmode="group",
     title={
-        "text": "Recalls and Mean Rank on Evaluation Set (0.2 data, batch=16, set 20)",
+        "text": "Recalls and Mean Rank on Evaluation Set (0.2 data, batch=16)",
         "font": {"size": title_font},
         "y": title_y
     },
