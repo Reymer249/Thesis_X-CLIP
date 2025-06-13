@@ -13,6 +13,8 @@ y_neg_2_llm = [0.681, 0.517, 0.379, 0.331, 0.222]
 y_neg_4 = [0.885, 0.854, 0.938, 0.747, 0.737]
 y_neg_8 = [0.891, 0.870, 0.943, 0.763, 0.745]
 
+y_pos_2 = [0.293, 0.363, 0.290, 0.271, 0.178]
+
 y_neg_2_pos_2 = [0.879, 0.843, 0.928, 0.725, 0.679]
 y_neg_2_pos_2_llm = [0.732, 0.511, 0.417, 0.354, 0.229]
 
@@ -35,7 +37,9 @@ neg_2_llm = go.Bar(x=x, y=y_neg_2_llm, name="Neg=2 - LLM", marker_color=colors[2
 neg_4 = go.Bar(x=x, y=y_neg_4, name="Neg=4", marker_color=colors[2], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 neg_8 = go.Bar(x=x, y=y_neg_8, name="Neg=8", marker_color=colors[3], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 
-neg_2_pos_2 = go.Bar(x=x, y=y_neg_2_pos_2, name="Neg=2 (set size 100)<br>Pos=2 (set size 40)", marker_color=colors[1], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
+pos_2 = go.Bar(x=x, y=y_pos_2, name="Pos=2", marker_color=colors[2], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
+
+neg_2_pos_2 = go.Bar(x=x, y=y_neg_2_pos_2, name="Neg=2, Pos=2", marker_color=colors[3], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 neg_2_pos_2_llm = go.Bar(x=x, y=y_neg_2_pos_2_llm, name="Neg=2, Pos=2 - LLM", marker_color=colors[1], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 
 neg_2_pos_2_set20 = go.Bar(x=x, y=y_neg_2_pos_2_set20, name="Neg=2, Pos=2", marker_color=colors[1], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
@@ -45,11 +49,11 @@ neg_1_pos_1_set20 = go.Bar(x=x, y=y_neg_1_pos_1_set20, name="Neg=1, Pos=1", mark
 neg_2_pos_2_set5 = go.Bar(x=x, y=y_neg_2_pos_2_set5, name="Neg=2 (set size 5)<br>Pos=2 (set size 5)", marker_color=colors[3], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 neg_1_pos_1_set5 = go.Bar(x=x, y=y_neg_1_pos_1_set5, name="Neg=1 (set size 5)<br>Pos=1 (set size 5)", marker_color=colors[4], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 
-fig = go.Figure(data=[batch_16_02_data, neg_2_pos_2_set20, neg_1_pos_2_set20, neg_2_pos_1_set20, neg_1_pos_1_set20])
+fig = go.Figure(data=[batch_16_02_data, neg_2, pos_2, neg_2_pos_2])
 fig.update_layout(
     barmode="group",
     title={
-        "text": "PosRank on Evaluation Set (0.2 data, batch 16, set 20)",
+        "text": "PosRank on Evaluation Set (0.2 data, batch 16)",
         "font": {"size": title_font},
         "y": title_y,
         "x": 0.02

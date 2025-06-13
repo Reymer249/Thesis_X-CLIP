@@ -1,6 +1,6 @@
 import plotly.graph_objects as go
 from constants import *
-from plot_recallk_MeanR import v2t_data, t2v_data
+from plot_Recallk_MeanR import v2t_data, t2v_data
 
 # X-axis: V2T and T2V
 x = ["V2T Avg. Recall", "T2V Avg. Recall"]

@@ -2,7 +2,7 @@
 
 # Set variables
 DATA_PATH="/data/s3705609/VATEX"
-job_name="xclip_vatex_run_vibranium_2"
+job_name="xclip_vatex_run"
 
 # Use torchrun instead of torch.distributed.launch (recommended in newer PyTorch)
 python -m torch.distributed.run --nproc_per_node=1 main_xclip.py \
@@ -10,7 +10,7 @@ python -m torch.distributed.run --nproc_per_node=1 main_xclip.py \
     --num_thread_reader=8 \
     --lr 1e-4 \
     --batch_size=64 \
-    --batch_size_val=16 \
+    --batch_size_val=64 \
     --epochs=5 \
     --n_display=100 \
     --data_path ${DATA_PATH} \
