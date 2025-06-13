@@ -12,7 +12,7 @@ This project builds upon the [X-CLIP](https://github.com/xuguohai/X-CLIP) model 
 Due to legal restrictions, we are unable to share the dataset used. This repository includes only the code used for training and evaluation.
 Most of the code is adapted from the original [X-CLIP](https://github.com/xuguohai/X-CLIP) repository.
 
-### What excluded?
+### What is excluded?
 
 1. Dataset, including:
     - video clips 
