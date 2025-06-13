@@ -1,4 +1,15 @@
-#!/usr/bin/env python3
+"""
+    Random Line Selection Utility
+
+    This module provides functionality to randomly select a specified percentage of lines
+    from a text file and write the selected lines to a new output file. It's useful for
+    creating random samples from large datasets, such as selecting a subset of video IDs,
+    user records, or any line-based data for testing or analysis purposes.
+
+    The script maintains the original formatting of each line and ensures no duplicate
+    lines are selected from the input file. The selection is performed without replacement,
+    meaning each line from the input can only appear once in the output.
+"""
 import random
 import sys
 

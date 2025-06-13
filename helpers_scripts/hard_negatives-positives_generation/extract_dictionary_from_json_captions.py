@@ -1,3 +1,8 @@
+"""
+    This module provides functionality to extract and categorize words from video captions
+    based on their parts of speech (POS). It processes JSON files containing video captions,
+    performs POS tagging, validates words, and organizes them into grammatical categories.
+"""
 import json
 import nltk
 import re

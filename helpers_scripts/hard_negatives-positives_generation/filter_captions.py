@@ -1,3 +1,6 @@
+"""
+    Filters JSON file with video captions to include only videos listed in the txt file.
+"""
 import json
 import os
 

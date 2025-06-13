@@ -1,3 +1,6 @@
+"""
+    Removes repetitions from the json file with generated hard positives or negatives.
+"""
 import json
 import sys
 

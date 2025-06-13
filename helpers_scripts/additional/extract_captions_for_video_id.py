@@ -1,5 +1,5 @@
 """
-This scripts extracts captions fot the specific videos from the *RE20.json file.
+    This scripts extracts captions fot the specific videos from the *RE20.json file.
 """
 import json
 

@@ -10,17 +10,72 @@ dataset for our experiments. This repository is the code we used for all our exp
 to share the dataset collected, so this repository contains only the code we used to train the models. The most of the
 code presented here was taken from [X-CLIP](https://github.com/xuguohai/X-CLIP) repository.
 
+### What is not in here?
+
+1. Dataset, including:
+    - video clips 
+    - `vatex_[train/val/test]_avail.txt` - txt files with ids of the videos (one id per line) we 
+   consider for training
+    - `captions.json` (also called in our code captions_avail_formatted.json) - json file with captions for videos of
+   the format:
+
+```
+{
+  "video_id_1": [
+    "description string 1",
+    "description string 2",
+    "description string 3",
+    ...
+  ],
+  "video_id_2": [
+    "description string 1",
+    "description string 2",
+    ...
+  ],
+  ...
+}
+```
+
+2. Hard negatives/positives json files of the format:
+
+```
+{
+  "caption_id_1": [
+    [
+      "hard positive/negative",
+      "POS tag"
+    ],
+    [
+      "hard positive/negative",
+      "POS tag"
+    ],
+    ...
+  ],
+  "caption_id_2": [
+    [
+      "hard positive/negative",
+      "POS tag"
+    ],
+    ...
+  ],
+  ...
+}
+```
+
+Where POS tag specifies the POS tag of the word which was changed. We don't use it anywhere in the code, so it is safe
+to put anything into in. We added it just in case we need it in the future
+
 ### How to run?
 
 Use shell scripts in the `scripts` folder. The main one is `run_xclip.sh`. More details in the `README.md` file in the
-folder
+folder. Of course, you will need to get all the files from "What is not in here?" section.
 
 ### Structure
 
 *This repository is the fork of [X-CLIP](https://github.com/xuguohai/X-CLIP), so most of the code was not written by us
 
 ###### folders
-- dataloader - folder with the code to load data. More details in the `README.md` file in the  folder itself
+- dataloader - folder with the code to load data
 - helpers_scripts - **Python scripts** for some additional processing we needed (i.e. calculate the length of sentences in
 the dataset, or generate sets with hard negatives and positives). More info in the `README.md` file in the  folder itself
 - modules - we did not modify this folder from the [X-CLIP](https://github.com/xuguohai/X-CLIP)
@@ -28,6 +83,28 @@ the dataset, or generate sets with hard negatives and positives). More info in t
 - preprocess -  we did not modify this folder from the [X-CLIP](https://github.com/xuguohai/X-CLIP)
 - scripts - **Shell scripts** to run everything. More details in the `README.md` file in the  folder itself
 ###### files
-calculate_PosRank.py - file to calculate PosRank. To use it, you need the weights for the model 
+- `calculate_PosRank.py` - file to calculate PosRank. To use it, you need the weights for the model, and visual features
+together with visual features mask (both are created via `get_features.py`)
+- `get_features.py` - the script to process videos into their encoded features. Why would we do that? It makes testing
+more fast and robust
+- `get_xclip.py` - I don't even know what is that, to be honest. We continued the work of
+[Chen and Hazel](https://github.com/JewelChen2019/Fine-grained-negatives/tree/main/X-CLIP_fine_grained_vp), and this
+file was in there, that is why it is here. It is not used in the project, as far as I traced, but I am scared to delete
+it :)
+- `main_clip4clip.py` - as X-CLIP is based on [CLIP4Clip](https://github.com/ArrowLuo/CLIP4Clip), we have this file as
+a parent class. Was not changed since [X-CLIP](https://github.com/xuguohai/X-CLIP)
+- `main_xclip.py` - the main script to run X-CLIP **without** hard negatives/positives augmentation
+- `main_xclip_aug.py` - the main script to run X-CLIP **with** hard negatives/positives augmentation
+
+The two last files have minimal differences, but they use different files from modules folder. Also, `main_xclip.py` should
+not have had the arguments like --do_neg_aug (the ones under "AUGMENTED PART" comment in the `main_xclip_aug.py`), but 
+when we had to rerun the X-CLIP with no augmentations we already have rewritten the dataloaders to expect these
+arguments. That is why the first file has them, but they should be turned off ( and they will not affect the training
+if so). You can also run the plain X-CLIP from `main_xclip_aug.py` by just not setting --do_neg_aug and --do_pos_aug flags.
+
+- `metrics.py` - was not changed since [X-CLIP](https://github.com/xuguohai/X-CLIP)
+- `util.py` - was not changed since [X-CLIP](https://github.com/xuguohai/X-CLIP)
+
+
 
 

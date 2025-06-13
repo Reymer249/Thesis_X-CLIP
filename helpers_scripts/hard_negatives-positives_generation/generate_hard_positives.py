@@ -1,3 +1,6 @@
+"""
+    Generate Hard Positives file using POS methodology
+"""
 import json
 import random
 import argparse

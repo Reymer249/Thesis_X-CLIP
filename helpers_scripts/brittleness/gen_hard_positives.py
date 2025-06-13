@@ -1,3 +1,8 @@
+"""
+    This script generates hard positives for Brittleness evaluation. It takes the original captions and generated hard
+    negatives. From hard negatives it takes the 1st sentence, checks which word was changed comparing to the original
+    sentence, and generates hard positive changing the same word for synonym.
+"""
 import json
 import nltk
 from nltk.corpus import wordnet as wn
