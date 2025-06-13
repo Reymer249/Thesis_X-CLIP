@@ -65,6 +65,9 @@ code presented here was taken from [X-CLIP](https://github.com/xuguohai/X-CLIP) 
 Where POS tag specifies the POS tag of the word which was changed. We don't use it anywhere in the code, so it is safe
 to put anything into in. We added it just in case we need it in the future
 
+You may find hard negatives for validation set in the [Chen and Hazel](https://github.com/JewelChen2019/Fine-grained-negatives/tree/main/X-CLIP_fine_grained_vp) repository, as our work is a continuation of
+their research ([paper](https://arxiv.org/abs/2410.12407)).
+
 ### How to run?
 
 Use shell scripts in the `scripts` folder. The main one is `run_xclip.sh`. More details in the `README.md` file in the
