@@ -1,16 +1,18 @@
 ### Overview
 
-It is the repository for the thesis work called Beyond "Coarse-Grained Matching in Video-Text Retrieval." With all
-the details of the work you may familiarize yourself using the thesis.pdf file (will be uploaded once approved).
 
-### What is in here?
 
-In the study we used the [X-CLIP](https://github.com/xuguohai/X-CLIP) model and [VATEX](https://eric-xw.github.io/vatex-website/about.html)
-dataset for our experiments. This repository is the code we used for all our experiments. We are not legally allowed
-to share the dataset collected, so this repository contains only the code we used to train the models. The most of the
-code presented here was taken from [X-CLIP](https://github.com/xuguohai/X-CLIP) repository.
+This repository contains the code for the thesis project titled "Beyond Coarse-Grained Matching in Video-Text Retrieval."
+The full details of the work will be available in the `thesis.pdf` file, which will be uploaded upon approval.
 
-### What is not in here?
+### What is included?
+
+This project builds upon the [X-CLIP](https://github.com/xuguohai/X-CLIP) model and utilizes the [VATEX](https://eric-xw.github.io/vatex-website/about.html) dataset for experimental evaluation.
+
+Due to legal restrictions, we are unable to share the dataset used. This repository includes only the code used for training and evaluation.
+Most of the code is adapted from the original [X-CLIP](https://github.com/xuguohai/X-CLIP) repository.
+
+### What excluded?
 
 1. Dataset, including:
     - video clips 
