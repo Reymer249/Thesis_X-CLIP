@@ -2,7 +2,7 @@
 
 # Set variables
 DATA_PATH="/vol/home/s3705609/Desktop/data_vatex"
-job_name=$1
+job_name=$1 # name of the folder where the weights of the models are located
 
 # Use torchrun instead of torch.distributed.launch (recommended in newer PyTorch)
 python -m torch.distributed.run --nproc_per_node=1 get_features.py \

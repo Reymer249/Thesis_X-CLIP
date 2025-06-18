@@ -35,3 +35,6 @@ python -m torch.distributed.run --nproc_per_node=1 main_xclip.py \
     --val_path_from_data_folder splits_txt/vatex_val_avail.txt \
     --test_path_from_data_folder splits_txt/vatex_test_avail.txt \
     --captions_path_from_data_folder splits_txt/captions_avail_formatted.json \
+
+# vatex_[train/val/test]_avail.txt are the txt files with the video_ids on each line. It is just a "repository" of all
+# video ids we have or consider. captions_avail_formatted.json is the file with captions for each video

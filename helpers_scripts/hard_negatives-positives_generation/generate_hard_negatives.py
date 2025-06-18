@@ -1,3 +1,6 @@
+"""
+    Generates Hard Negatives file using POS methodology
+"""
 import json
 import random
 import argparse

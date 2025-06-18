@@ -1,3 +1,6 @@
+"""
+    Generates Hard Negatives or Positives file using LLM methodology
+"""
 import datetime
 import json
 import argparse

@@ -1,3 +1,6 @@
+"""
+    Just a file for testing the wordnet functionality and capabilities.
+"""
 import nltk
 from nltk.corpus import wordnet
 

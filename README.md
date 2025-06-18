@@ -1,119 +1,115 @@
-# X-CLIP: End-to-End Multi-grained Contrastive Learning for Video-Text Retrieval
-
-## Introduction
-
-The implementation of paper [X-CLIP: End-to-End Multi-grained Contrastive Learning for Video-Text Retrieval](https://arxiv.org/abs/2207.07285 "X-CLIP: End-to-End Multi-grained Contrastive Learning for Video-Text Retrieval"). Accepted by ACMMM22. By [Yiwei Ma](https://github.com/xmu-xiaoma666 "Yiwei Ma"), [Guohai Xu](https://scholar.google.com/citations?user=bS8Ku4MAAAAJ\&hl=en "Guohai Xu"), [Xiaoshuai Sun](https://scholar.google.com/citations?user=KPMK3B4AAAAJ\&hl=en "Xiaoshuai Sun")\*, [Ming Yan](https://scholar.google.com/citations?user=uIUfGxYAAAAJ\&hl=zh-CN "Ming Yan"), [Ji Zhang](https://scholar.google.com/citations?user=cgnuJDUAAAAJ\&hl=zh-CN "Ji Zhang"), [Rongrong Ji](https://scholar.google.com/citations?user=lRSD7PQAAAAJ\&hl=en "Rongrong Ji").
+### Overview
 
 
 
-X-CLIP adopts cross-grained contrastive learning and attention over similarity matrix module to filter out unnecessary information during video-text retrieval. It achieves SOTA results on MSR-VTT, MSVD, LSMDC, DiDeMo, and ActivityNet.
+This repository contains the code for the thesis project titled "Beyond Coarse-Grained Matching in Video-Text Retrieval."
+The full details of the work will be available in the `thesis.pdf` file, which will be uploaded upon approval.
 
-<!-- ![XCLIP](./XCLIP.png) -->
+### What is included?
 
-![image](https://user-images.githubusercontent.com/33897496/191735201-e951c434-c5aa-4646-b8f8-d594d2fad99b.png)
+This project builds upon the [X-CLIP](https://github.com/xuguohai/X-CLIP) model and utilizes the [VATEX](https://eric-xw.github.io/vatex-website/about.html) dataset for experimental evaluation.
 
+Due to legal restrictions, we are unable to share the dataset used. This repository includes only the code used for training and evaluation.
+Most of the code is adapted from the original [X-CLIP](https://github.com/xuguohai/X-CLIP) repository.
 
-## News
+### What is excluded?
 
-*   **2022.09.20**: Released code
+1. Dataset, including:
+    - video clips 
+    - `vatex_[train/val/test]_avail.txt` - txt files with ids of the videos (one id per line) we 
+   consider for training
+    - `captions.json` (also called in our code captions_avail_formatted.json) - json file with captions for videos of
+   the format:
 
-## Requirement
-
-*   [PyTorch](https://pytorch.org/ "PyTorch") version = 1.7.1
-
-*   Install other libraries via
-
-```bash
-pip install -r requirements.txt
 ```
-
-## How to Run
-
-（1）About data download
-
-Please refer to the guides from [CLIP4Clip: Data Preparing](https://github.com/ArrowLuo/CLIP4Clip#:~:text=Data-,Preparing,-For%20MSRVTT).
-
-
-
-（2）About the pretrained CLIP checkpoints
-
-You can find more pretrained models in [here](https://github.com/openai/CLIP/blob/main/clip/clip.py "here").
-
-```bash
-# download CLIP（ViT-B/32） weight
-wget -P ./modules https://openaipublic.azureedge.net/clip/models/40d365715913c9da98579312b702a82c18be219cc2a73407c4526f58eba950af/ViT-B-32.pt
-
-# download CLIP（ViT-B/16） weight
-wget -P ./modules https://openaipublic.azureedge.net/clip/models/5806e77cd80f8b59890b7e101eabd078d9fb84e6937f9e85e4ecb61988df416f/ViT-B-16.pt
-```
-
-
-
-（3）About the running scripts
-
-**MSR-VTT**
-
-```bash
-# ViT-B/32
-sh scripts/run_xclip_msrvtt_vit32.sh
-
-# ViT-B/16
-sh scripts/run_xclip_msrvtt_vit16.sh
-```
-
-**MSVD**
-
-```bash
-# ViT-B/32
-sh scripts/run_xclip_msvd_vit32.sh
-
-# ViT-B/16
-sh scripts/run_xclip_msvd_vit16.sh
-```
-
-**LSMDC**
-
-```bash
-# ViT-B/32
-sh scripts/run_xclip_lsmdc_vit32.sh
-
-# ViT-B/16
-sh scripts/run_xclip_lsmdc_vit16.sh
-```
-
-**DiDeMo**
-
-```bash
-# ViT-B/32
-sh scripts/run_xclip_didemo_vit32.sh
-
-# ViT-B/16
-sh scripts/run_xclip_didemo_vit16.sh
-```
-
-**ActivityNet**
-
-```bash
-# ViT-B/32
-sh scripts/run_xclip_actnet_vit32.sh
-
-# ViT-B/16
-sh scripts/run_xclip_actnet_vit16.sh
-```
-
-## Citation
-
-If you find our method useful in your work, please cite:
-
-```python
-@article{Ma2022XCLIP,
-  title={{X-CLIP:}: End-to-End Multi-grained Contrastive Learning for Video-Text Retrieval},
-  author={Yiwei Ma and Guohai Xu and Xiaoshuai Sun and Ming Yan and Ji Zhang and Rongrong Ji},
-  journal={arXiv preprint arXiv:2207.07285},
-  year={2022}
+{
+  "video_id_1": [
+    "description string 1",
+    "description string 2",
+    "description string 3",
+    ...
+  ],
+  "video_id_2": [
+    "description string 1",
+    "description string 2",
+    ...
+  ],
+  ...
 }
 ```
 
-## Acknowledgments
+2. Hard negatives/positives json files of the format:
 
-The implementation of X-CLIP relies on resources from [CLIP4Clip](https://github.com/ArrowLuo/CLIP4Clip "CLIP4Clip") and [CLIP](https://github.com/openai/CLIP "CLIP"). We thank the original authors for their open-sourcing.
+```
+{
+  "caption_id_1": [
+    [
+      "hard positive/negative",
+      "POS tag"
+    ],
+    [
+      "hard positive/negative",
+      "POS tag"
+    ],
+    ...
+  ],
+  "caption_id_2": [
+    [
+      "hard positive/negative",
+      "POS tag"
+    ],
+    ...
+  ],
+  ...
+}
+```
+
+Where POS tag specifies the POS tag of the word which was changed. We don't use it anywhere in the code, so it is safe
+to put anything into in. We added it just in case we need it in the future
+
+You may find hard negatives for validation set in the [Chen and Hazel](https://github.com/JewelChen2019/Fine-grained-negatives/tree/main/X-CLIP_fine_grained_vp) repository, as our work is a continuation of
+their research ([paper](https://arxiv.org/abs/2410.12407)).
+
+### How to run?
+
+Use shell scripts in the `scripts` folder. The main one is `run_xclip.sh`. More details in the `README.md` file in the
+folder. Of course, you will need to get all the files from "What is not in here?" section.
+
+### Structure
+
+*This repository is the fork of [X-CLIP](https://github.com/xuguohai/X-CLIP), so most of the code was not written by us
+
+###### folders
+- dataloader - folder with the code to load data
+- helpers_scripts - **Python scripts** for some additional processing we needed (i.e. calculate the length of sentences in
+the dataset, or generate sets with hard negatives and positives). More info in the `README.md` file in the  folder itself
+- modules - we did not modify this folder from the [X-CLIP](https://github.com/xuguohai/X-CLIP)
+- plots - Python scripts to generate plots. In the code you will find the result values for all the experiments.
+- preprocess -  we did not modify this folder from the [X-CLIP](https://github.com/xuguohai/X-CLIP)
+- scripts - **Shell scripts** to run everything. More details in the `README.md` file in the  folder itself
+###### files
+- `calculate_PosRank.py` - file to calculate PosRank. To use it, you need the weights for the model, and visual features
+together with visual features mask (both are created via `get_features.py`)
+- `get_features.py` - the script to process videos into their encoded features. Why would we do that? It makes testing
+more fast and robust
+- `get_xclip.py` - I don't even know what is that, to be honest. We continued the work of
+[Chen and Hazel](https://github.com/JewelChen2019/Fine-grained-negatives/tree/main/X-CLIP_fine_grained_vp), and this
+file was in there, that is why it is here. It is not used in the project, as far as I traced, but I am scared to delete
+it :)
+- `main_clip4clip.py` - as X-CLIP is based on [CLIP4Clip](https://github.com/ArrowLuo/CLIP4Clip), we have this file as
+a parent class. Was not changed since [X-CLIP](https://github.com/xuguohai/X-CLIP)
+- `main_xclip.py` - the main script to run X-CLIP **without** hard negatives/positives augmentation
+- `main_xclip_aug.py` - the main script to run X-CLIP **with** hard negatives/positives augmentation
+
+The two last files have minimal differences, but they use different files from modules folder. Also, `main_xclip.py` should
+not have had the arguments like --do_neg_aug (the ones under "AUGMENTED PART" comment in the `main_xclip_aug.py`), but 
+when we had to rerun the X-CLIP with no augmentations we already have rewritten the dataloaders to expect these
+arguments. That is why the first file has them, but they should be turned off ( and they will not affect the training
+if so). You can also run the plain X-CLIP from `main_xclip_aug.py` by just not setting --do_neg_aug and --do_pos_aug flags.
+
+- `metrics.py` - was not changed since [X-CLIP](https://github.com/xuguohai/X-CLIP)
+- `util.py` - was not changed since [X-CLIP](https://github.com/xuguohai/X-CLIP)
+
+
+
+

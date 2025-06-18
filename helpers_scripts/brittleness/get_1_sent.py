@@ -1,3 +1,7 @@
+"""
+    This code transforms the json with hard negatives with multiple sentences per caption
+     into the one with only one sentence per caption, cutting everything else off
+"""
 import json
 
 
