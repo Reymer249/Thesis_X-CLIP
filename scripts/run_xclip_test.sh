@@ -1,17 +1,17 @@
 #!/bin/bash
 
 # Set variables
-DATA_PATH="/data/s3705609/VATEX"
+DATA_PATH="/vol/home/s3705609/Desktop/data_vatex"
 job_name=$1
 
 # Use torchrun instead of torch.distributed.launch (recommended in newer PyTorch)
 python -m torch.distributed.run --nproc_per_node=1 main_xclip.py \
     --do_eval \
-    --init_model ${DATA_PATH}/x-clip_checkpoints/${job_name}/pytorch_model.bin.4
+    --init_model ${DATA_PATH}/x-clip_checkpoints/${job_name}/pytorch_model.bin.4 \
     --num_thread_reader=8 \
     --lr 1e-4 \
-    --batch_size=64 \
-    --batch_size_val=64 \
+    --batch_size=16 \
+    --batch_size_val=16 \
     --n_display=100 \
     --data_path ${DATA_PATH} \
     --features_path ${DATA_PATH}/clips \
@@ -31,6 +31,6 @@ python -m torch.distributed.run --nproc_per_node=1 main_xclip.py \
     --train_path_from_data_folder splits_txt/vatex_val_avail.txt \
     --val_path_from_data_folder splits_txt/vatex_val_avail.txt \
     --test_path_from_data_folder splits_txt/vatex_val_avail.txt \
-    --captions_path_from_data_folder splits_txt/captions_avail_formatted.json \
+    --captions_path_from_data_folder splits_txt/captions_avail_formatted.json 
 
 # I mapped everything to the validation set just to be sure :)

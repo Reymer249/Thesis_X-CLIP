@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set variables
-DATA_PATH="/data/s3705609/VATEX"
+DATA_PATH="/vol/home/s3705609/Desktop/data_vatex"
 job_name="xclip_vatex_run"
 
 # Use torchrun instead of torch.distributed.launch (recommended in newer PyTorch)
@@ -15,7 +15,7 @@ python -m torch.distributed.run --nproc_per_node=1 main_xclip.py \
     --n_display=100 \
     --data_path ${DATA_PATH} \
     --features_path ${DATA_PATH}/clips \
-    --output_dir ${DATA_PATH}/x-clip_checkpoints/${job_name} \
+    --output_dir ${DATA_PATH}/${job_name}_test_run \
     --max_words 32 \
     --max_frames 12 \
     --datatype vatex \
@@ -28,9 +28,6 @@ python -m torch.distributed.run --nproc_per_node=1 main_xclip.py \
     --linear_patch 2d \
     --sim_header seqTransf \
     --pretrained_clip_name ViT-B/32 \
-    --use_wandb \
-    --wandb_project x-clip \
-    --wandb_name ${job_name} \
     --train_path_from_data_folder splits_txt/vatex_train_avail.txt \
     --val_path_from_data_folder splits_txt/vatex_val_avail.txt \
     --test_path_from_data_folder splits_txt/vatex_test_avail.txt \
