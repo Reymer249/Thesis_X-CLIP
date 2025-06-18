@@ -7,7 +7,7 @@ job_name=$1
 # Use torchrun instead of torch.distributed.launch (recommended in newer PyTorch)
 python -m torch.distributed.run --nproc_per_node=1 main_xclip.py \
     --do_eval \
-    --init_model ${DATA_PATH}/x-clip_checkpoints/${job_name}/pytorch_model.bin.4
+    --init_model ${DATA_PATH}/x-clip_checkpoints/${job_name}/pytorch_model.bin.4 \
     --num_thread_reader=8 \
     --lr 1e-4 \
     --batch_size=64 \
