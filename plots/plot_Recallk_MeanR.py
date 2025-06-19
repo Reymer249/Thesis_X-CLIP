@@ -7,7 +7,8 @@ x_recall = ["R@1", "R@5", "R@10", "Avg. Recall"]
 x_rank = ["Mean Rank"]
 
 # Shared group names and colors
-group_labels = ["Control<br>(Neg=0, Pos=0)", "Neg=2", "Pos=2", "Neg=2, Pos=2"]
+group_labels = ["Control<br>(Neg=0, Pos=0)", "Neg=2 (set size 100)<br>Pos=2 (set size 40)", "Neg=2 (set size 20)<br>Pos=2 (set size 20)",
+                "Neg=2 (set size 5)<br>Pos=2 (set size 5)"]
 title_font_size = 36
 title_font_size_x = 20
 title_font_size_y = 20
@@ -29,9 +30,9 @@ v2t_data = {
     "Neg=4": ([49.4, 85.1, 93.4], 4.0),
     "Neg=8": ([45.5, 84.0, 92.1], 4.2),
     "Pos=2": ([58.1, 89.4, 94.5], 3.5),
-    "Neg=2, Pos=2": ([49.0, 86.4, 93.8], 4.4),
+    "Neg=2 (set size 100)<br>Pos=2 (set size 40)": ([49.0, 86.4, 93.8], 4.4),
     "Neg=2, Pos=2 - LLM": ([52.5, 86.7, 93.9], 4.1),
-    "Neg=2, Pos=2 (set 20)": ([48.8, 85.5, 93.1], 4.5),
+    "Neg=2 (set size 20)<br>Pos=2 (set size 20)": ([48.8, 85.5, 93.1], 4.5),
     "Neg=1, Pos=2": ([57.3, 89.9, 95.3], 3.6),
     "Neg=2, Pos=1": ([47.7, 85.0, 93.4], 4.1),
     "Neg=1, Pos=1": ([56.8, 88.5, 94.5], 3.9),
@@ -52,14 +53,14 @@ t2v_data = {
     "Neg=4": ([42.7, 77.2, 86.8], 10.2),
     "Neg=8": ([42.7, 77.0, 86.5], 9.8),
     "Pos=2": ([43.4, 77.4, 86.8], 8.9),
-    "Neg=2, Pos=2": ([43.2, 77.1, 86.5], 8.6),
+    "Neg=2 (set size 100)<br>Pos=2 (set size 40)": ([43.2, 77.1, 86.5], 8.6),
     "Neg=2, Pos=2 - LLM": ([43.9, 77.7, 87.1], 8.7),
-    "Neg=2, Pos=2 (set 20)": ([43.1, 76.5, 86.1], 9.1),
+    "Neg=2 (set size 20)<br>Pos=2 (set size 20)": ([43.1, 76.5, 86.1], 9.1),
     "Neg=1, Pos=2": ([43.7, 77.7, 87.1], 9.6),
     "Neg=2, Pos=1": ([42.7, 76.6, 86.2], 9.5),
     "Neg=1, Pos=1": ([43.2, 76.9, 86.4], 9.8),
-    "Neg=2, Pos=2;<br>Set size 5": ([42.9, 76.8, 86.5], 9.1),
-    "Neg=2 (set size 5)<br>Pos=2 (set size 5)": ([43.1, 77.2, 86.4], 10.6),
+    "Neg=2 (set size 5)<br>Pos=2 (set size 5)": ([42.9, 76.8, 86.5], 9.1),
+    "Neg=1, Pos=1;<br>Set size 5": ([43.1, 77.2, 86.4], 10.6),
 
 }
 
