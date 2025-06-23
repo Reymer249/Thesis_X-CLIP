@@ -90,6 +90,7 @@ the dataset, or generate sets with hard negatives and positives). More info in t
 ###### files
 - `calculate_PosRank.py` - file to calculate PosRank. To use it, you need the weights for the model, and visual features
 together with visual features mask (both are created via `get_features.py`)
+- `ex_sentences.txt` - txt file with the 25 sentences analyzed mentioned in the "3.4 Hard positives/negatives sampling" section, "Quality" paragraph
 - `get_features.py` - the script to process videos into their encoded features. Why would we do that? It makes testing
 more fast and robust
 - `get_xclip.py` - I don't even know what is that, to be honest. We continued the work of
