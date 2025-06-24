@@ -28,8 +28,8 @@ y_neg_1_pos_1_set5 = [0.283, 0.331, 0.247, 0.265, 0.167]
 chen_coarse = go.Bar(x=x, y=y_chen_coarse, name="Batch 64<br>(Original Study;<br> Coarse)", marker_color=colors[0], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 chen_hard_neg = go.Bar(x=x, y=y_chen_hard_neg, name="Batch 64<br>(Original Study;<br> Fine)", marker_color=colors[1], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 
-batch_64_full_data = go.Bar(x=x, y=y_batch_64_full_data, name="Batch 64<br>(Replicated)", marker_color=colors[0], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
-batch_16_full_data = go.Bar(x=x, y=y_batch_16_full_data, name="Batch 16<br>(Replicated)", marker_color=colors[0], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
+batch_64_full_data = go.Bar(x=x, y=y_batch_64_full_data, name="Batch 64<br>(Replicated)", marker_color=colors[1], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
+batch_16_full_data = go.Bar(x=x, y=y_batch_16_full_data, name="Batch 16<br>(Replicated)", marker_color=colors[2], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 batch_16_02_data = go.Bar(x=x, y=y_batch_16_02data, name="Control<br>(Neg=0, Pos=0)", marker_color=colors[0], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 
 neg_2 = go.Bar(x=x, y=y_neg_2, name="Neg=2", marker_color=colors[1], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
@@ -49,11 +49,11 @@ neg_1_pos_1_set20 = go.Bar(x=x, y=y_neg_1_pos_1_set20, name="Neg=1, Pos=1", mark
 neg_2_pos_2_set5 = go.Bar(x=x, y=y_neg_2_pos_2_set5, name="Neg=2 (set size 5)<br>Pos=2 (set size 5)", marker_color=colors[3], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 neg_1_pos_1_set5 = go.Bar(x=x, y=y_neg_1_pos_1_set5, name="Neg=1 (set size 5)<br>Pos=1 (set size 5)", marker_color=colors[4], opacity=opacity, marker_line_color=marker_color, marker_line_width=marker_width)
 
-fig = go.Figure(data=[batch_16_02_data, neg_2, pos_2, neg_2_pos_2])
+fig = go.Figure(data=[chen_coarse, batch_64_full_data, batch_16_full_data])
 fig.update_layout(
     barmode="group",
     title={
-        "text": "PosRank on Evaluation Set (0.2 data, batch 16)",
+        "text": "PosRank on Evaluation Set",
         "font": {"size": title_font},
         "y": title_y,
         "x": 0.02
