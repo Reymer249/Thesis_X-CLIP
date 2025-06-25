@@ -1,0 +1,426 @@
+================================================================================
+
+Example 1:
+Video ID: sBnQjcw4iSI_000076_000086
+Original Caption: One young is boy is digging a hole in the ground while another boy watches.
+
+--- POS-Generated Examples ---
+POS Hard Negative (100): One young is boy is digging a hole in the ground while another girl watches.
+POS Hard Negative (20): One young is boy suffer digging a hole in the ground while another boy watches.
+POS Hard Negative (5): One young is boy is digging a hole in the ground while another girl watches.
+POS Hard Positive (40): One young is boy is digging a hole in the ground while another boy vigil.
+POS Hard Positive (20): One young is boy is digging a fix in the ground while another boy watches.
+POS Hard Positive (5): One young is boy is digging a mess in the ground while another boy watches.
+
+--- LLM-Generated Examples ---
+LLM Hard Negative: A lady is clearing away debris from her backyard rather than digging a hole.
+LLM Hard Positive: A child is excavating the ground as a peer scrutinizes the activity.
+----------------------------------------
+
+Example 2:
+Video ID: LywGyuEIF6c_000005_000015
+Original Caption: Children are accompanied by adults, they walk to a pond, and swirl bowls filled with water and sediment.
+
+--- POS-Generated Examples ---
+POS Hard Negative (100): Saw are accompanied by adults, they walk to a pond, and swirl bowls filled with water and sediment.
+POS Hard Negative (20): Parent are accompanied by adults, they walk to a pond, and swirl bowls filled with water and sediment.
+POS Hard Negative (5): Children are accompanied by juvenile, they walk to a pond, and swirl bowls filled with water and sediment.
+POS Hard Positive (40): Children are accompanied by adults, they walk to a pond, and swirl bowls filled with pee and sediment.
+POS Hard Positive (20): Children are accompanied by adult, they walk to a pond, and swirl bowls filled with water and sediment.
+POS Hard Positive (5): Child are accompanied by adults, they walk to a pond, and swirl bowls filled with water and sediment.
+
+--- LLM-Generated Examples ---
+LLM Hard Negative: The children are building sandcastles on the beach, while the adults read books on the rocky cliffs.
+LLM Hard Positive: Kids are being taken by parents to a brook, and they vigorously mix containers holding water and debris.
+----------------------------------------
+
+Example 3:
+Video ID: BnNOKba5K-8_000010_000020
+Original Caption: Someone is painting graffiti on the side of a building.
+
+--- POS-Generated Examples ---
+POS Hard Negative (100): Religious person is painting graffiti on the side of a building.
+POS Hard Negative (20): Extrovert is painting graffiti on the side of a building.
+POS Hard Negative (5): Pessimist is painting graffiti on the side of a building.
+POS Hard Positive (40): Someone stand by painting graffiti on the side of a building.
+POS Hard Positive (20): Individual is painting graffiti on the side of a building.
+POS Hard Positive (5): Soul is painting graffiti on the side of a building.
+
+--- LLM-Generated Examples ---
+LLM Hard Negative: The team is sandblasting the exterior of a factory building.
+LLM Hard Positive: Unlicensed craftsmen are applying unauthorized paintings to the building.
+----------------------------------------
+
+Example 4:
+Video ID: IBYHkBdJ0eM_000000_000010
+Original Caption: Two kids were staring at the toy trains moving on the rail
+
+--- POS-Generated Examples ---
+POS Hard Negative (100): Two determination were staring at the toy trains moving on the rail
+POS Hard Negative (20): Two kids were staring at the toy trains refrain on the rail
+POS Hard Negative (5): Two kids were staring at the toy trains stay in place on the rail
+POS Hard Positive (40): Two kids constitute staring at the toy trains moving on the rail
+POS Hard Positive (20): Two nipper were staring at the toy trains moving on the rail
+POS Hard Positive (5): Two small fry were staring at the toy trains moving on the rail
+
+--- LLM-Generated Examples ---
+LLM Hard Negative: Two small tots were glancing at the toy train set traveling on the narrow railway line.
+LLM Hard Positive: Two younglings peered at the toy trains whizzing past on the rails.
+----------------------------------------
+
+Example 5:
+Video ID: HlvZ8SaUqbE_000000_000010
+Original Caption: A young girl gives a wink and then waves her hand goodbye.
+
+--- POS-Generated Examples ---
+POS Hard Negative (100): A young history gives a wink and then waves her hand goodbye.
+POS Hard Negative (20): A old girl gives a wink and then waves her hand goodbye.
+POS Hard Negative (5): A young girl take a wink and then waves her hand goodbye.
+POS Hard Positive (40): A young girl gives a blink and then waves her hand goodbye.
+POS Hard Positive (20): A young girl gives a eye blink and then waves her hand goodbye.
+POS Hard Positive (5): A young missy gives a wink and then waves her hand goodbye.
+
+--- LLM-Generated Examples ---
+LLM Hard Negative: An adult holds up a finger and shakes their head in disagreement.
+LLM Hard Positive: She lifts her hand to wave goodbye, making sure everyone knows that the party is coming to an end.
+----------------------------------------
+
+Example 6:
+Video ID: OmB8gnvb5lY_000010_000020
+Original Caption: A person is opening a box containing a ventilation fan.
+
+--- POS-Generated Examples ---
+POS Hard Negative (100): A person bobsledding opening a box containing a ventilation fan.
+POS Hard Negative (20): A unemotional person is opening a box containing a ventilation fan.
+POS Hard Negative (5): A person differ opening a box containing a ventilation fan.
+POS Hard Positive (40): A person is opening a loge containing a ventilation fan.
+POS Hard Positive (20): A someone is opening a box containing a ventilation fan.
+POS Hard Positive (5): A individual is opening a box containing a ventilation fan.
+
+--- LLM-Generated Examples ---
+LLM Hard Negative: A point is detaching from a package that includes a coolant.
+LLM Hard Positive: An individual is setting off a case carrying a release system.
+----------------------------------------
+
+Example 7:
+Video ID: uftReOMM9-A_000063_000073
+Original Caption: A USA team is bobsledding down a hill while people cheer them on.
+
+--- POS-Generated Examples ---
+POS Hard Negative (100): A USA shredder is bobsledding down a hill while people cheer them on.
+POS Hard Negative (20): A USA team is bobsledding down a hill while clergy cheer them on.
+POS Hard Negative (5): A USA team is bobsledding down a hill while people complain them on.
+POS Hard Positive (40): A USA squad is bobsledding down a hill while people cheer them on.
+POS Hard Positive (20): A United States of America team is bobsledding down a hill while people cheer them on.
+POS Hard Positive (5): A U. S. Army team is bobsledding down a hill while people cheer them on.
+
+--- LLM-Generated Examples ---
+LLM Hard Negative: USA team is ice skating on a frozen pond while people make fun of them.
+LLM Hard Positive: A group from America is racing downhill with spectators cheering.
+----------------------------------------
+
+Example 8:
+Video ID: KzSHxL6ll88_000007_000017
+Original Caption: A guy  messing around with a hand saw and then cutting roof tile.
+
+--- POS-Generated Examples ---
+POS Hard Negative (100): A reinforces messing around with a hand saw and then cutting roof tile.
+POS Hard Negative (20): A guy messing around with a hand saw and then lengthen roof tile.
+POS Hard Negative (5): A woman messing around with a hand saw and then cutting roof tile.
+POS Hard Positive (40): A bozo messing around with a hand saw and then cutting roof tile.
+POS Hard Positive (20): A cat messing around with a hand saw and then cutting roof tile.
+POS Hard Positive (5): A guy wire messing around with a hand saw and then cutting roof tile.
+
+--- LLM-Generated Examples ---
+LLM Hard Negative: A energetic individual working on constructing a deck railing.
+LLM Hard Positive: A fellow is using his handsaw to cut down some roofing tiles.
+----------------------------------------
+
+Example 9:
+Video ID: DbzNmMWXt5o_000000_000010
+Original Caption: Six persons were doing the same exercise in the corridor and laughing and counting
+
+--- POS-Generated Examples ---
+POS Hard Negative (100): Six persons were doing the same flipper in the corridor and laughing and counting
+POS Hard Negative (20): Six persons were doing the unlike exercise in the corridor and laughing and counting
+POS Hard Negative (5): Six persons were doing the unlike exercise in the corridor and laughing and counting
+POS Hard Positive (40): Six persons were doing the same practice session in the corridor and laughing and counting
+POS Hard Positive (20): Six persons were doing the same drill in the corridor and laughing and counting
+POS Hard Positive (5): Six soul were doing the same exercise in the corridor and laughing and counting
+
+--- LLM-Generated Examples ---
+LLM Hard Negative: Twenty people were performing the same fitness regimen in the corridor and smiled and tallied their endurance levels.
+LLM Hard Positive: Six people were taking part in the same workout in the corridor, laughing and counting their efforts together.
+----------------------------------------
+
+Example 10:
+Video ID: 5fvoVIFUldc_000000_000010
+Original Caption: Two men dump out individual lego sets on a table and begin assembling them.
+
+--- POS-Generated Examples ---
+POS Hard Negative (100): Two men dump out individual lego sets on a shovel and begin assembling them.
+POS Hard Negative (20): Two woman dump out individual lego sets on a table and begin assembling them.
+POS Hard Negative (5): Two civilian dump out individual lego sets on a table and begin assembling them.
+POS Hard Positive (40): Two men dump out individual lego sets on a tabular array and begin assembling them.
+POS Hard Positive (20): Two humanity dump out individual lego sets on a table and begin assembling them.
+POS Hard Positive (5): Two adult male dump out individual lego sets on a table and begin assembling them.
+
+--- LLM-Generated Examples ---
+LLM Hard Negative: Fourteen men dump out individual Lego sets on a table and plan to watch TV shows instead of assembling them.
+LLM Hard Positive: Two people pour unique Lego pieces onto a flat space and then start putting them together.
+----------------------------------------
+
+Example 11:
+Video ID: kGZxAXlaBzM_000023_000033
+Original Caption: A baby girl in a pink shirt and pants is holding and playing with her sippy cup.
+
+--- POS-Generated Examples ---
+POS Hard Negative (100): A baby girl in a pink shirt and pants is holding and poring with her sippy cup.
+POS Hard Negative (20): A baby male child in a pink shirt and pants is holding and playing with her sippy cup.
+POS Hard Negative (5): A baby girl in a pink shirt and pants differ holding and playing with her sippy cup.
+POS Hard Positive (40): A baby girl in a pink shirt and pants is holding and playing with her sippy loving cup.
+POS Hard Positive (20): A baby fille in a pink shirt and pants is holding and playing with her sippy cup.
+POS Hard Positive (5): A sister girl in a pink shirt and pants is holding and playing with her sippy cup.
+
+--- LLM-Generated Examples ---
+LLM Hard Negative: A small dog in a yellow leash and collar is chasing after a ball.
+LLM Hard Positive: A little girl wearing a pink top and bottoms is engaged in play with a drink.
+----------------------------------------
+
+Example 12:
+Video ID: UbODLzJR5qg_000003_000013
+Original Caption: A group of people snorkeling in the ocean, sea of similar body of water.
+
+--- POS-Generated Examples ---
+POS Hard Negative (100): A group of people snorkeling in the ocean, sea of similar body of fresh water.
+POS Hard Negative (20): A group of people snorkeling in the ocean, sea of similar artifact of water.
+POS Hard Negative (5): A group of people snorkeling in the ocean, sea of unlike body of water.
+POS Hard Positive (40): A group of people snorkeling in the ocean, sea of similar body of body of water.
+POS Hard Positive (20): A grouping of people snorkeling in the ocean, sea of similar body of water.
+POS Hard Positive (5): A mathematical group of people snorkeling in the ocean, sea of similar body of water.
+
+--- LLM-Generated Examples ---
+LLM Hard Negative: A group of swimmers compete in a pool rather than snorkeling.
+LLM Hard Positive: A herd of mortals swimming in the ocean, through various watersheds.
+----------------------------------------
+
+Example 13:
+Video ID: W9OnhV7-Hqg_000095_000105
+Original Caption: A man wearing diving suit holding a piece of bread while fish are feeding on the bread.
+
+--- POS-Generated Examples ---
+POS Hard Negative (100): A man wearing diving suit holding a piece of bread o fish are feeding on the bread.
+POS Hard Negative (20): A juvenile wearing diving suit holding a piece of bread while fish are feeding on the bread.
+POS Hard Negative (5): A man refresh diving suit holding a piece of bread while fish are feeding on the bread.
+POS Hard Positive (40): A man wearing diving suit holding a piece of bread while fish are feeding on the gelt.
+POS Hard Positive (20): A piece wearing diving suit holding a piece of bread while fish are feeding on the bread.
+POS Hard Positive (5): A military personnel wearing diving suit holding a piece of bread while fish are feeding on the bread.
+
+--- LLM-Generated Examples ---
+LLM Hard Negative: A man in scuba gear gripping a portion of pasta alongside octopuses slurping up the pasta.
+LLM Hard Positive: A human equipped with a swimming costume is carrying a piece of bread while aquatic creatures consume it.
+----------------------------------------
+
+Example 14:
+Video ID: rUQ0IyM5ppw_000005_000015
+Original Caption: A young boy runs around a set of bases while other cheer him on.
+
+--- POS-Generated Examples ---
+POS Hard Negative (100): A young boy pumps around a set of bases while other cheer him on.
+POS Hard Negative (20): A young boy stay around a set of bases while other cheer him on.
+POS Hard Negative (5): A young boy runs around a set of bases while other uncheerfulness him on.
+POS Hard Positive (40): A young boy go around a set of bases while other cheer him on.
+POS Hard Positive (20): A young boy runs around a solidification of bases while other cheer him on.
+POS Hard Positive (5): A young boy runs around a exercise set of bases while other cheer him on.
+
+--- LLM-Generated Examples ---
+LLM Hard Negative: A toddler giggles with joy rather than cheering on a runner.
+LLM Hard Positive: With enthusiasm palpable, a sprightly child bounds along the infield paths, cheered on by onlookers.
+----------------------------------------
+
+Example 15:
+Video ID: -1xDshoKGiw_000168_000178
+Original Caption: A man and a woman are rollerskating for an audience.
+
+--- POS-Generated Examples ---
+POS Hard Negative (100): A man and a woman fuel rollerskating for an audience.
+POS Hard Negative (20): A man and a woman disagree rollerskating for an audience.
+POS Hard Negative (5): A woman and a woman are rollerskating for an audience.
+POS Hard Positive (40): A world and a woman are rollerskating for an audience.
+POS Hard Positive (20): A human being and a woman are rollerskating for an audience.
+POS Hard Positive (5): A adult male and a woman are rollerskating for an audience.
+
+--- LLM-Generated Examples ---
+LLM Hard Negative: A couple is wheeling their skates across a frozen lake instead of on a sidewalk.
+LLM Hard Positive: The scene includes a man and woman skating for an audience.
+----------------------------------------
+
+Example 16:
+Video ID: -DuTGJi0zlM_000000_000010
+Original Caption: The baby was standing up by the TV and was excited when his father cam into the room.
+
+--- POS-Generated Examples ---
+POS Hard Negative (100): The baby was standing up by the TV and was desensitize when his father cam into the room.
+POS Hard Negative (20): The baby was yield up by the TV and was excited when his father cam into the room.
+POS Hard Negative (5): The baby was standing up by the TV and was excited when his mother cam into the room.
+POS Hard Positive (40): The baby was standing up by the TV and was wind up when his father cam into the room.
+POS Hard Positive (20): The baby was standing up by the TV and was excited when his founding father cam into the room.
+POS Hard Positive (5): The baby was standing up by the Boob tube and was excited when his father cam into the room.
+
+--- LLM-Generated Examples ---
+LLM Hard Negative: The youngster hid behind the wardrobe and didn't exhibit any excitement when their father arrived in the house.
+LLM Hard Positive: The infant positioned itself next to the screen as his father entered the space.
+----------------------------------------
+
+Example 17:
+Video ID: uenQHOs4DUc_000001_000011
+Original Caption: People standing by a waterslide as a child slides into the water.
+
+--- POS-Generated Examples ---
+POS Hard Negative (100): People standing by a waterslide attempt a child slides into the water.
+POS Hard Negative (20): Dead standing by a waterslide as a child slides into the water.
+POS Hard Negative (5): People standing by a waterslide as a parent slides into the water.
+POS Hard Positive (40): People standing by a waterslide as a child slides into the urine.
+POS Hard Positive (20): People standing by a waterslide as a youngster slides into the water.
+POS Hard Positive (5): Citizenry standing by a waterslide as a child slides into the water.
+
+--- LLM-Generated Examples ---
+LLM Hard Negative: A group of people wait their turn to use the waterslide, while a child watches from afar.
+LLM Hard Positive: The spectators wait for the child to glide down the waterslide into the refreshing water below.
+----------------------------------------
+
+Example 18:
+Video ID: eCshxLGPUno_000052_000062
+Original Caption: A woman is doing a head stand with her legs bent straight out in front of her, then she raises them straight up and then lowers them in front of her again.
+
+--- POS-Generated Examples ---
+POS Hard Negative (100): A woman is doing a reverse stand with her legs bent straight out in front of her, then she raises them straight up and then lowers them in front of her again.
+POS Hard Negative (20): A woman is doing a head stand with her legs bent straight out in front of her, then she raises them straight downwards and then lowers them in front of her again.
+POS Hard Negative (5): A woman is doing a tail stand with her legs bent straight out in front of her, then she raises them straight up and then lowers them in front of her again.
+POS Hard Positive (40): A woman is doing a head stand with her legs bent straight out in front of her, then she raises them straight up and then lowers them in forepart of her again.
+POS Hard Positive (20): A woman is doing a top dog stand with her legs bent straight out in front of her, then she raises them straight up and then lowers them in front of her again.
+POS Hard Positive (5): A adult female is doing a head stand with her legs bent straight out in front of her, then she raises them straight up and then lowers them in front of her again.
+
+--- LLM-Generated Examples ---
+LLM Hard Negative: A whale is breaching instead.
+LLM Hard Positive: A lady performs a handstand where her legs are stretched out to the sides first, then she lifts them vertically before lowering them back down in front of herself.
+----------------------------------------
+
+Example 19:
+Video ID: pAlKmAAOA9k_000026_000036
+Original Caption: A person shows how to put a part on a machine and turning it.
+
+--- POS-Generated Examples ---
+POS Hard Negative (100): A unemotional person shows how to put a part on a machine and turning it.
+POS Hard Negative (20): A stranger shows how to put a part on a machine and turning it.
+POS Hard Negative (5): A loser shows how to put a part on a machine and turning it.
+POS Hard Positive (40): A person shows how to put a region on a machine and turning it.
+POS Hard Positive (20): A person shows how to put a voice on a machine and turning it.
+POS Hard Positive (5): A individual shows how to put a part on a machine and turning it.
+
+--- LLM-Generated Examples ---
+LLM Hard Negative: A viewer notices when someone detaches a part from a machine and prevents its operation.
+LLM Hard Positive: An individual narrates the technique for inserting a component into a device.
+----------------------------------------
+
+Example 20:
+Video ID: juWarsreGK0_000000_000010
+Original Caption: Small children s are given couch for rugby game by their couch
+
+--- POS-Generated Examples ---
+POS Hard Negative (100): Small children s are take couch for rugby game by their couch
+POS Hard Negative (20): Small children s change given couch for rugby game by their couch
+POS Hard Negative (5): Large children s are given couch for rugby game by their couch
+POS Hard Positive (40): Small children s are leave couch for rugby game by their couch
+POS Hard Positive (20): Small fry s are given couch for rugby game by their couch
+POS Hard Positive (5): Small small fry s are given couch for rugby game by their couch
+
+--- LLM-Generated Examples ---
+LLM Hard Negative: Senior citizens aged over forty years old receive power chairs for golf game on the power chair.
+LLM Hard Positive: Infants obtain a couch for the rugby contest.
+----------------------------------------
+
+Example 21:
+Video ID: 1Mc6Krmttw0_000037_000047
+Original Caption: Two amazing catches by high school football quarterbacks and receivers.
+
+--- POS-Generated Examples ---
+POS Hard Negative (100): Two amazing catches watermelon high school football quarterbacks and receivers.
+POS Hard Negative (20): Two amazing catches by high school football quarterbacks and scripture.
+POS Hard Negative (5): Two amazing catches by high night school football quarterbacks and receivers.
+POS Hard Positive (40): Two amazing catch by high school football quarterbacks and receivers.
+POS Hard Positive (20): Two amazing catches by high schooltime football quarterbacks and receivers.
+POS Hard Positive (5): Two amazing snatch by high school football quarterbacks and receivers.
+
+--- LLM-Generated Examples ---
+LLM Hard Negative: Eight flawed kicks by young volleyball blockers and spikers.
+LLM Hard Positive: Two incredible throws thrown by elite high school quarterbacks and wideouts.
+----------------------------------------
+
+Example 22:
+Video ID: En4CNXVCk5g_000001_000011
+Original Caption: A man is holding a big hammer up in the air, balancing it
+
+--- POS-Generated Examples ---
+POS Hard Negative (100): A man is holding a saw hammer up in the air, balancing it
+POS Hard Negative (20): A man differ holding a big hammer up in the air, balancing it
+POS Hard Negative (5): A man is let go of a big hammer up in the air, balancing it
+POS Hard Positive (40): A man is obligate a big hammer up in the air, balancing it
+POS Hard Positive (20): A human beings is holding a big hammer up in the air, balancing it
+POS Hard Positive (5): A military personnel is holding a big hammer up in the air, balancing it
+
+--- LLM-Generated Examples ---
+LLM Hard Negative: A man is throwing a ball at a target rather than balancing a tool.
+LLM Hard Positive: A human is lifting a huge maul up into the air, preserving its balance.
+----------------------------------------
+
+Example 23:
+Video ID: ArazriX5DMU_000000_000010
+Original Caption: A young person does a headstand on a couch and then falls down.
+
+--- POS-Generated Examples ---
+POS Hard Negative (100): A young person does a headstand bike a couch and then falls down.
+POS Hard Negative (20): A young person does a headstand on a couch and then increase down.
+POS Hard Negative (5): A young person does a headstand on a couch and then rise down.
+POS Hard Positive (40): A young person suffice a headstand on a couch and then falls down.
+POS Hard Positive (20): A young person behave a headstand on a couch and then falls down.
+POS Hard Positive (5): A young individual does a headstand on a couch and then falls down.
+
+--- LLM-Generated Examples ---
+LLM Hard Negative: A little one tries a head tilt on a hammock and falls from its suspension.
+LLM Hard Positive: A kid shows a backbend on a couch before falling.
+----------------------------------------
+
+Example 24:
+Video ID: q8rxtAzgmtU_000000_000010
+Original Caption: A man cracks his knuckles on both of his hands.
+
+--- POS-Generated Examples ---
+POS Hard Negative (100): A man cracks his quiver on both of his hands.
+POS Hard Negative (20): A man cracks his knuckles on both broadcast his hands.
+POS Hard Negative (5): A woman cracks his knuckles on both of his hands.
+POS Hard Positive (40): A man cracks his knuckles on both of his workforce.
+POS Hard Positive (20): A gentleman's gentleman cracks his knuckles on both of his hands.
+POS Hard Positive (5): A gentleman's gentleman cracks his knuckles on both of his hands.
+
+--- LLM-Generated Examples ---
+LLM Hard Negative: A rational mind shoves their knuckles against a wall on both of their hands.
+LLM Hard Positive: A person flexing their fingers on both palms.
+----------------------------------------
+
+Example 25:
+Video ID: 5qPMVSLt6z0_000002_000012
+Original Caption: A shirtless man is spreading wax down the hair on his abdomen and then breaks off a piece of clear packing tape.
+
+--- POS-Generated Examples ---
+POS Hard Negative (100): A shirtless man is spreading wax down the wok on his abdomen and then breaks off a piece of clear packing tape.
+POS Hard Negative (20): A shirtless man differ spreading wax down the hair on his abdomen and then breaks off a piece of clear packing tape.
+POS Hard Negative (5): A shirtless civilian is spreading wax down the hair on his abdomen and then breaks off a piece of clear packing tape.
+POS Hard Positive (40): A shirtless man is spreading wax down the hair on his abdomen and then breaks off a piece of clear packing magnetic tape.
+POS Hard Positive (20): A shirtless serviceman is spreading wax down the hair on his abdomen and then breaks off a piece of clear packing tape.
+POS Hard Positive (5): A shirtless human race is spreading wax down the hair on his abdomen and then breaks off a piece of clear packing tape.
+
+--- LLM-Generated Examples ---
+LLM Hard Negative: A bare-chested individual is tanning their skin with a sun lamp.
+LLM Hard Positive: A naked male is applying wax to his pubic area before cutting off some transparent shipping tape.
+----------------------------------------
