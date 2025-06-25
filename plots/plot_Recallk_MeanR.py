@@ -7,7 +7,8 @@ x_recall = ["R@1", "R@5", "R@10", "Avg. Recall"]
 x_rank = ["Mean Rank"]
 
 # Shared group names and colors
-group_labels = []
+group_labels = ["Neg=2", "Neg=2<br>(Proper Distribution)", "Pos=2", "Pos=2<br>(Proper Distribution)",
+                "Neg=2, Pos=2", "Neg=2, Pos=2<br>(Proper Distribution)"]
 title_font_size = 36
 title_font_size_x = 20
 title_font_size_y = 20
@@ -24,7 +25,7 @@ v2t_data = {
     "Batch 64<br>(Replicated)": ([66.7, 94.1, 97.5], 2.3),
     "Batch 16<br>(Replicated)": ([63.8, 92.8, 97.1], 2.5),
     "Batch 16;<br>0.2 data<br>(Replicated)": ([58.6, 89.1, 94.1], 3.4),
-    "Batch 16;<br>0.2 data;<br>Neg=2": ([50.0, 86.7, 93.9], 3.7),
+    "Neg=2": ([50.0, 86.7, 93.9], 3.7),
     "Neg=2 - LLM": ([53.0, 87.5, 93.8], 4.4),
     "Neg=4": ([49.4, 85.1, 93.4], 4.0),
     "Neg=8": ([45.5, 84.0, 92.1], 4.2),
@@ -37,6 +38,9 @@ v2t_data = {
     "Neg=1, Pos=1": ([56.8, 88.5, 94.5], 3.9),
     "Neg=2 (set size 5)<br>Pos=2 (set size 5)": ([50.4, 86.5, 93.5], 4.2),
     "Neg=1, Pos=1;<br>Set size 5": ([56.6, 88.4, 94.4], 3.5),
+    "Neg=2<br>(Proper Distribution)": ([52.4, 86.4, 93.6], 4.3),
+    "Pos=2<br>(Proper Distribution)": ([56.6, 89.3, 94.5], 3.7),
+    "Neg=2, Pos=2<br>(Proper Distribution)": ([48.8, 85.9, 93.6], 4.3),
 }
 
 # T2V Data
@@ -46,7 +50,7 @@ t2v_data = {
     "Batch 64<br>(Replicated)": ([49.6, 83.5, 91.2], 6.9),
     "Batch 16<br>(Replicated)": ([47.3, 82.4, 90.4], 10.9),
     "Batch 16;<br>0.2 data<br>(Replicated)": ([42.7, 76.3, 86.2], 9.6),
-    "Batch 16;<br>0.2 data;<br>Neg=2": ([42.5, 77.0, 86.5], 10.4),
+    "Neg=2": ([42.5, 77.0, 86.5], 10.4),
     "Neg=2 - LLM": ([43.0, 76.6, 86.4], 9.5),
     "Neg=4": ([42.7, 77.2, 86.8], 10.2),
     "Neg=8": ([42.7, 77.0, 86.5], 9.8),
@@ -59,6 +63,9 @@ t2v_data = {
     "Neg=1, Pos=1": ([43.2, 76.9, 86.4], 9.8),
     "Neg=2 (set size 5)<br>Pos=2 (set size 5)": ([42.9, 76.8, 86.5], 9.1),
     "Neg=1, Pos=1;<br>Set size 5": ([43.1, 77.2, 86.4], 10.6),
+    "Neg=2<br>(Proper Distribution)": ([42.4, 76.0, 85.6], 9.5),
+    "Pos=2<br>(Proper Distribution)": ([43.2, 77.3, 86.5], 9.4),
+    "Neg=2, Pos=2<br>(Proper Distribution)": ([42.7, 76.2, 86.3], 9.0),
 }
 
 
@@ -197,4 +204,4 @@ for i in range(1, 3):
         fig.update_yaxes(title_font={"size": yaxis_title_size}, tickfont={"size": yaxis_tickfont_size}, row=i, col=j)
 
 # Show the figure
-fig.write_image("recall.svg")
+fig.write_image("recall.pdf")
