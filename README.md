@@ -73,7 +73,7 @@ their research ([paper](https://arxiv.org/abs/2410.12407)).
 ### How to run?
 
 Use shell scripts in the `scripts` folder. The main one is `run_xclip.sh`. More details in the `README.md` file in the
-folder. Of course, you will need to get all the files from "What is not in here?" section.
+folder. Of course, you will need to get all the files from "What is excluded?" section.
 
 ### Structure
 
