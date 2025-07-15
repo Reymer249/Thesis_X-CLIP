@@ -7,7 +7,7 @@ The full details of the work will be available in the `thesis.pdf` file, which w
 
 ### What is included?
 
-This project builds upon the [X-CLIP](https://github.com/xuguohai/X-CLIP) model and utilizes the [VATEX](https://eric-xw.github.io/vatex-website/about.html) dataset for experimental evaluation.
+This project builds upon (forks) the [X-CLIP](https://github.com/xuguohai/X-CLIP) model and utilizes the [VATEX](https://eric-xw.github.io/vatex-website/about.html) dataset for experimental evaluation.
 
 Due to legal restrictions, we are unable to share the dataset used. This repository includes only the code used for training and evaluation.
 Most of the code is adapted from the original [X-CLIP](https://github.com/xuguohai/X-CLIP) repository.
