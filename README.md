@@ -94,7 +94,7 @@ together with visual features mask (both are created via `get_features.py`)
 - `get_features.py` - the script to process videos into their encoded features. Why would we do that? It makes testing
 more fast and robust
 - `get_xclip.py` - I don't even know what is that, to be honest. We continued the work of
-[Chen and Hazel](https://github.com/JewelChen2019/Fine-grained-negatives/tree/main/X-CLIP_fine_grained_vp), and this
+[Chen and Doughty](https://github.com/JewelChen2019/Fine-grained-negatives/tree/main/X-CLIP_fine_grained_vp), and this
 file was in there, that is why it is here. It is not used in the project, as far as I traced, but I am scared to delete
 it :)
 - `main_clip4clip.py` - as X-CLIP is based on [CLIP4Clip](https://github.com/ArrowLuo/CLIP4Clip), we have this file as
