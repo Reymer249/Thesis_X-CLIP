@@ -37,11 +37,11 @@ def extract_words_by_pos(json_file_path):
 
     # Initialize dictionary to store words by part of speech
     pos_dict = {
-        "noun": set(),
-        "adjective": set(),
-        "verb": set(),
-        "adverb": set(),
-        "preposition": set()
+        "NOUN": set(),
+        "ADJ": set(),
+        "VERB": set(),
+        "ADV": set(),
+        "PREP": set()
     }
 
     # Process each caption in the JSON data
@@ -57,16 +57,16 @@ def extract_words_by_pos(json_file_path):
             for word, tag in tagged_words:
                 # Only add the word if it's valid
                 if is_valid_word(word):
-                    if tag.startswith('NN'):  # Nouns
-                        pos_dict["noun"].add(word)
-                    elif tag.startswith('JJ'):  # Adjectives
-                        pos_dict["adjective"].add(word)
-                    elif tag.startswith('VB'):  # Verbs
-                        pos_dict["verb"].add(word)
-                    elif tag.startswith('RB'):  # Adverbs
-                        pos_dict["adverb"].add(word)
-                    elif tag == 'IN':  # Prepositions
-                        pos_dict["preposition"].add(word)
+                    if tag.startswith('NN'):  # NOUNs
+                        pos_dict["NOUN"].add(word)
+                    elif tag.startswith('JJ'):  # ADJs
+                        pos_dict["ADJ"].add(word)
+                    elif tag.startswith('VB'):  # VERBs
+                        pos_dict["VERB"].add(word)
+                    elif tag.startswith('RB'):  # ADVs
+                        pos_dict["ADV"].add(word)
+                    elif tag == 'IN':  # PREPs
+                        pos_dict["PREP"].add(word)
 
     # Convert sets to lists
     for pos in pos_dict:
