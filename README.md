@@ -1,18 +1,35 @@
-### Overview
+# Overview
 
 
 
 This repository contains the code for the thesis project titled "Beyond Coarse-Grained Matching in Video-Text Retrieval."
 The full details of the work will be available in the `thesis.pdf` file, which will be uploaded upon approval.
 
-### What is included?
+## What is included?
 
 This project builds upon (forks) the [X-CLIP](https://github.com/xuguohai/X-CLIP) model and utilizes the [VATEX](https://eric-xw.github.io/vatex-website/about.html) dataset for experimental evaluation.
+
+#### X-CLIP Architecture
+<!-- ![XCLIP](./XCLIP.png) -->
+
+![image](https://user-images.githubusercontent.com/33897496/191735201-e951c434-c5aa-4646-b8f8-d594d2fad99b.png)
+
+*the image is taken from [X-CLIP](https://github.com/xuguohai/X-CLIP)
 
 Due to legal restrictions, we are unable to share the dataset used. This repository includes only the code used for training and evaluation.
 Most of the code is adapted from the original [X-CLIP](https://github.com/xuguohai/X-CLIP) repository.
 
-### What is excluded?
+## Requirements
+
+*   [PyTorch](https://pytorch.org/ "PyTorch") version = 1.7.1
+
+*   Install other libraries via
+
+```bash
+pip install -r requirements.txt
+```
+
+## What is excluded?
 
 1. Dataset, including:
     - video clips 
@@ -70,16 +87,16 @@ to put anything into in. We added it just in case we need it in the future
 You may find hard negatives for validation set in the [Chen and Hazel](https://github.com/JewelChen2019/Fine-grained-negatives/tree/main/X-CLIP_fine_grained_vp) repository, as our work is a continuation of
 their research ([paper](https://arxiv.org/abs/2410.12407)).
 
-### How to run?
+## How to run?
 
 Use shell scripts in the `scripts` folder. The main one is `run_xclip.sh`. More details in the `README.md` file in the
 folder. Of course, you will need to get all the files from "What is excluded?" section.
 
-### Structure
+## Structure
 
 *This repository is the fork of [X-CLIP](https://github.com/xuguohai/X-CLIP), so most of the code was not written by us
 
-###### folders
+#### folders
 - dataloader - folder with the code to load data
 - helpers_scripts - **Python scripts** for some additional processing we needed (i.e. calculate the length of sentences in
 the dataset, or generate sets with hard negatives and positives). More info in the `README.md` file in the  folder itself
@@ -87,7 +104,7 @@ the dataset, or generate sets with hard negatives and positives). More info in t
 - plots - Python scripts to generate plots. In the code you will find the result values for all the experiments.
 - preprocess -  we did not modify this folder from the [X-CLIP](https://github.com/xuguohai/X-CLIP)
 - scripts - **Shell scripts** to run everything. More details in the `README.md` file in the  folder itself
-###### files
+#### files
 - `calculate_PosRank.py` - file to calculate PosRank. To use it, you need the weights for the model, and visual features
 together with visual features mask (both are created via `get_features.py`)
 - `ex_sentences.txt` - txt file with the 25 sentences analyzed mentioned in the "3.4 Hard positives/negatives sampling" section, "Quality" paragraph
@@ -110,7 +127,5 @@ if so). You can also run the plain X-CLIP from `main_xclip_aug.py` by just not s
 
 - `metrics.py` - was not changed since [X-CLIP](https://github.com/xuguohai/X-CLIP)
 - `util.py` - was not changed since [X-CLIP](https://github.com/xuguohai/X-CLIP)
-
-
 
 
