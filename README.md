@@ -3,7 +3,7 @@
 
 
 This repository contains the code for the thesis project titled "Beyond Coarse-Grained Matching in Video-Text Retrieval."
-The full details of the work will be available in the `thesis.pdf` file, which will be uploaded upon approval.
+The full details of the work will be available in the `Thesis.pdf` file, which will be uploaded upon approval.
 
 ## What is included?
 
