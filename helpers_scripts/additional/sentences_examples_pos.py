@@ -1,3 +1,6 @@
+"""
+    Prints n random examples showing original caption and POS-based hard negatives/positives.
+"""
 import json
 import random
 import argparse

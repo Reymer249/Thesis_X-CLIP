@@ -1,3 +1,6 @@
+"""
+    This script outputs the statistics of generated sentences per part of speech for different methods of generation.
+"""
 import json
 import argparse
 import logging

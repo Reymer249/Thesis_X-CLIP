@@ -1,3 +1,7 @@
+"""
+    Shows up the examples of generated sentences using different methods. THis script was used to generate the table
+    in the Appendix E in the paper
+"""
 import json
 import random
 import argparse

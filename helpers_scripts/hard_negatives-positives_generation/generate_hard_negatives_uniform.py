@@ -14,11 +14,14 @@
         4) if it is not enough, calculate how many substitutions we are missing => n
         5) n times substitute a random word with given pos with the word with a given pos from the dictionary
 
-        therefore, no max_attemps variables or anything like that
+    therefore, no max_attemps variables or anything like that
 
-        when retrieving values from the set collected on the step 5, the priority should be given first to the
-        substitutions with direct antonyms, then antonyms of hypernyms or hyponyms, and then the rest. so we should
-        keep track how we generate substitution ad prioritize on that
+    when retrieving values from the set collected on the step 5, the priority should be given first to the
+    substitutions with direct antonyms, then antonyms of hypernyms or hyponyms, and then the rest. so we should
+    keep track how we generate substitution ad prioritize on that
+
+    FOR MORE DETAILS SEE: documentation in generate_hard_positives_uniform.py
+
 """
 import json
 import random

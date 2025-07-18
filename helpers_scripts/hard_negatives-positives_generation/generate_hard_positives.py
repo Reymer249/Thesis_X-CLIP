@@ -1,5 +1,9 @@
 """
     Generate Hard Positives file using POS methodology
+
+    FOR MORE DETAILS SEE: documentation in generate_hard_negatives_uniform.py - we describe the method there, and in the
+    paper
+
 """
 import json
 import random

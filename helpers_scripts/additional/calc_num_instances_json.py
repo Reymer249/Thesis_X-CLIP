@@ -1,3 +1,6 @@
+"""
+   Counts the number of instances (keys) in a JSON file.
+"""
 import json
 import sys
 

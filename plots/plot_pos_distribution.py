@@ -1,3 +1,7 @@
+"""
+    This script outputs the distribution of generated sentences per part of speech for some method. The examples of
+    generated plots may be found in Appendix F in the paper, adn described in section 3.4 (Methodology).
+"""
 import plotly.graph_objects as go
 from constants import *
 import numpy as np

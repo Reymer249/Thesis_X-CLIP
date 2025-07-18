@@ -1,3 +1,43 @@
+"""
+    This file generates hard negatives or positives in a "uniform" way. Let us explain what it means:
+
+    In a "normal" generation algorithm (see other scripts), the process is following (also described in the paper -
+    Algorithms 1 and 2):
+
+    1. We get a sentence
+    2. We parse all parts of speech in the sentence
+    3. We generate hard positives or negatives using direct synonyms/antonyms of the words for ALL words
+    4. If the set size of generated sentences is less than needed, we use synonyms/antonyms of hypernym or hyponyms
+    5. If it is still not enough, we use vocabulary to generate more hard negatives
+    6. We then "fill up" the final dataset with the respective priorities
+
+    However, when the set size is small, it will result in a skewed distribution, as it is easier to find direct
+    synonyms or antonyms for nouns, rather than, for example, prepositions. Therefore, we introduced this script, to
+    generate the hard negatives/positives more uniformly, even by drpping the quality of the generated sentences (as
+    now we have priorities only in the part of speech bucket, and not in the whole set, see below):
+
+    1. We get a sentence
+    2. We parse all parts of speech in the sentence
+    3. We get the number of needed sentences for each part of speech (e.g., if we need 20 sentences and in the caption
+    we have all parts of speech (5), then we will generate 20/5=4 sentences for each part of speech; as you see, the
+    quality of the sentences suffers a bit, as we have to generate sentences for some part of speech even though
+    they might not have any direct synonyms/antonyms, and we will have to use vocabulary)
+    4. For each part of speech we:
+        1. We generate hard positives or negatives using direct synonyms/antonyms of the words
+        2. If the set size of generated sentences is less than needed, we use synonyms/antonyms of hypernym or hyponyms
+        3. If it is still not enough, we use vocabulary to generate more hard negatives
+    5. We add up the sets for different parts of speech into one set
+
+    Hereby, we preserve the distribution of the appearance of the parts of speech in the sentence. We call it
+    "uniform" as we uniformly use parts of speech, i.e. generate sentences for all of them.
+
+    IMPORTANT NOTE: We do not use this algorithm in the paper, as we have noticed, that when the set size is big enough
+    (>40 sentences), the distribution in the other algorithm converges to this one, which makes sense, as it exhausts
+    direct synonyms and antonyms and also has to use vocabulary.
+
+    FOR MORE DETAILS SEE: documentation in generate_hard_negatives_uniform.py
+
+"""
 import json
 import random
 import argparse

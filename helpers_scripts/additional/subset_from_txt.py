@@ -1,6 +1,8 @@
 """
     Random Line Selection Utility
 
+    This file was used to create the 20% dataset from the full VATEX dataset
+
     This module provides functionality to randomly select a specified percentage of lines
     from a text file and write the selected lines to a new output file. It's useful for
     creating random samples from large datasets, such as selecting a subset of video IDs,
